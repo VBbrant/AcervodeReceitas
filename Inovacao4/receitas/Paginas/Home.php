@@ -1,23 +1,6 @@
-<!DOCTYPE html> <!--Home.php-->
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SaborArte - Compartilhe Receitas</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../Style/home.css">
-</head>
-<body>
-    <?php 
-    if (session_status() == PHP_SESSION_NONE) {
-        session_start(); 
-    }
-    if (!isset($_SESSION['idLogin'])) {
-        header("Location: " . ROOT_PATH . "/Paginas/Login.php");
-        exit();
-    }
-    include '../elementoPagina/cabecalho.php'; ?>
-    
+<?php include '../elementoPagina/cabecalho.php'; ?>
+
+<div class="page-content">
     <div class="background1"></div>
 
     <div class="container mt-4">
@@ -63,7 +46,7 @@
         <div class="row featured-books">
             <?php
             // Consulta para buscar livros
-            $sqlLivros = "SELECT idLivro AS id, titulo, 'Autor Desconhecido' AS autor FROM livro LIMIT 9";  // Exemplo: modificando a consulta conforme as colunas
+            $sqlLivros = "SELECT idLivro AS id, titulo, 'Autor Desconhecido' AS autor FROM livro LIMIT 9";  
             $resultLivros = mysqli_query($conn, $sqlLivros);
 
             if (mysqli_num_rows($resultLivros) > 0) {
@@ -92,6 +75,6 @@
     <footer class="mt-4 text-center">
         <p>&copy; 2024 SaborArte. Todos os direitos reservados.</p>
     </footer>
+</div> <!-- Fim do .page-content -->
 
-</body>
-</html>
+<?php include "../elementoPagina/rodape.php"; ?>

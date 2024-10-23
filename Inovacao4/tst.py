@@ -114,4 +114,12 @@ file_path_with_translation = "/mnt/data/crazy_for_you_with_translation.srt"
 with open(file_path_with_translation, "w", encoding="utf-8") as srt_file:
     srt_file.write(srt_file_content_with_translation)
 
-file_path_with_translation
+file_path_with_translation<div id="perfilPopup" class="perfil-popup">
+        <h4>Perfil do Usuário</h4>
+        <ul>
+            <li><a href="<?php echo ROOT_PATH; ?>/Paginas/Perfil.php">Ver Perfil</a></li>
+            <li><a href="#">Configurações</a></li>
+            <li><a href="<?php echo ROOT_PATH; ?>/Paginas/logout.php">Sair</a></li>
+        </ul>
+    </div>
+

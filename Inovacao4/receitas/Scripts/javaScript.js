@@ -1,79 +1,73 @@
+// Variáveis para a barra lateral e o ícone de menu
+let menuIcon = document.getElementById('menuIcon');
+let sidebar = document.getElementById('sidebar');  // Certifique-se de que a barra lateral tenha esse ID
+let menuOpen = false;
+
+// Função para abrir e fechar a barra lateral
+menuIcon.addEventListener('click', function () {
+    menuOpen = !menuOpen;  // Alterna entre abrir e fechar
+
+    if (menuOpen) {
+        sidebar.style.transform = 'translateX(0)';  // Abre a barra lateral
+        rotateMenuIcon(true);  // Roda as barras
+    } else {
+        sidebar.style.transform = 'translateX(-100%)';  // Fecha a barra lateral
+        rotateMenuIcon(false);  // Volta as barras ao estado original
+    }
+});
+
+// Função para animar as três barras do ícone de menu
+function rotateMenuIcon(open) {
+    let iconBars = menuIcon.querySelectorAll('span');  // Seleciona as barras dentro do ícone
+
+    if (open) {
+        // Animação para formar um "X"
+        iconBars[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
+        iconBars[1].style.opacity = '0';  // A barra do meio some
+        iconBars[2].style.transform = 'rotate(-45deg) translate(5px, -5px)';
+    } else {
+        // Volta ao formato de três barras verticais
+        iconBars[0].style.transform = 'rotate(0) translate(0, 0)';
+        iconBars[1].style.opacity = '1';
+        iconBars[2].style.transform = 'rotate(0) translate(0, 0)';
+    }
+}
+
+// Controle da visibilidade do header ao rolar a página
 let lastScrollTop = 0;
-const header = document.querySelector('.header');
-const sidebar = document.getElementById('sidebar');
+let header = document.querySelector('.header');  // Atualizado para pegar o header com a classe
 
 window.addEventListener('scroll', function () {
-    if (!sidebar.classList.contains('active')) {
-        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        
-        if (scrollTop > lastScrollTop) {
-            // Ao rolar para baixo, esconde o header
-            header.classList.add('hidden');
-        } else {
-            // Ao rolar para cima, mostra o header
-            header.classList.remove('hidden');
-        }
-        lastScrollTop = scrollTop;
+    let currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+
+    if (menuOpen) {
+        header.classList.remove('hidden');
+        return;
+    }
+
+    if (currentScroll > lastScrollTop) {
+        header.classList.add('hidden');  // Esconde ao rolar para baixo
+    } else {
+        header.classList.remove('hidden');  // Mostra ao rolar para cima
+    }
+    lastScrollTop = currentScroll;
+});
+
+// Mostrar o pop-up ao clicar no ícone de usuário
+let userIcon = document.getElementById('userIcon');
+let userPopup = document.querySelector('.header-user-popup');
+
+userIcon.addEventListener('click', function () {
+    if (userPopup.style.display === 'block') {
+        userPopup.style.display = 'none';
+    } else {
+        userPopup.style.display = 'block';
     }
 });
 
-// Barra lateral -------------------------------------------------------------------------------------------
-document.addEventListener("DOMContentLoaded", function() {
-    const toggleButton = document.getElementById("toggleSidebar");
-    const bars = toggleButton.getElementsByClassName("bar");
-
-    toggleButton.addEventListener("click", function() {
-        sidebar.classList.toggle("active");
-        
-        
-        for (let i = 0; i < bars.length; i++) {
-            bars[i].classList.toggle("rotate");
-        }
-    });
-});
-
-
-// Função para mostrar mais receitas--------------------------------------------------------------------------
-document.getElementById('more-recipes-btn').addEventListener('click', function() {
-    let hiddenRecipes = document.querySelectorAll('.extra-receitas.hidden');
-    for (let i = 0; i < Math.min(hiddenRecipes.length, 6); i++) {
-        hiddenRecipes[i].classList.remove('hidden');
-    }
-
-    // mudar comportamento do botão
-    if (document.querySelectorAll('.extra-receitas.hidden').length === 0) {
-        this.textContent = 'Ver todas as receitas';
-        this.addEventListener('click', function() {
-            window.location.href = 'Receitas.php';
-        });
+// Fechar o pop-up se clicar fora dele
+window.addEventListener('click', function (e) {
+    if (!userIcon.contains(e.target) && !userPopup.contains(e.target)) {
+        userPopup.style.display = 'none';
     }
 });
-
-// Função para mostrar mais livros ----------------------------------------------------------------------
-document.getElementById('more-books-btn').addEventListener('click', function() {
-    let hiddenBooks = document.querySelectorAll('.extra-livros.hidden');
-    for (let i = 0; i < Math.min(hiddenBooks.length, 6); i++) {
-        hiddenBooks[i].classList.remove('hidden');
-    }
-
-    // mudar comportamento do botao
-    if (document.querySelectorAll('.extra-livros.hidden').length === 0) {
-        this.textContent = 'Ver todos os livros';
-        this.addEventListener('click', function() {
-            window.location.href = 'Livros.php';
-        });
-    }
-});
-
-// Função para exibir/ocultar o popup de perfil ---------------------------------------------------------------
-document.getElementById('userProfileIcon').addEventListener('click', function(event) {
-    event.preventDefault();
-    const perfilPopup = document.getElementById('perfilPopup');
-    perfilPopup.classList.toggle('show');
-});
-
-// Função para alternar o modo escuro
-document.getElementById('toggleDarkMode').addEventListener('click', function() {
-    document.body.classList.toggle('dark-mode');
-});
-

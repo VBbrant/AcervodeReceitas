@@ -1,51 +1,67 @@
-<!-- cabecalho.php -->
-<header class="header">
-    <?php
-    if (session_status() == PHP_SESSION_NONE) {
-        session_start(); 
-    }
-    include_once $_SERVER['DOCUMENT_ROOT'] . '/ACERVODERECEITAS/Inovacao4/config.php'; ?> <!-- Inclui o arquivo de configuração -->
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Título da Página</title>
     
-    <?php echo "<script src=' echo ROOT_PATH; /Scripts/javaScript.js'></script>";?> 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
-    
-    
+    <!-- Link para o Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>/Style/estilu.css">
     
-    <!-- Inclui a barra lateral -->
-    <?php include $_SERVER['DOCUMENT_ROOT'] . ROOT_PATH . '/elementoPagina/barraLateral.php'; ?>
+    <!-- Link para o arquivo de ícones Bootstrap (para os ícones de sino e usuário) -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
     
-    <div class="container d-flex justify-content-between align-items-center">
-        <div class="logo">SABOR<span style="color: red;">ARTE</span></div>
-        <button id="toggleSidebar" class="btn btn-danger">
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-        </button>
-        <nav class="navbar navbar-expand-lg navbar-light">
-            <ul class="navbar-nav">
-                <li class="nav-item"><a class="nav-link text-white" href="<?php echo ROOT_PATH; ?>/Paginas/Home.php">Início</a></li>
-                <li class="nav-item"><a class="nav-link text-white" href="<?php echo ROOT_PATH; ?>/Paginas/receitas/addReceita.php">Receitas</a></li>
-                <li class="nav-item"><a class="nav-link text-white" href="#">Livros</a></li>
-                <li class="nav-item"><a class="nav-link text-white" href="#">Sobre</a></li>
-            </ul>
-        </nav>
-        <div class="icons">
-            <a href="#" class="text-white mr-3"><i class="fas fa-search"></i></a>
-            <a href="#" id="userProfileIcon" class="text-white"><i class="fas fa-user"></i></a>
-        </div>
-    </div>
+    <!-- Link para o CSS personalizado -->
+    <link rel="stylesheet" href="../Style/estiloCabecalho.css">
+    <link rel="stylesheet" href="../Style/home.css">
+</head>
+<body>
 
-    <!-- Popup de perfil -->
-    <div id="perfilPopup" class="perfil-popup">
-        <h4>Perfil do Usuário</h4>
+    <header id="header" class="header fixed-top bg-white shadow-sm">
+        <div class="container-fluid d-flex justify-content-between align-items-center">
+        <div id="menuIcon">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <div id="sidebar">
+            <?php include '../elementoPagina/barraLateral.php'; ?>
+        </div> 
+            <!-- Logo -->
+            <a href="#" class="navbar-brand">
+                <span class="text-black">SABOR</span><span class="text-danger">ARTE</span>
+            </a>
+            
+            <!-- Formulário de pesquisa -->
+            <form class="d-flex">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            </form>
+            
+            <div class="icons d-flex align-items-center">
+                <div class="notification position-relative">
+                    <i class="bi bi-bell"></i>
+                    <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
+                </div>
+                <div class="user-icon ms-3" id="userIcon">
+                    <i class="bi bi-person-circle"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Pop-up do usuário -->
+    <div class="header-user-popup" id="userPopup">
         <ul>
-            <li><a href="<?php echo ROOT_PATH; ?>/Paginas/Perfil.php">Ver Perfil</a></li>
+            <li><a href="#">Perfil</a></li>
+            <li><a href="#">Modo Escuro</a></li>
             <li><a href="#">Configurações</a></li>
-            <li><a href="<?php echo ROOT_PATH; ?>/Paginas/logout.php">Sair</a></li>
+            <li><a href="#">Sair</a></li>
         </ul>
     </div>
-</header>
+
+    <!-- Scripts -->
+    <?php include "../elementoPagina/rodape.php"; ?>
+</body>
+</html>
