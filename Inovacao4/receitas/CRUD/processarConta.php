@@ -4,7 +4,6 @@ include_once('../conn.php');
 
 // Verifica se o formulário de login ou registro foi enviado
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Se for um formulário de login
     if (isset($_POST['login']) && isset($_POST['senha'])) {
         $login = mysqli_real_escape_string($conn, $_POST['login']);
         $senha = mysqli_real_escape_string($conn, $_POST['senha']);
@@ -27,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $_SESSION['idLogin'] = $usuario['idLogin'];
                     $_SESSION['idCargo'] = $usuario['idCargo'];
 
-                    // Redireciona com base no cargo
+                    
                     switch ($usuario['idCargo']) {
                         case 6: // ADM
                             header("Location: ../Paginas/Home.php");
@@ -67,15 +66,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $senha = mysqli_real_escape_string($conn, $_POST['senha']);
 
         if (!empty($nome) && !empty($login) && !empty($senha)) {
-            // Verifica se o login já existe
             $sql_check = "SELECT * FROM usuario WHERE email = '$login'";
             $result_check = mysqli_query($conn, $sql_check);
 
             if (mysqli_num_rows($result_check) == 0) {
-                // Criptografando a senha
                 $senha_hashed = password_hash($senha, PASSWORD_DEFAULT);
 
-                // Inserindo novo usuário
                 $sql = "INSERT INTO usuario (nome, email, senha) VALUES ('$nome', '$login', '$senha_hashed')";
 
                 if (mysqli_query($conn, $sql)) {

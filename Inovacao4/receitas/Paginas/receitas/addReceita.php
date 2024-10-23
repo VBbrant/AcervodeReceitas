@@ -7,6 +7,13 @@
     <title>Document</title>
 </head>
 <body>
+    <?php if (session_status() == PHP_SESSION_NONE) {
+        session_start(); 
+    }
+    if (!isset($_SESSION['idLogin'])) {
+        header("Location: " . ROOT_PATH . "/Paginas/Login.php");
+        exit();
+    } ?>
     <header>
         <?php include $_SERVER['DOCUMENT_ROOT'] . '/elementoPagina/cabecalho.php';?>
     </header>

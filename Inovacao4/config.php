@@ -1,4 +1,4 @@
 <!-- config.php -->
 <?php
-define('ROOT_PATH', '/Inovacao4/receitas');
+define('ROOT_PATH', '/ACERVODERECEITAS/Inovacao4/receitas');
 ?>

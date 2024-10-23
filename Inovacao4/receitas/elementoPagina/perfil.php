@@ -1,5 +1,5 @@
 <?php
-include_once $_SERVER['DOCUMENT_ROOT'] . '/Inovacao4/config.php';
+include_once $_SERVER['DOCUMENT_ROOT'] . 'ACERVODERCEITAS/Inovacao4/config.php';
 ?>
 
 <div id="perfilPopup" class="perfil-popup hidden">

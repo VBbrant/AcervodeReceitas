@@ -4,7 +4,7 @@
     if (session_status() == PHP_SESSION_NONE) {
         session_start(); 
     }
-    include_once $_SERVER['DOCUMENT_ROOT'] . '/Inovacao4/config.php'; ?> <!-- Inclui o arquivo de configuração -->
+    include_once $_SERVER['DOCUMENT_ROOT'] . '/ACERVODERECEITAS/Inovacao4/config.php'; ?> <!-- Inclui o arquivo de configuração -->
     
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../Style/estilu.css">
@@ -26,7 +26,14 @@
         </nav>
         <div class="icons">
             <a href="#" class="text-white mr-3"><i class="fas fa-search"></i></a>
-            <a href="<?php echo ROOT_PATH; ?>/Paginas/Perfil.php" class="text-white"><i class="fas fa-user"></i></a> <!-- Link do perfil -->
+            <a href="#" id="userProfileIcon" class="text-white"><i class="fas fa-user"></i></a> <!-- Ícone de usuário -->
         </div>
+    </div>
+
+    <!-- Popup do perfil que será exibido ao clicar no ícone de usuário -->
+    <div id="perfilPopup" class="perfil-popup">
+        <h4>Perfil do Usuário</h4>
+        <p>Aqui você pode ver os detalhes do perfil.</p>
+        <a href="<?php echo ROOT_PATH; ?>/Paginas/Perfil.php">Ir para o perfil completo</a>
     </div>
 </header>
