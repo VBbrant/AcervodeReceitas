@@ -10,13 +10,13 @@
     transition: top 0.3s;
 }
 
-.logo {
+.header .logo {
     font-size: 24px;
     font-weight: bold;
     color: white;
 }
 
-.hidden {
+.header .hidden {
     top: -100px;
 }
 

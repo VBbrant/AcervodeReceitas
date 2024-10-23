@@ -93,10 +93,5 @@
         <p>&copy; 2024 SaborArte. Todos os direitos reservados.</p>
     </footer>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../Scripts/javaScript.js"></script>
-    
 </body>
 </html>

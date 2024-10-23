@@ -1,23 +1,51 @@
-/**addReceita.php */
 <!DOCTYPE html>
-<html lang="PT-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Adicionar Receita</title>
 </head>
 <body>
-    <?php if (session_status() == PHP_SESSION_NONE) {
-        session_start(); 
-    }
-    if (!isset($_SESSION['idLogin'])) {
-        header("Location: " . ROOT_PATH . "/Paginas/Login.php");
-        exit();
-    } ?>
-    <header>
-        <?php include $_SERVER['DOCUMENT_ROOT'] . '/elementoPagina/cabecalho.php';?>
-    </header>
-    
+<?php
+    include_once $_SERVER['DOCUMENT_ROOT'] . '/ACERVODERECEITAS/Inovacao4/receitas/elementoPagina/cabecalho.php'; 
+    ?>
+    <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>/Style/receitas.css">
+    <div class="container">
+        <h2>Adicionar Nova Receita</h2>
+        <form method="POST" action="../CRUD/processarAll.php">
+            <div class="form-group">
+                <label for="nome_rec">Nome da Receita:</label>
+                <input type="text" class="form-control" id="nome_rec" name="nome_rec" required>
+            </div>
+            <div class="form-group">
+                <label for="data_criacao">Data de Criação:</label>
+                <input type="date" class="form-control" id="data_criacao" name="data_criacao">
+            </div>
+            <div class="form-group">
+                <label for="modo_preparo">Modo de Preparo:</label>
+                <textarea class="form-control" id="modo_preparo" name="modo_preparo" rows="5"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="num_porcao">Número de Porções:</label>
+                <input type="number" class="form-control" id="num_porcao" name="num_porcao">
+            </div>
+            <div class="form-group">
+                <label for="descricao">Descrição:</label>
+                <textarea class="form-control" id="descricao" name="descricao" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="inedita">Inédita:</label>
+                <select class="form-control" id="inedita" name="inedita">
+                    <option value="S">Sim</option>
+                    <option value="N">Não</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="link_imagem">Link da Imagem:</label>
+                <input type="text" class="form-control" id="link_imagem" name="link_imagem">
+            </div>
+            <button type="submit" class="btn btn-primary">Adicionar Receita</button>
+        </form>
+    </div>
 </body>
 </html>
-

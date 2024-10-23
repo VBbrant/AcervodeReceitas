@@ -67,9 +67,9 @@ document.getElementById('more-books-btn').addEventListener('click', function() {
 
 // Função para exibir/ocultar o popup de perfil ---------------------------------------------------------------
 document.getElementById('userProfileIcon').addEventListener('click', function(event) {
-    event.preventDefault(); // Evitar que o link execute a navegação padrão
+    event.preventDefault();
     const perfilPopup = document.getElementById('perfilPopup');
-    perfilPopup.classList.toggle('show'); // Alterna entre mostrar e ocultar o popup
+    perfilPopup.classList.toggle('show');
 });
 
 // Função para alternar o modo escuro

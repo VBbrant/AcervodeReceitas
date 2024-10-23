@@ -23,10 +23,12 @@ $usuario = [
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Área do Usuário</title>
     <link rel="stylesheet" href="../Style/estiloPerfil.css">
+    <script src="../Scripts/javaScript.js"></script>
+
 </head>
 <body>
     <?php include '../elementoPagina/cabecalho.php'; ?>
-<div class="perfil-container">
+    <div class="perfil-container">
         <h1>Área do Usuário</h1>
         <div class="perfil-info">
             <div class="perfil-item">
@@ -35,7 +37,7 @@ $usuario = [
             </div>
             <div class="perfil-item">
                 <label>Nome</label>
-                <input type="text" value="<?= isset($usuario['nome']) ? $usuario['nome'] : 'N/A' ?>" readonly>
+                <input type="text" value="<?= isset($usuario['nomeFunc']) ? $usuario['nomeFunc'] : 'N/A' ?>" readonly>
             </div>
             <div class="perfil-item">
                 <label>Nome Fantasia</label>
@@ -46,10 +48,6 @@ $usuario = [
                 <input type="email" value="<?= isset($usuario['email']) ? $usuario['email'] : 'N/A' ?>" readonly>
             </div>
             <div class="perfil-item">
-                <label>Senha</label>
-                <input type="password" value="<?= isset($usuario['senha']) ? $usuario['senha'] : 'N/A' ?>" readonly>
-            </div>
-            <div class="perfil-item">
                 <label>Cargo</label>
                 <input type="text" value="<?= isset($usuario['cargo']) ? $usuario['cargo'] : 'N/A' ?>" readonly>
             </div>
@@ -57,3 +55,4 @@ $usuario = [
     </div>
 </body>
 </html>
+

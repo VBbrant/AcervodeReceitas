@@ -6,11 +6,12 @@
     }
     include_once $_SERVER['DOCUMENT_ROOT'] . '/ACERVODERECEITAS/Inovacao4/config.php'; ?> <!-- Inclui o arquivo de configuração -->
     
+    <?php echo "<script src=' echo ROOT_PATH; /Scripts/javaScript.js'></script>";?> 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="<?php echo ROOT_PATH; ?>/Scripts/javaScript.js.php"></script>
-
+    
+    
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>/Style/estilu.css">
     

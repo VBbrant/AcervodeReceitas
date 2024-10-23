@@ -8,8 +8,7 @@
     <link rel="stylesheet" href="../../Style/estilo.css">
 </head>
 <body>
-    <?php include $_SERVER['DOCUMENT_ROOT'] . '/elementoPagina/cabecalho.php';
-; ?>
+    <?php include $_SERVER['DOCUMENT_ROOT'] . '/ACERVODERECEITAS/Inovacao4/receitas/elementoPagina/cabecalho.php'; ?>
 
     <div class="container mt-4">
         <h2 class="section-title">Detalhes da Receita</h2>
@@ -27,8 +26,8 @@
                 <h4>Modo de Preparo</h4>
                 <p>{$modoPreparo}</p>
                 ";
-            } else {
-                echo "<p>Receita não encontrada.</p>";
+            } elseif (isset($error)) {
+                echo "<p>{$error}</p>";
             }
             ?>
         </div>
