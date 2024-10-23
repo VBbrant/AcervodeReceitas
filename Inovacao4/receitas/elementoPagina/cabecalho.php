@@ -6,9 +6,17 @@
     }
     include_once $_SERVER['DOCUMENT_ROOT'] . '/ACERVODERECEITAS/Inovacao4/config.php'; ?> <!-- Inclui o arquivo de configuração -->
     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="<?php echo ROOT_PATH; ?>/Scripts/javaScript.js.php"></script>
+
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../Style/estilu.css">
-    <?php include 'barraLateral.php'; ?>
+    <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>/Style/estilu.css">
+    
+    <!-- Inclui a barra lateral -->
+    <?php include $_SERVER['DOCUMENT_ROOT'] . ROOT_PATH . '/elementoPagina/barraLateral.php'; ?>
+    
     <div class="container d-flex justify-content-between align-items-center">
         <div class="logo">SABOR<span style="color: red;">ARTE</span></div>
         <button id="toggleSidebar" class="btn btn-danger">
@@ -26,14 +34,17 @@
         </nav>
         <div class="icons">
             <a href="#" class="text-white mr-3"><i class="fas fa-search"></i></a>
-            <a href="#" id="userProfileIcon" class="text-white"><i class="fas fa-user"></i></a> <!-- Ícone de usuário -->
+            <a href="#" id="userProfileIcon" class="text-white"><i class="fas fa-user"></i></a>
         </div>
     </div>
 
-    <!-- Popup do perfil que será exibido ao clicar no ícone de usuário -->
+    <!-- Popup de perfil -->
     <div id="perfilPopup" class="perfil-popup">
         <h4>Perfil do Usuário</h4>
-        <p>Aqui você pode ver os detalhes do perfil.</p>
-        <a href="<?php echo ROOT_PATH; ?>/Paginas/Perfil.php">Ir para o perfil completo</a>
+        <ul>
+            <li><a href="<?php echo ROOT_PATH; ?>/Paginas/Perfil.php">Ver Perfil</a></li>
+            <li><a href="#">Configurações</a></li>
+            <li><a href="<?php echo ROOT_PATH; ?>/Paginas/logout.php">Sair</a></li>
+        </ul>
     </div>
 </header>

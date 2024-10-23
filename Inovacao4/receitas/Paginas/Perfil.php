@@ -1,9 +1,19 @@
 <?php
 session_start(); // Inicia a sessão
-if (!isset($_SESSION['idFun'])) {
+if (!isset($_SESSION['idLogin'])) {
     header("Location: ../Paginas/Login.php");
     exit();
 }
+
+$usuario = [
+    'idFun' => $_SESSION['idFun'] ?? null,
+    'nomeFunc' => $_SESSION['nome'] ?? null,
+    'nome_fantasia' => $_SESSION['nome_fantasia'] ?? null,
+    'email' => $_SESSION['email'] ?? null,
+    'senha' => $_SESSION['senha'] ?? null,
+    'cargo' => $_SESSION['cargo'] ?? null
+];
+
 ?>
 
 <!DOCTYPE html>
@@ -12,10 +22,11 @@ if (!isset($_SESSION['idFun'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Área do Usuário</title>
-    <link rel="stylesheet" href="../Style/perfil.css">
+    <link rel="stylesheet" href="../Style/estiloPerfil.css">
 </head>
 <body>
-    <div class="perfil-container">
+    <?php include '../elementoPagina/cabecalho.php'; ?>
+<div class="perfil-container">
         <h1>Área do Usuário</h1>
         <div class="perfil-info">
             <div class="perfil-item">
@@ -24,7 +35,7 @@ if (!isset($_SESSION['idFun'])) {
             </div>
             <div class="perfil-item">
                 <label>Nome</label>
-                <input type="text" value="<?= isset($usuario['nomeFunc']) ? $usuario['nomeFunc'] : 'N/A' ?>" readonly>
+                <input type="text" value="<?= isset($usuario['nome']) ? $usuario['nome'] : 'N/A' ?>" readonly>
             </div>
             <div class="perfil-item">
                 <label>Nome Fantasia</label>
@@ -41,33 +52,6 @@ if (!isset($_SESSION['idFun'])) {
             <div class="perfil-item">
                 <label>Cargo</label>
                 <input type="text" value="<?= isset($usuario['cargo']) ? $usuario['cargo'] : 'N/A' ?>" readonly>
-            </div>
-        </div>
-        <div class="receita-info">
-            <h2>Detalhes da Receita</h2>
-            <div class="receita-item">
-                <label>Nome</label>
-                <input type="text" value="<?= isset($nome) ? $nome : 'N/A' ?>" readonly>
-            </div>
-            <div class="receita-item">
-                <label>Data de Criação</label>
-                <input type="text" value="<?= isset($dataCriacao) ? $dataCriacao : 'N/A' ?>" readonly>
-            </div>
-            <div class="receita-item">
-                <label>Modo de Preparo</label>
-                <textarea readonly><?= isset($modoPreparo) ? $modoPreparo : 'N/A' ?></textarea>
-            </div>
-            <div class="receita-item">
-                <label>Número de Porções</label>
-                <input type="text" value="<?= isset($numPorcao) ? $numPorcao : 'N/A' ?>" readonly>
-            </div>
-            <div class="receita-item">
-                <label>Descrição</label>
-                <textarea readonly><?= isset($descricao) ? $descricao : 'N/A' ?></textarea>
-            </div>
-            <div class="receita-item">
-                <label>Imagem</label>
-                <input type="text" value="<?= isset($imagem) ? $imagem : 'N/A' ?>" readonly>
             </div>
         </div>
     </div>

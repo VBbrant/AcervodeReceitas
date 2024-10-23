@@ -2,17 +2,15 @@
 session_start(); // Inicia a sessão
 include '../../conn.php';
 
-// Verifica se o usuário está logado
+// Verifica se o usuário está logad
 if (!isset($_SESSION['idFun'])) {
-    // Redireciona para a página de login se não estiver logado
     header("Location: ../Paginas/Login.php");
     exit();
 }
 
-// Obtém o ID do funcionário da sessão
 $idUsuario = $_SESSION['idFun'];
 
-// Query para buscar os dados do funcionário
+
 $query = "SELECT f.idFun, f.nome AS nomeFunc, f.nome_fantasia, u.email, u.senha, c.nome AS cargo
           FROM funcionario f
           JOIN usuario u ON f.idLogin = u.idLogin
@@ -24,7 +22,7 @@ $stmt->bind_param("i", $idUsuario);
 $stmt->execute();
 $result = $stmt->get_result();
 
-// Verifica se o resultado retornou algo
+
 if ($result->num_rows > 0) {
     $usuario = $result->fetch_assoc();
 } else {
@@ -32,7 +30,7 @@ if ($result->num_rows > 0) {
     exit;
 }
 
-// Verifica se o ID da receita foi fornecido
+//VerReceita----------------------------------------------------------------
 if (isset($_GET['id'])) {
     $idReceita = $_GET['id'];
 

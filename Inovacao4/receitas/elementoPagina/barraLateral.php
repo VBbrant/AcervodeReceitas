@@ -26,6 +26,8 @@
         <li class="list-group-item">Ingredientes
             <ul>
                 <li>Adicionar Ingrediente</li>
+                <li>Editar Ingrediente</li>
+                <li>Remover Ingrediente</li>
             </ul>
         </li>
     </ul>

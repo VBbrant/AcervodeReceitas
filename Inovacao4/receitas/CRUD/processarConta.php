@@ -9,11 +9,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $senha = mysqli_real_escape_string($conn, $_POST['senha']);
 
         if (!empty($login) && !empty($senha)) {
-            // Consulta para encontrar o usuário pelo email
-            $sql = "SELECT u.idLogin, u.senha, f.idCargo 
-                    FROM usuario u 
-                    JOIN funcionario f ON u.idLogin = f.idLogin 
-                    WHERE u.email = '$login'";
+            // Consulta para encontrar o usuário e as informações do funcionário pelo email
+            $sql = "SELECT u.idLogin, u.senha, f.idCargo, f.idFun, f.nome, f.nome_fantasia 
+            FROM usuario u 
+            JOIN funcionario f ON u.idLogin = f.idLogin 
+            WHERE u.email = '$login'";
+
+
                     
             $result = mysqli_query($conn, $sql);
 
@@ -22,26 +24,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 
                 // Verifica se a senha está correta
                 if (password_verify($senha, $usuario['senha'])) {
-                    // Inicia a sessão com idLogin e idCargo
+                    // Inicia a sessão com as informações do login e do funcionário
                     $_SESSION['idLogin'] = $usuario['idLogin'];
                     $_SESSION['idCargo'] = $usuario['idCargo'];
+                    $_SESSION['idFun'] = $usuario['idFun'];
+                    $_SESSION['nomeFunc'] = $usuario['nomeFunc'];
+                    $_SESSION['nome_fantasia'] = $usuario['nome_fantasia'];
+                    $_SESSION['email'] = $usuario['email'];
 
-                    
+                    // Redireciona com base no cargo
                     switch ($usuario['idCargo']) {
                         case 6: // ADM
                             header("Location: ../Paginas/Home.php");
                             break;
                         case 7: // Cozinheiro
-                            header("Location: ../paginas/cozinheiro_dashboard.php");
+                            header("Location: ../Paginas/cozinheiro_dashboard.php");
                             break;
                         case 8: // Editor
-                            header("Location: ../paginas/editor_dashboard.php");
+                            header("Location: ../Paginas/editor_dashboard.php");
                             break;
                         case 9: // Degustador
-                            header("Location: ../paginas/degustador_dashboard.php");
+                            header("Location: ../Paginas/degustador_dashboard.php");
                             break;
                         case 10: // Analista de Sistema
-                            header("Location: ../paginas/analista_dashboard.php");
+                            header("Location: ../Paginas/analista_dashboard.php");
                             break;
                         default:
                             echo "<script>alert('Cargo não reconhecido.'); window.location.href='../Paginas/Login.php';</script>";
@@ -55,7 +61,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 echo "<script>alert('Login não encontrado.'); window.location.href='../Paginas/login.php';</script>";
             }
         } else {
-            echo "<script>alert('Por favor, preencha todos os campos.'); window.location.href='../paginas/login.php';</script>";
+            echo "<script>alert('Por favor, preencha todos os campos.'); window.location.href='../Paginas/login.php';</script>";
         }
     }
 
