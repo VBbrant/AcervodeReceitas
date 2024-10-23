@@ -1,0 +1,48 @@
+/* Estilização para imagens e conteúdo das receitas */
+.recipe-box {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+/* Define um grid com 2 colunas */
+.featured-recipes {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 20px; /* Espaçamento entre os itens */
+    padding: 40px 20px; /* Espaçamento em cima e nas laterais */
+    margin-top: 20px; /* Separação da barra superior */
+}
+
+.recipe-image {
+    background-size: cover;
+    background-position: center;
+    height: 250px; /* Aumenta o tamanho das imagens */
+    border-radius: 15px;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    padding: 15px;
+}
+
+.recipe-details {
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    border-radius: 0 0 15px 15px;
+}
+
+.recipe-details h5, .recipe-details p {
+    color: white;
+    margin: 0;
+}
+
+.book-box {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+/* Esconde as receitas/livros extras por padrão */
+.hidden {
+    display: none;
+}
