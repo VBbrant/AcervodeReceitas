@@ -1,4 +1,10 @@
+
+
 <!DOCTYPE html>
+<!--FAZ EM ARQUIVOS SEPARADOS PFV, USE A PASTA STYLE PARA CSS, CRIE UM  NOVO ARQUIVO LÁ,
+ E USE processarAdicionar.php, processarAll.php(vizualização), processarEditar.php e processarExcluir.php 
+ na pasta CRUD-->
+ */
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
