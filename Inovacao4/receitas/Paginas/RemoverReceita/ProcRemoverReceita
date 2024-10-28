@@ -1,0 +1,20 @@
+<?php
+// Simulação de banco de dados de receitas
+$recipes = [
+    ['id' => 1, 'title' => 'Receita 1', 'description' => 'Descrição da Receita 1', 'ingredient' => 'Ingrediente A'],
+    ['id' => 2, 'title' => 'Receita 2', 'description' => 'Descrição da Receita 2', 'ingredient' => 'Ingrediente B'],
+    ['id' => 3, 'title' => 'Receita 3', 'description' => 'Descrição da Receita 3', 'ingredient' => 'Ingrediente C']
+];
+
+// Verificar se a remoção foi solicitada
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $recipe_id_to_remove = $_POST['recipe_id'];
+
+    // Filtra as receitas para remover a selecionada
+    $recipes = array_filter($recipes, function ($recipe) use ($recipe_id_to_remove) {
+        return $recipe['id'] != $recipe_id_to_remove;
+    });
+
+    echo "<script>alert('Receita removida com sucesso!');</script>";
+}
+?>

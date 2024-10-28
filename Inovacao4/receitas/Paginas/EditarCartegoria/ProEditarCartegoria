@@ -1,0 +1,11 @@
+<?php
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $searchCategory = $_POST['search-category'];
+    $categoryName = $_POST['category-name'];
+    $ingredientId = $_POST['ingredient-id'];
+    $categoryDescription = $_POST['category-description'];
+    echo "Categoria '$categoryName' editada com sucesso!";
+    echo "<br>ID: $ingredientId";
+    echo "<br>Descrição: $categoryDescription";
+}
+?>

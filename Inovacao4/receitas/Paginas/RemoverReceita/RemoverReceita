@@ -1,0 +1,82 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remover Receita</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            background-image: url('https://placehold.co/800x600');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            filter: sepia(1);
+        }
+    </style>
+</head>
+<body class="bg-opacity-50">
+    <div class="container mx-auto p-8">
+        <h1 class="text-4xl font-bold text-center text-white mb-8">Remover Receita</h1>
+        
+        <!-- Seção de seleção de receitas -->
+        <div class="bg-white bg-opacity-75 p-6 rounded-lg shadow-lg">
+            <h2 class="text-xl font-semibold mb-4">Selecionar Receita <i class="fas fa-arrow-right"></i></h2>
+            <div class="space-y-4">
+                <?php foreach ($recipes as $recipe): ?>
+                <div class="flex items-start space-x-4">
+                    <div class="w-16 h-16 bg-gray-300 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-image text-2xl text-gray-500"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold"><?php echo $recipe['title']; ?></h3>
+                        <p class="text-gray-600"><?php echo $recipe['description']; ?></p>
+                        <div class="text-gray-500 text-sm flex items-center">
+                            <i class="fas fa-clock mr-1"></i> Hoje • 23 min
+                        </div>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+
+        <!-- Tabela de receitas selecionadas -->
+        <div class="bg-white bg-opacity-75 p-6 rounded-lg shadow-lg mt-8">
+            <h2 class="text-xl font-semibold mb-4">Receitas Selecionadas</h2>
+            <div class="overflow-x-auto">
+                <form action="" method="POST">
+                    <table class="min-w-full bg-white">
+                        <thead>
+                            <tr>
+                                <th class="py-2 px-4 border-b">ID Receita</th>
+                                <th class="py-2 px-4 border-b">Nome Receita</th>
+                                <th class="py-2 px-4 border-b">Ingrediente</th>
+                                <th class="py-2 px-4 border-b">Selecionar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($recipes as $recipe): ?>
+                            <tr>
+                                <td class="py-2 px-4 border-b"><?php echo $recipe['id']; ?></td>
+                                <td class="py-2 px-4 border-b"><?php echo $recipe['title']; ?></td>
+                                <td class="py-2 px-4 border-b"><?php echo $recipe['ingredient']; ?></td>
+                                <td class="py-2 px-4 border-b">
+                                    <input type="radio" name="recipe_id" value="<?php echo $recipe['id']; ?>">
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+
+                    <div class="flex justify-between mt-4">
+                        <button class="bg-gray-300 text-gray-700 py-2 px-4 rounded" type="button">Cancelar</button>
+                        <button class="bg-black text-white py-2 px-4 rounded" type="submit">Deletar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

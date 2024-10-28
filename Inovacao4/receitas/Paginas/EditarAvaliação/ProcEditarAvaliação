@@ -1,0 +1,20 @@
+<?php
+// Verifica se o formulário foi enviado
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Coleta os dados do formulário
+    $idReceita = $_POST['idReceita'];
+    $idCozinheiro = $_POST['idCozinheiro'];
+    $idAvaliacao = $_POST['idAvaliacao'];
+    $avaliacao = $_POST['avaliacao'];
+    $descricaoAvaliacao = $_POST['descricaoAvaliacao'];
+
+    // Exemplo de saída
+    echo "<h2>Avaliação editada para a receita de ID: $idReceita</h2>";
+    echo "<p>ID do Cozinheiro: $idCozinheiro</p>";
+    echo "<p>ID da Avaliação: $idAvaliacao</p>";
+    echo "<p>Avaliação: $avaliacao estrelas</p>";
+    echo "<p>Descrição da Avaliação: $descricaoAvaliacao</p>";
+
+    // Aqui você pode salvar os dados editados no banco de dados
+}
+?>
