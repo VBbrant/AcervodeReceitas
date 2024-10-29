@@ -1,4 +1,5 @@
 <!-- index.php -->
+<?php require_once '../../config.php'; ?>
 <!DOCTYPE html>
 <html lang="Pt-br">
 <head>
@@ -9,14 +10,15 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../Style/estiloCabecalho.css">
     <link rel="stylesheet" href="../Style/home1.css">
     
 </head>
 <body>
 
-    <?php include '../elementoPagina/cabecalho.php'; ?>
+    <?php include ROOT_PATH . 'receitas/elementoPagina/cabecalho.php'; ?>
 
-    <?php include '../conn.php';
+    <?php include ROOT_PATH . 'receitas/conn.php';
 
     $sql_featured = "SELECT r.idReceita, r.nome_rec, r.descricao, r.link_imagem, f.nome as chef_name 
                     FROM receita r 
@@ -35,13 +37,12 @@
 
     
     <div class="main-banner position-relative">
-        <img src="../imagens/arrasCarneSeca.png" class="w-100" alt="Background" style="height: 400px; object-fit: cover;">
+        <img src="../imagens/banner.png" class="w-100" alt="Background" style="height: 300px; object-fit: cover;">
         <div class="position-absolute top-50 start-50 translate-middle text-center text-white">
             <h1 class="display-4 fw-bold">CRIE E COMPARTILHE<br>NOVAS RECEITAS</h1>
         </div>
     </div>
 
-    
     <section class="featured-recipes py-5">
         <div class="container">
             <h2 class="text-center mb-4">RECEITAS EM DESTAQUE</h2>
@@ -52,7 +53,8 @@
                     while($recipe = $result_featured->fetch_assoc()) {
                 ?>
                     <div class="col-md-6">
-                        <a href="receita.php?id=<?php echo $recipe['idReceita']; ?>" class="text-decoration-none">
+                        <!-- Altere o link do href para apontar para "verReceita.php" com o ID da receita -->
+                        <a href="receitas/verReceita.php?id=<?php echo $recipe['idReceita']; ?>" class="text-decoration-none">
                             <div class="recipe-card position-relative rounded-4 overflow-hidden">
                                 <img src="<?php echo htmlspecialchars($recipe['link_imagem']); ?>" 
                                     class="w-100" 
@@ -73,10 +75,12 @@
             </div>
             
             <div class="text-center mt-4">
-                <a href="receitas.php" class="btn btn-dark rounded-pill px-4">Mais Receitas</a>
+                <a href="receitas/verReceita.php" class="btn btn-dark rounded-pill px-4">Mais Receitas</a>
             </div>
         </div>
     </section>
+
+
 
     <!-- Featured Books Section -->
     <section class="featured-books py-5">
@@ -87,7 +91,7 @@
                 <div class="col-md-4">
                     <div class="book-card text-center">
                         <div class="book-cover mb-3">
-                            <img src="path/to/book1.jpg" alt="Saboreie" class="rounded-4" style="width: 200px; height: 280px; object-fit: cover;">
+                            <img src="../imagens/livro.jpg" alt="Saboreie" class="rounded-4" style="width: 200px; height: 280px; object-fit: cover;">
                         </div>
                         <h3 class="h5">SABOREIE</h3>
                         <p class="text-muted">por David Luiz</p>

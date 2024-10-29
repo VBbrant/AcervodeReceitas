@@ -1,36 +1,10 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-include '../../conn.php'; // Inclui a conexão com o banco de dados
+require_once '../../../config.php';
+include '../../conn.php';
 
-// Verifica se o usuário está logado
-if (!isset($_SESSION['idFun'])) {
-    header("Location: ../Paginas/Login.php");
-    exit();
-}
+$error = "";
+$receita = null;
 
-$idUsuario = $_SESSION['idFun'];
-
-$query = "SELECT f.idFun, f.nome AS nomeFunc, f.nome_fantasia, u.email, u.senha, c.nome AS cargo
-          FROM funcionario f
-          JOIN usuario u ON f.idLogin = u.idLogin
-          JOIN cargo c ON f.idCargo = c.idCargo
-          WHERE f.idFun = ?";
-
-$stmt = $conn->prepare($query);
-$stmt->bind_param("i", $idUsuario);
-$stmt->execute();
-$result = $stmt->get_result();
-
-if ($result->num_rows > 0) {
-    $usuario = $result->fetch_assoc();
-} else {
-    echo "Nenhum usuário encontrado.";
-    exit;
-}
-
-// VerReceita ----------------------------------------------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
     $idReceita = $_GET['id'];
 
@@ -46,12 +20,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
 
         if (mysqli_num_rows($result) > 0) {
             $receita = mysqli_fetch_assoc($result);
-            $nome = $receita['nome_rec'];
-            $dataCriacao = $receita['data_criacao'];
-            $modoPreparo = $receita['modo_preparo'];
-            $numPorcao = $receita['num_porcao'];
-            $descricao = $receita['descricao'];
-            $imagem = $receita['link_imagem'];
         } else {
             $error = "Receita não encontrada.";
         }
@@ -64,4 +32,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
 }
 
 mysqli_close($conn);
+
+// Redireciona para verReceita.php com os dados da receita
+
+exit;
 ?>

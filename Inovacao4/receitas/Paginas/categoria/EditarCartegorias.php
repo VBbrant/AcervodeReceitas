@@ -62,7 +62,7 @@
         <label for="category-description">Descrição da Categoria:</label>
         <textarea id="category-description" name="category-description" rows="4" placeholder="Digite a descrição aqui..."></textarea>
 
-        <button type="button" class="cancel-btn" onclick="window.location.href='index.php'">Cancelar</button>
+        <button type="button" class="cancel-btn" onclick="window.location.href='.php'">Cancelar</button>
         <button type="submit" class="edit-btn">Editar</button>
     </form>
 </div>

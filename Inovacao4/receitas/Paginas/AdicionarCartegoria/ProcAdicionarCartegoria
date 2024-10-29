@@ -1,8 +1,0 @@
-<?php
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $categoryName = $_POST['category-name'];
-    $categoryDescription = $_POST['category-description'];
-    echo "Categoria '$categoryName' adicionada com sucesso!";
-    echo "<br>Descrição: $categoryDescription";
-}
-?>

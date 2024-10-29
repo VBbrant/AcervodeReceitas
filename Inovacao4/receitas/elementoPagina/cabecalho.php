@@ -1,7 +1,4 @@
-<!-- header.php -->
-<style>
-    <?php include '../Style/estiloCabecalho.css';?>
-</style>
+<?php require_once CONFIG_PATH;?>
 <header class="header">
     <nav class="navbar fixed-top">
         <div class="container-fluid header-content">
@@ -10,9 +7,12 @@
                 <button class="btn menu-button me-3" onclick="toggleSidebar()" aria-label="Toggle menu">
                     <i class="fas fa-bars"></i>
                 </button>
-                <a href="../Paginas/home.php" class="navbar-brand">
-                    <img src="../imagens/logo.png" alt="SaborArte" class="logo-img" height="40">
+                <a href="<?php echo BASE_URL; ?>receitas/Paginas/home.php" class="navbar-brand">
+                    <img src="<?php echo BASE_URL; ?>receitas/imagens/logo.png" alt="SaborArte" class="logo-img" height="40">
                 </a>
+                <!-- Exibe o caminho do arquivo no sistema (opcional)
+                <p><?php echo ROOT_PATH . 'receitas/imagens/logo.png'; ?></p>
+                <p><?php echo CONFIG_PATH . 'receitas/imagens/logo.png'; ?></p>-->
             </div>
 
             <!-- Right side - Search and Profile -->
@@ -34,18 +34,14 @@
 
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
-        <?php include '../elementoPagina/barraLateral.php'; ?>
+        <?php include ROOT_PATH . 'receitas/elementoPagina/barraLateral.php'; ?>
     </div>
 
     <!-- Profile Dropdown -->
     <div class="profile-dropdown" id="profileDropdown">
-        <?php include '../elementoPagina/perfil.php'; ?>
+        <?php include ROOT_PATH . 'receitas/elementoPagina/perfil.php'; ?>
     </div>
 
     <!-- Overlay -->
     <div class="overlay" id="overlay" onclick="closeAll()"></div>
 </header>
-<script>
-    <?php include '../Scripts/Script.js';?>
-</script>
-

@@ -1,15 +1,18 @@
+<?php
+    require_once "../../../config.php"; 
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>receitas/Style/receitas.css">
+    <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>receitas/Style/estiloCabecalho.css">
     <title>Adicionar Receita</title>
 </head>
 <body>
-<?php
-    include_once $_SERVER['DOCUMENT_ROOT'] . '/ACERVODERECEITAS/Inovacao4/receitas/elementoPagina/cabecalho.php'; 
-    ?>
-    <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>/Style/receitas.css">
+    <?php include ROOT_PATH . 'receitas/elementoPagina/cabecalho.php'; ?>
+    
     <div class="container">
         <h2>Adicionar Nova Receita</h2>
         <form method="POST" action="../CRUD/processarAll.php">
@@ -47,5 +50,5 @@
             <button type="submit" class="btn btn-primary">Adicionar Receita</button>
         </form>
     </div>
-</body>
-</html>
+
+<?php include ROOT_PATH . 'receitas/elementoPagina/rodape.php'; ?>
