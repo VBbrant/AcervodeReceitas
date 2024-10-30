@@ -60,15 +60,51 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 //addReceita
-function addIngredient() {
-    const ingredientInput = document.getElementById('ingredientes');
-    const ingredientList = document.getElementById('ingredientList');
+const selectedIngredients = [];
 
-    if (ingredientInput.value.trim() !== '') {
-        const newIngredient = document.createElement('div');
-        newIngredient.classList.add('ingredient-item');
-        newIngredient.innerText = ingredientInput.value.trim();
-        ingredientList.appendChild(newIngredient);
-        ingredientInput.value = '';
+function selectIngredient(ingredient) {
+    if (!selectedIngredients.includes(ingredient)) {
+        selectedIngredients.push(ingredient);
+        updateSelectedIngredients();
     }
+}
+
+// Função para remover um ingrediente da lista selecionada
+function removeIngredient(ingredient) {
+    const index = selectedIngredients.indexOf(ingredient);
+    if (index > -1) {
+        selectedIngredients.splice(index, 1);
+        updateSelectedIngredients();
+    }
+}
+
+// Função para atualizar a lista de ingredientes selecionados
+function updateSelectedIngredients() {
+    const selectedIngredientsDiv = document.getElementById('selectedIngredients');
+    selectedIngredientsDiv.innerHTML = '';
+
+    selectedIngredients.forEach(ingredient => {
+        const ingredientTag = document.createElement('div');
+        ingredientTag.classList.add('selected-ingredient');
+        ingredientTag.textContent = ingredient;
+
+        const removeBtn = document.createElement('span');
+        removeBtn.classList.add('remove');
+        removeBtn.textContent = 'x';
+        removeBtn.onclick = () => removeIngredient(ingredient);
+
+        ingredientTag.appendChild(removeBtn);
+        selectedIngredientsDiv.appendChild(ingredientTag);
+    });
+}
+
+// Função para pesquisar ingredientes
+function pesquisarIngrediente() {
+    const searchValue = document.getElementById('ingredientes').value.toLowerCase();
+    const ingredientItems = document.querySelectorAll('.ingredient-item');
+    
+    ingredientItems.forEach(item => {
+        const ingredientName = item.textContent.toLowerCase();
+        item.style.display = ingredientName.includes(searchValue) ? 'block' : 'none';
+    });
 }
