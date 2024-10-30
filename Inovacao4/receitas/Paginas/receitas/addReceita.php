@@ -53,36 +53,39 @@ require_once ROOT_PATH . "receitas/conn.php";
                 <label for="link_imagem" class="form-label">Link da Imagem:</label>
                 <input type="text" class="form-control" id="link_imagem" name="link_imagem">
             </div>
-            
+
             <!-- Lista pesquisável de ingredientes -->
             <div class="mb-3 ingredient-search">
-            <label for="ingredientes" class="form-label">Ingredientes:</label>
-            <div class="input-group">
-                <input type="text" class="form-control" id="ingredientes" placeholder="Pesquise ingredientes...">
-                <button type="button" class="btn btn-primary" onclick="pesquisarIngrediente()">🔍</button>
-                <button type="button" class="btn btn-success" onclick="window.location.href='<?php echo BASE_URL; ?>receitas/Paginas/adicionarIngrediente.php'">+</button>
+                <label for="ingredientes" class="form-label">Ingredientes:</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="ingredientes" placeholder="Pesquise ingredientes...">
+                    <button type="button" class="btn btn-primary" onclick="pesquisarIngrediente()">🔍</button>
+                    <button type="button" class="btn btn-success" onclick="window.location.href='<?php echo BASE_URL; ?>receitas/Paginas/adicionarIngrediente.php'">+</button>
+                </div>
+                
+                <div class="ingredient-list border rounded bg-white mt-1" id="ingredientList">
+                    <?php
+                    $sql = "SELECT nome FROM ingrediente";
+                    $result = $conn->query($sql);
+                    while ($row = $result->fetch_assoc()) {
+                        echo '<button type="button" class="ingredient-item btn btn-outline-secondary btn-sm w-100 text-start my-1" onclick="selectIngredient(\'' . htmlspecialchars($row['nome']) . '\')">' . htmlspecialchars($row['nome']) . '</button>';
+                    }
+                    ?>
+                </div>
             </div>
-            
-            <div class="ingredient-list border rounded bg-white mt-1" id="ingredientList">
-                <?php
-                $sql = "SELECT nome FROM ingrediente";
-                $result = $conn->query($sql);
-                while ($row = $result->fetch_assoc()) {
-                    echo '<button type="button" class="ingredient-item btn btn-outline-secondary btn-sm w-100 text-start my-1" onclick="selectIngredient(\'' . htmlspecialchars($row['nome']) . '\')">' . htmlspecialchars($row['nome']) . '</button>';
-                }
-                ?>
+
+            <!-- Div para exibir os ingredientes selecionados com quantidade e medida -->
+            <div class="mb-3">
+                <label>Ingredientes Selecionados:</label>
+                <div class="selected-ingredients d-flex flex-wrap gap-2 mt-2" id="selectedIngredients"></div>
             </div>
-        </div>
 
-        <!-- Div para exibir os ingredientes selecionados como tags -->
-        <div class="mb-3">
-            <label>Ingredientes Selecionados:</label>
-            <div class="selected-ingredients d-flex flex-wrap gap-2 mt-2" id="selectedIngredients"></div>
-        </div>
-
+            <!-- Campo oculto para envio de dados de ingredientes -->
+            <input type="hidden" name="ingredientes" id="ingredientesJson">
 
             <button type="submit" class="btn btn-primary w-100">Adicionar Receita</button>
         </form>
     </div>
+
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <?php include ROOT_PATH . 'receitas/elementoPagina/rodape.php'; ?>

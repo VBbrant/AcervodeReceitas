@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt = $conn->prepare("INSERT INTO receita (nome_rec, data_criacao, modo_preparo, num_porcao, descricao, inedita, link_imagem) VALUES (?, ?, ?, ?, ?, ?, ?)");
     $stmt->bind_param("sssisss", $nome_rec, $data_criacao, $modo_preparo, $num_porcao, $descricao, $inedita, $link_imagem);
     $stmt->execute();
-    $recipe_id = $stmt->insert_id; // Pega o ID da nova receita para referência
+    $recipe_id = $stmt->insert_id;
     $stmt->close();
 
     // Verifica se há ingredientes para adicionar

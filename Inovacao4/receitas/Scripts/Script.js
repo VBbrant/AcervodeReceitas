@@ -62,18 +62,15 @@ document.addEventListener('DOMContentLoaded', function() {
 //addReceita
 const selectedIngredients = [];
 
+// Função para selecionar um ingrediente da lista
 function selectIngredient(ingredient) {
-    if (!selectedIngredients.includes(ingredient)) {
-        selectedIngredients.push(ingredient);
-        updateSelectedIngredients();
-    }
-}
-
-// Função para remover um ingrediente da lista selecionada
-function removeIngredient(ingredient) {
-    const index = selectedIngredients.indexOf(ingredient);
-    if (index > -1) {
-        selectedIngredients.splice(index, 1);
+    // Evita duplicação de ingredientes
+    if (!selectedIngredients.some(item => item.nome === ingredient)) {
+        selectedIngredients.push({
+            nome: ingredient,
+            quantidade: '',
+            sistema: ''
+        });
         updateSelectedIngredients();
     }
 }
@@ -83,22 +80,66 @@ function updateSelectedIngredients() {
     const selectedIngredientsDiv = document.getElementById('selectedIngredients');
     selectedIngredientsDiv.innerHTML = '';
 
-    selectedIngredients.forEach(ingredient => {
+    selectedIngredients.forEach((ingredient, index) => {
         const ingredientTag = document.createElement('div');
-        ingredientTag.classList.add('selected-ingredient');
-        ingredientTag.textContent = ingredient;
+        ingredientTag.classList.add('selected-ingredient', 'd-flex', 'align-items-center', 'gap-2', 'p-2', 'border', 'rounded');
 
+        // Nome do ingrediente
+        const ingredientName = document.createElement('span');
+        ingredientName.textContent = ingredient.nome;
+        ingredientTag.appendChild(ingredientName);
+
+        // Campo de quantidade
+        const quantityInput = document.createElement('input');
+        quantityInput.type = 'number';
+        quantityInput.classList.add('form-control', 'form-control-sm');
+        quantityInput.style.width = '70px';
+        quantityInput.placeholder = 'Quant.';
+        quantityInput.value = ingredient.quantidade;
+        quantityInput.onchange = () => {
+            selectedIngredients[index].quantidade = quantityInput.value;
+            updateIngredientsJson();
+        };
+        ingredientTag.appendChild(quantityInput);
+
+        // Campo de sistema de medida
+        const measureInput = document.createElement('input');
+        measureInput.type = 'text';
+        measureInput.classList.add('form-control', 'form-control-sm');
+        measureInput.style.width = '90px';
+        measureInput.placeholder = 'Unidade';
+        measureInput.value = ingredient.sistema;
+        measureInput.onchange = () => {
+            selectedIngredients[index].sistema = measureInput.value;
+            updateIngredientsJson();
+        };
+        ingredientTag.appendChild(measureInput);
+
+        // Botão de remoção
         const removeBtn = document.createElement('span');
-        removeBtn.classList.add('remove');
+        removeBtn.classList.add('remove', 'text-danger', 'fw-bold');
+        removeBtn.style.cursor = 'pointer';
         removeBtn.textContent = 'x';
-        removeBtn.onclick = () => removeIngredient(ingredient);
-
+        removeBtn.onclick = () => {
+            selectedIngredients.splice(index, 1);
+            updateSelectedIngredients();
+            updateIngredientsJson();
+        };
         ingredientTag.appendChild(removeBtn);
+
         selectedIngredientsDiv.appendChild(ingredientTag);
     });
+
+    // Atualiza o campo JSON oculto com dados dos ingredientes
+    updateIngredientsJson();
 }
 
-// Função para pesquisar ingredientes
+// Atualiza o campo oculto com JSON dos ingredientes selecionados
+function updateIngredientsJson() {
+    document.getElementById('ingredientesJson').value = JSON.stringify(selectedIngredients);
+}
+
+// Função para pesquisar ingredientes (já implementada anteriormente)
 function pesquisarIngrediente() {
     const searchValue = document.getElementById('ingredientes').value.toLowerCase();
     const ingredientItems = document.querySelectorAll('.ingredient-item');
