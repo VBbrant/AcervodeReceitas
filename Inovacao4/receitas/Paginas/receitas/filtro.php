@@ -33,25 +33,18 @@ if (!empty($conditions)) {
 $sql .= " ORDER BY avaliacao DESC";
 
 $result = $conn->query($sql);
-$recipes = [];
 
-while ($row = $result->fetch_assoc()) {
-    $recipes[] = [
-        'idReceita' => $row['idReceita'],
-        'titulo' => $row['titulo'],
-        'descricao' => $row['descricao'],
-        'avaliacao' => $row['avaliacao'],
-        'imagem' => BASE_URL . $row['imagem'] // Inclui o domínio completo
-    ];
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        echo '<div class="recipe-card">';
+        echo '<img src="' . BASE_URL . $row['imagem'] . '" alt="' . htmlspecialchars($row['titulo']) . '" class="recipe-image">';
+        echo '<h3>' . htmlspecialchars($row['titulo']) . '</h3>';
+        echo '<p>' . htmlspecialchars($row['descricao']) . '</p>';
+        echo '<span class="rating">' . htmlspecialchars($row['avaliacao']) . ' estrelas</span>';
+        echo '</div>';
+    }
+} else {
+    echo '<p>Nenhuma receita encontrada para os filtros selecionados.</p>';
 }
-
-header('Content-Type: application/json');
-$jsonOutput = json_encode($recipes);
-
-if ($jsonOutput === false) {
-    die("Erro ao codificar JSON: " . json_last_error_msg());
-}
-
-echo $jsonOutput;
-
 ?>
+    

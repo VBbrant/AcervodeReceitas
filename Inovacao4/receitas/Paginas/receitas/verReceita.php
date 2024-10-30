@@ -1,6 +1,6 @@
 <?php 
 // index.php
-require_once '../../../config.php';
+include '../../../config.php';
 include ROOT_PATH . 'receitas/conn.php';
 ?>
 

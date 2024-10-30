@@ -15,6 +15,7 @@
     
 </head>
 <body>
+    <div class="background-container"></div>
    
     <?php include ROOT_PATH . 'receitas/elementoPagina/cabecalho.php'; ?>
 
@@ -34,8 +35,7 @@
                     LIMIT 2";
     $result_reviews = $conn->query($sql_reviews);
     ?>
-
-    <div class="background-container"></div>  
+  
     <div class="main-banner position-relative">
         <img src="../imagens/banner.png" class="w-100" alt="Background" style="height: 300px; object-fit: cover;">
         <div class="position-absolute top-50 start-50 translate-middle text-center text-white">

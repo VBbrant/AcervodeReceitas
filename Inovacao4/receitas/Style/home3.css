@@ -15,10 +15,10 @@
     position: absolute;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     background-image: url("../imagens/mainRestaurante.jpg");
-    background-size: cover;
+    background-size: cover; /* Faz a imagem cobrir a tela toda */
     background-position: center;
     transform: rotate(90deg); /* Gira apenas o fundo */
 }
@@ -29,8 +29,8 @@
     position: absolute;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     background-color: rgba(255, 165, 0, 0.5); /* Cor laranja com 50% de opacidade */
 }
 

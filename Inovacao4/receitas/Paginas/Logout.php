@@ -8,6 +8,6 @@ session_unset();
 session_destroy(); 
 
 
-header("Location: " . ROOT_PATH . "receitas/Paginas/Login.php");
+header("Location: " . BASE_URL . "receitas/Paginas/Login.php");
 exit();
 ?>

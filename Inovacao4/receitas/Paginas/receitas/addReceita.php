@@ -1,13 +1,15 @@
 <?php
-    require_once "../../../config.php"; 
+require_once "../../../config.php";
+require_once ROOT_PATH . "receitas/conn.php";
 ?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>receitas/Style/receitas.css">
-    <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>receitas/Style/estiloCabecalho.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>receitas/Style/AddReceita.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>receitas/Style/estiloCabecalho.css">
     <title>Adicionar Receita</title>
 </head>
 <body>
@@ -15,7 +17,7 @@
     
     <div class="container">
         <h2>Adicionar Nova Receita</h2>
-        <form method="POST" action="../CRUD/processarAll.php">
+        <form method="POST" action="../CRUD/processarAdicionar.php">
             <div class="form-group">
                 <label for="nome_rec">Nome da Receita:</label>
                 <input type="text" class="form-control" id="nome_rec" name="nome_rec" required>
@@ -47,8 +49,42 @@
                 <label for="link_imagem">Link da Imagem:</label>
                 <input type="text" class="form-control" id="link_imagem" name="link_imagem">
             </div>
+
+            <!-- Lista pesquisável de ingredientes -->
+            <div class="form-group ingredient-search">
+                <label for="ingredientes">Ingredientes:</label>
+                <input type="text" class="form-control" id="ingredientes" name="ingredientes" placeholder="Pesquise ingredientes...">
+                <button type="button" class="add-button" onclick="addIngredient()">+</button>
+                <div class="ingredient-list" id="ingredientList">
+                    <?php
+                    $sql = "SELECT nome FROM ingrediente";
+                    $result = $conn->query($sql);
+                    while ($row = $result->fetch_assoc()) {
+                        echo '<div class="ingredient-item">' . htmlspecialchars($row['nome']) . '</div>';
+                    }
+                    ?>
+                </div>
+            </div>
+
             <button type="submit" class="btn btn-primary">Adicionar Receita</button>
         </form>
     </div>
 
-<?php include ROOT_PATH . 'receitas/elementoPagina/rodape.php'; ?>
+    <?php include ROOT_PATH . 'receitas/elementoPagina/rodape.php'; ?>
+
+    <script>
+        function addIngredient() {
+            const ingredientInput = document.getElementById('ingredientes');
+            const ingredientList = document.getElementById('ingredientList');
+
+            if (ingredientInput.value.trim() !== '') {
+                const newIngredient = document.createElement('div');
+                newIngredient.classList.add('ingredient-item');
+                newIngredient.innerText = ingredientInput.value.trim();
+                ingredientList.appendChild(newIngredient);
+                ingredientInput.value = '';
+            }
+        }
+    </script>
+</body>
+</html>
