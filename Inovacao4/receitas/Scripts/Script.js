@@ -58,3 +58,17 @@ document.addEventListener('DOMContentLoaded', function() {
     categoryFilter.addEventListener('change', filterRecipes);
     ratingFilter.addEventListener('change', filterRecipes);
 });
+
+//addReceita
+function addIngredient() {
+    const ingredientInput = document.getElementById('ingredientes');
+    const ingredientList = document.getElementById('ingredientList');
+
+    if (ingredientInput.value.trim() !== '') {
+        const newIngredient = document.createElement('div');
+        newIngredient.classList.add('ingredient-item');
+        newIngredient.innerText = ingredientInput.value.trim();
+        ingredientList.appendChild(newIngredient);
+        ingredientInput.value = '';
+    }
+}

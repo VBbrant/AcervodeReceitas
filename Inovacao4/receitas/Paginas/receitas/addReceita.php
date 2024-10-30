@@ -8,9 +8,13 @@ require_once ROOT_PATH . "receitas/conn.php";
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaborArte - Adicionar receita</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>receitas/Style/AddReceita.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>receitas/Style/estiloCabecalho.css">
-    <title>Adicionar Receita</title>
 </head>
 <body>
     <?php include ROOT_PATH . 'receitas/elementoPagina/cabecalho.php'; ?>
@@ -70,21 +74,4 @@ require_once ROOT_PATH . "receitas/conn.php";
         </form>
     </div>
 
-    <?php include ROOT_PATH . 'receitas/elementoPagina/rodape.php'; ?>
-
-    <script>
-        function addIngredient() {
-            const ingredientInput = document.getElementById('ingredientes');
-            const ingredientList = document.getElementById('ingredientList');
-
-            if (ingredientInput.value.trim() !== '') {
-                const newIngredient = document.createElement('div');
-                newIngredient.classList.add('ingredient-item');
-                newIngredient.innerText = ingredientInput.value.trim();
-                ingredientList.appendChild(newIngredient);
-                ingredientInput.value = '';
-            }
-        }
-    </script>
-</body>
-</html>
+<?php include ROOT_PATH . 'receitas/elementoPagina/rodape.php'; ?>

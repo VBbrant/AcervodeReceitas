@@ -36,7 +36,7 @@ $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
-        echo '<div class="recipe-card">';
+        echo '<div class="recipe-card">';  
         echo '<img src="' . BASE_URL . $row['imagem'] . '" alt="' . htmlspecialchars($row['titulo']) . '" class="recipe-image">';
         echo '<h3>' . htmlspecialchars($row['titulo']) . '</h3>';
         echo '<p>' . htmlspecialchars($row['descricao']) . '</p>';
@@ -47,4 +47,3 @@ if ($result->num_rows > 0) {
     echo '<p>Nenhuma receita encontrada para os filtros selecionados.</p>';
 }
 ?>
-    

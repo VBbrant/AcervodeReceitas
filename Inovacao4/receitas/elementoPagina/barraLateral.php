@@ -5,7 +5,7 @@
         <li><a href="<?php echo BASE_URL; ?>receitas/Paginas/home.php"><i class="fas fa-home"></i> Início</a></li>
         
         <li class="has-submenu">
-            <a href="<?php echo BASE_URL;?>receitas/Paginas/receita/verReceita.php" onclick="toggleSubmenu(this)">
+            <a href="<?php echo BASE_URL;?>receitas/Paginas/receitas/verReceita.php" onclick="toggleSubmenu(this)">
                 <i class="fas fa-utensils"></i> Receitas
                 <i class="fas fa-chevron-down float-end"></i>
             </a>
