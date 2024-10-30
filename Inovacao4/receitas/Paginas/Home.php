@@ -10,12 +10,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="../Style/estiloCabecalho.css">
-    <link rel="stylesheet" href="../Style/home1.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL;?>receitas/Style/estiloCabecalho.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL;?>receitas/Style/home3.css">
     
 </head>
 <body>
-
+   
     <?php include ROOT_PATH . 'receitas/elementoPagina/cabecalho.php'; ?>
 
     <?php include ROOT_PATH . 'receitas/conn.php';
@@ -35,7 +35,7 @@
     $result_reviews = $conn->query($sql_reviews);
     ?>
 
-    
+    <div class="background-container"></div>  
     <div class="main-banner position-relative">
         <img src="../imagens/banner.png" class="w-100" alt="Background" style="height: 300px; object-fit: cover;">
         <div class="position-absolute top-50 start-50 translate-middle text-center text-white">
@@ -54,9 +54,9 @@
                 ?>
                     <div class="col-md-6">
                         <!-- Altere o link do href para apontar para "verReceita.php" com o ID da receita -->
-                        <a href="receitas/verReceita.php?id=<?php echo $recipe['idReceita']; ?>" class="text-decoration-none">
+                        <a href="receitas/verReceitaIndividual.php?id=<?php echo $recipe['idReceita']; ?>" class="text-decoration-none">
                             <div class="recipe-card position-relative rounded-4 overflow-hidden">
-                                <img src="<?php echo htmlspecialchars($recipe['link_imagem']); ?>" 
+                                <img src="<?php echo BASE_URL . htmlspecialchars($recipe['link_imagem']); ?>" 
                                     class="w-100" 
                                     alt="<?php echo htmlspecialchars($recipe['nome_rec']); ?>"
                                     style="height: 200px; object-fit: cover;">

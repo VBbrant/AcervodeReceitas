@@ -1,0 +1,72 @@
+/* Define o estilo da div de fundo */
+.background-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    z-index: -1; /* Mantém o fundo atrás do conteúdo principal */
+}
+
+/* Estilo para a imagem de fundo rotacionada */
+.background-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-image: url("../imagens/mainRestaurante.jpg");
+    background-size: cover;
+    background-position: center;
+    transform: rotate(90deg); /* Gira apenas o fundo */
+}
+
+/* Camada laranja semitransparente */
+.background-container::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(255, 165, 0, 0.5); /* Cor laranja com 50% de opacidade */
+}
+
+
+.recipe-card {
+    transition: transform 0.3s ease;
+}
+
+.recipe-card:hover {
+    transform: translateY(-5px);
+}
+
+.book-card {
+    transition: transform 0.3s ease;
+}
+
+.book-card:hover {
+    transform: translateY(-5px);
+}
+
+.review-card {
+    transition: transform 0.3s ease;
+    background-color: #000;
+    border-radius: 20px;
+}
+
+.review-card:hover {
+    transform: translateY(-5px);
+}
+
+.main-banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.5));
+}

@@ -1,48 +1,44 @@
-<?php
-require_once "../../../config.php";
-session_start();
-
-$receita = isset($_SESSION['receita']) ? $_SESSION['receita'] : null;
-$error = isset($_GET['error']) ? $_GET['error'] : null;
+<?php 
+// index.php
+require_once '../../../config.php';
+include ROOT_PATH . 'receitas/conn.php';
 ?>
 
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="Pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>receitas/Style/receitas.css">
-    <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>receitas/Style/estiloCabecalho.css">
-    <title><?php echo $receita ? htmlspecialchars($receita['nome_rec']) : "Receita"; ?></title>
+    <title>SaborArte - ver Receita</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL;?>receitas/Style/estiloCabecalho.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL;?>receitas/Style/receita.css">    
 </head>
 <body>
-    <?php include ROOT_PATH . 'receitas/elementoPagina/cabecalho.php'; ?>
-
-    <div class="container py-5">
-        <?php if ($error): ?>
-            <p class="alert alert-danger"><?php echo htmlspecialchars($error); ?></p>
-        <?php elseif ($receita): ?>
-            <h1 class="mb-4"><?php echo htmlspecialchars($receita['nome_rec']); ?></h1>
-            <p><strong>Data de Criação:</strong> <?php echo htmlspecialchars($receita['data_criacao']); ?></p>
-            <p><strong>Porções:</strong> <?php echo htmlspecialchars($receita['num_porcao']); ?></p>
-            <p><strong>Descrição:</strong> <?php echo htmlspecialchars($receita['descricao']); ?></p>
+    <?php include ROOT_PATH . 'receitas/elementoPagina/cabecalho.php';?>
+    <main>
+        <h1 class="receitas-title" style="margin-top= 200px;">RECEITAS</h1>
+        
+        <div class="filters-container">
+            <select id="categoryFilter" class="filter-select">
+                <option value="">Definir Categoria</option>
+                <option value="carnes">Carnes</option>
+                <option value="massas">Massas</option>
+                <option value="sobremesas">Sobremesas</option>
+            </select>
             
-            <?php if ($receita['link_imagem']): ?>
-                <img src="<?php echo htmlspecialchars($receita['link_imagem']); ?>" alt="<?php echo htmlspecialchars($receita['nome_rec']); ?>" class="img-fluid rounded mb-4">
-            <?php endif; ?>
+            <select id="ratingFilter" class="filter-select">
+                <option value="">Definir Avaliação</option>
+                <option value="5">5+ estrelas</option>
+                <option value="7">7+ estrelas</option>
+                <option value="9">9+ estrelas</option>
+            </select>
+        </div>
 
-            <h3>Modo de Preparo</h3>
-            <p><?php echo nl2br(htmlspecialchars($receita['modo_preparo'])); ?></p>
-        <?php else: ?>
-            <p class="alert alert-danger">Receita não encontrada.</p>
-        <?php endif; ?>
-    </div>
-
-    <?php include ROOT_PATH . 'receitas/elementoPagina/rodape.php'; ?>
-</body>
-</html>
-
-<?php
-// Limpa os dados da sessão após exibir
-unset($_SESSION['receita']);
-?>
+        <div class="recipes-grid" id="recipesGrid"></div> <!-- Div para inserir receitas dinamicamente -->
+    </main>
+    <script src="<?php echo BASE_URL; ?>receitas/Scripts/carregarReceitas.js"></script>
+<?php include ROOT_PATH . "receitas/elementoPagina/rodape.php"; ?>

@@ -1,0 +1,195 @@
+/* Fundo da página */
+body {
+    background-color: #FFA500; /* Laranja sólido */
+    font-family: Arial, sans-serif;
+    color: #333;
+}
+
+/* Container principal */
+.conteudo-receita .container {
+    max-width: 600px;
+    margin: auto;
+}
+
+/* Imagem da receita */
+.conteudo-receita img.img-fluid {
+    border-radius: 15px;
+    max-width: 100%;
+    height: auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Título da receita */
+.conteudo-receita h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 0.5em 1em;
+    border-radius: 10px;
+    display: inline-block;
+    margin-top: -60px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Botão Editar */
+.conteudo-receita button.btn-dark {
+    background-color: #333;
+    color: #fff;
+    padding: 5px 15px;
+    border-radius: 20px;
+    margin-top: 10px;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+/* Avaliação Container */
+.avaliacao-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: #333;
+    border-radius: 20px;
+    padding: 1rem;
+    color: white;
+    font-family: Arial, sans-serif;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Rating Section */
+.rating {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.5rem;
+}
+
+.rating .score {
+    font-weight: bold;
+    color: white;
+}
+
+.rating .stars i {
+    color: #FFD700; /* Yellow for stars */
+    font-size: 1.5rem;
+}
+
+/* Chef Info Section */
+.chef-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: black;
+    border-radius: 20px;
+    padding: 0.5rem 1rem;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.chef-info i {
+    color: red; /* Icon color */
+    font-size: 1.2rem;
+}
+
+.chef-info span {
+    font-size: 1rem;
+    font-weight: bold;
+    color: white;
+}
+
+/* Pinos vermelhos */
+.conteudo-receita .pin {
+    content: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAUCAYAAACqD+k/AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAhNJREFUeNqUVy1oHFUU/r6bLbRFFoUmqZEhbWgFIFaKKFbWoIilDkKViFghBQsoODgpaEVK9a0obARUUo2sSKGKCQtFAYdA1WhTpqgpD1LSBpNE+3qS3E9rIXOd/fnZ7s3trMC8JnPvfdM33OefMb4P5BWpH60vFGC9mMVK0mgmRtGFJGSg6UIbDYcf3SPtDzQsbBAAOp3FSZCcbtEFoPX1s5X5QQmgm9U5pgy5h8TuCFB9HoL9xVDvFsoZpdde/mAfuHKV6BpPxKEkjykgakEuRxxg7KnDnxTYcWbGMRVt8PDogN0jkSiFgn5RSjHv6qB+8DmXiNVLEgtJHQKy6Lg+Z5VKngAHRVfW60mjIZWgy5fxtQRAfAkpRExuKKy4D4DAgmqOeQAUCaAJGBDqk+dOVNU1b1kSVBY0KBmXvgn7MCTmo+AGDWYgViSzFYf4AA2QgXNOxeyOx7gLmrVymMslZjbCy3xuQ/DGpU1FUoSkClEZgLSoy8oWVt3doEGVlgA0PMNA+wTXLAFK5xgm9TVqMYXjtxscUMAY9uDV7yhg4FnAAxRHMEeFCEM6eutCRlcoYleG0lZIeT9ANcCsGEOVPKpMoToAeIbg8+AkgmDJwDJgkFmsBpoIohtTzbQlhk2emkDJnbyTGtgmNBnAyLMXmqEikTs4ygRUS/xLnXK3XIztbzovxry6aV2ctFO8g6BOaMGv3AB+YeAyknZgaAAAAAElFTkSuQmCC');
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: -10px;
+    left: -10px;
+}
+
+/* Ingredientes, modo de preparo, avaliações */
+.conteudo-receita .bg-light {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 15px 0;
+    position: relative;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.conteudo-receita .bg-light h3 {
+    font-weight: bold;
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+}
+
+/* Ingredientes */
+.conteudo-receita .bg-light ul {
+    padding-left: 20px;
+    list-style-type: none;
+}
+
+.conteudo-receita .bg-light ul li {
+    margin-bottom: 5px;
+    font-size: 1rem;
+}
+
+/* Modo de Preparo */
+.conteudo-receita .bg-light ol {
+    padding-left: 20px;
+    list-style-type: decimal;
+}
+
+.conteudo-receita .bg-light ol li {
+    margin-bottom: 10px;
+    font-size: 1rem;
+}
+
+/* Categoria e Porções */
+.conteudo-receita .bg-light h4 {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.conteudo-receita .bg-light p {
+    font-size: 1rem;
+    color: #555;
+}
+
+/* Avaliações */
+.conteudo-receita .d-flex {
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #333;
+    color: #fff;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.conteudo-receita .d-flex h4 {
+    color: #FFD700;
+    font-size: 1.5rem;
+}
+
+.conteudo-receita .d-flex p {
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.conteudo-receita .d-flex small {
+    color: #ccc;
+    font-size: 0.8rem;
+}
+
+.conteudo-receita .d-flex i {
+    color: #FFD700; /* Estrela dourada */
+}
+
+/* Footer ajustado */
+.conteudo-receita footer {
+    background-color: #f8f9fa;
+    padding: 20px 0;
+    text-align: center;
+    color: #777;
+    font-size: 0.9rem;
+}
+
