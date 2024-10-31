@@ -51,5 +51,17 @@
                 <li><a href="/ingredients/delete.php">Excluir Ingrediente</a></li>
             </ul>
         </li>
+
+        <li class="has-submenu">
+            <a href="#" onclick="toggleSubmenu(this)">
+                <i class="fas fa-user"></i> Funcionários
+                <i class="fas fa-chevron-down float-end"></i>
+            </a>
+            <ul class="submenu">
+                <li><a href="<?php echo BASE_URL; ?>receitas/Paginas/funcionarios/ADDFuncionario.php">Adicionar Funcionário</a></li>
+                <li><a href="<?php echo BASE_URL; ?>receitas/Paginas/funcionarios/EditFuncionario.php">Editar Funcionário</a></li>
+                <li><a href="<?php echo BASE_URL; ?>receitas/Paginas/funcionarios/ExcluirFuncionario.php">Excluir Funcionário</a></li>
+            </ul>
+        </li>
     </ul>
 </nav>

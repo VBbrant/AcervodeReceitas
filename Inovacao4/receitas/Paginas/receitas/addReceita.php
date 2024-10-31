@@ -2,6 +2,16 @@
 require_once "../../../config.php";
 require_once ROOT_PATH . "receitas/conn.php";
 ?>
+<?php
+// Consulta para obter unidades de medida da tabela 'medida'
+$sql_medidas = "SELECT sistema FROM medida";
+$result_medidas = $conn->query($sql_medidas);
+$medidas = [];
+while ($row = $result_medidas->fetch_assoc()) {
+    $medidas[] = $row['sistema'];
+}
+?>
+
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -86,6 +96,6 @@ require_once ROOT_PATH . "receitas/conn.php";
             <button type="submit" class="btn btn-primary w-100">Adicionar Receita</button>
         </form>
     </div>
-
+    <script>const medidas = <?php echo json_encode($medidas); ?>;</script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <?php include ROOT_PATH . 'receitas/elementoPagina/rodape.php'; ?>

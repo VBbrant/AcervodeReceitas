@@ -1,0 +1,13 @@
+body {
+    background-color: green;
+    background-size: cover;
+    background-position: 50%;
+    background-repeat: no-repeat;
+    filter: sepia(0.5);
+    overflow-x: hidden;
+}
+
+.container{
+    margin-left: 300px !important;
+    margin-top: 170px !important;
+}

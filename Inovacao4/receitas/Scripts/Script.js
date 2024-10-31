@@ -60,22 +60,19 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 //addReceita
-const selectedIngredients = [];
+// Lista simulada de medidas (substituir por carregamento dinâmico)
 
-// Função para selecionar um ingrediente da lista
 function selectIngredient(ingredient) {
-    // Evita duplicação de ingredientes
     if (!selectedIngredients.some(item => item.nome === ingredient)) {
         selectedIngredients.push({
             nome: ingredient,
             quantidade: '',
-            sistema: ''
+            sistema: medidas.length ? medidas[0].sistema : ''
         });
         updateSelectedIngredients();
     }
 }
 
-// Função para atualizar a lista de ingredientes selecionados
 function updateSelectedIngredients() {
     const selectedIngredientsDiv = document.getElementById('selectedIngredients');
     selectedIngredientsDiv.innerHTML = '';
@@ -84,12 +81,10 @@ function updateSelectedIngredients() {
         const ingredientTag = document.createElement('div');
         ingredientTag.classList.add('selected-ingredient', 'd-flex', 'align-items-center', 'gap-2', 'p-2', 'border', 'rounded');
 
-        // Nome do ingrediente
         const ingredientName = document.createElement('span');
         ingredientName.textContent = ingredient.nome;
         ingredientTag.appendChild(ingredientName);
 
-        // Campo de quantidade
         const quantityInput = document.createElement('input');
         quantityInput.type = 'number';
         quantityInput.classList.add('form-control', 'form-control-sm');
@@ -102,20 +97,28 @@ function updateSelectedIngredients() {
         };
         ingredientTag.appendChild(quantityInput);
 
-        // Campo de sistema de medida
-        const measureInput = document.createElement('input');
-        measureInput.type = 'text';
-        measureInput.classList.add('form-control', 'form-control-sm');
-        measureInput.style.width = '90px';
-        measureInput.placeholder = 'Unidade';
-        measureInput.value = ingredient.sistema;
-        measureInput.onchange = () => {
-            selectedIngredients[index].sistema = measureInput.value;
+        // Dropdown de medida
+        const measureSelect = document.createElement('select');
+        measureSelect.classList.add('form-control', 'form-control-sm');
+        measureSelect.style.width = '90px';
+        measureSelect.onchange = () => {
+            selectedIngredients[index].sistema = measureSelect.value;
             updateIngredientsJson();
         };
-        ingredientTag.appendChild(measureInput);
 
-        // Botão de remoção
+        // Opções de medidas
+        medidas.forEach(medida => {
+            const option = document.createElement('option');
+            option.value = medida.sistema;
+            option.textContent = medida.sistema;
+            if (ingredient.sistema === medida.sistema) {
+                option.selected = true;
+            }
+            measureSelect.appendChild(option);
+        });
+
+        ingredientTag.appendChild(measureSelect);
+
         const removeBtn = document.createElement('span');
         removeBtn.classList.add('remove', 'text-danger', 'fw-bold');
         removeBtn.style.cursor = 'pointer';
@@ -130,22 +133,10 @@ function updateSelectedIngredients() {
         selectedIngredientsDiv.appendChild(ingredientTag);
     });
 
-    // Atualiza o campo JSON oculto com dados dos ingredientes
     updateIngredientsJson();
 }
 
-// Atualiza o campo oculto com JSON dos ingredientes selecionados
 function updateIngredientsJson() {
     document.getElementById('ingredientesJson').value = JSON.stringify(selectedIngredients);
 }
 
-// Função para pesquisar ingredientes (já implementada anteriormente)
-function pesquisarIngrediente() {
-    const searchValue = document.getElementById('ingredientes').value.toLowerCase();
-    const ingredientItems = document.querySelectorAll('.ingredient-item');
-    
-    ingredientItems.forEach(item => {
-        const ingredientName = item.textContent.toLowerCase();
-        item.style.display = ingredientName.includes(searchValue) ? 'block' : 'none';
-    });
-}

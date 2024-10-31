@@ -52,4 +52,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header("Location: " . BASE_URL . "receitas/Paginas/Home.php");
     exit();
 }
+
+//Funcionario
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $id_funcionario = $_POST['id-funcionario'];
+    $nome_funcionario = $_POST['nome-funcionario'];
+    $rg = $_POST['rg'];
+    $data_admissao = $_POST['data-admissao'];
+    $salario = $_POST['salario'];
+    $cargo = $_POST['cargo'];
+    $nome_fantasia = $_POST['nome-fantasia'];
+
+    echo "<script>alert('Funcionário incluído com sucesso!');</script>";
+}
 ?>

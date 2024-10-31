@@ -1,0 +1,32 @@
+
+body {
+    background-color: #FFA500; 
+    font-family: Arial, sans-serif;
+}
+
+.logo {
+    background-color: white;
+    border-bottom: 2px solid #ddd;
+}
+
+.login-box {
+    margin-top: 5px;
+    background-color: white;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    max-width: 400px;
+    width: 100%;
+}
+
+h1 span {
+    color: red;
+}
+
+form {
+    margin-top: 10px;
+}
+
+.form-label {
+    font-weight: bold;
+}
+
+

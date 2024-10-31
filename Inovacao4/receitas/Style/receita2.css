@@ -42,11 +42,17 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
     background-color: white;
+    color: black !important;
+    text-decoration: none !important;
 }
 
 .recipe-card:hover {
     transform: translateY(-5px);
+    color: black !important;
+    text-decoration: none !important;
 }
+
+
 
 .recipe-card img {
     width: 100%;
@@ -61,9 +67,9 @@
 
 .rating {
     position: absolute;
-    top: -2rem;
+    top: 1rem;
     right: 1rem;
-    background-color: #FF0000;
+    background-color: red;
     color: white;
     padding: 0.5rem 1rem;
     border-radius: 20px;
