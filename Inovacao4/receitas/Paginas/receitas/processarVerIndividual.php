@@ -9,7 +9,7 @@ $idReceita = intval($_GET['id']);
 
 // Consulta ao banco de dados para obter os detalhes da receita, incluindo a categoria, média de nota_degustacao e nome do cozinheiro
 $query = "SELECT r.nome_rec, r.data_criacao, r.modo_preparo, r.num_porcao, r.descricao, r.inedita, r.link_imagem, 
-               c.descricao AS categoria,
+               arquivo_imagem,c.nome AS categoria,
                AVG(d.nota_degustacao) AS media_nota,
                func.nome AS nome_cozinheiro
         FROM receita r
@@ -31,7 +31,7 @@ if (!$receita) {
 
 
 // Consulta para obter ingredientes da receita
-$queryIngredientes = "SELECT i.nome AS ingrediente, m.quantidade, m.sistema
+$queryIngredientes = "SELECT i.nome AS ingrediente, ri.quantidade, m.sistema
                       FROM receita_ingrediente ri
                       JOIN ingrediente i ON ri.idIngrediente = i.idIngrediente
                       JOIN medida m ON ri.idMedida = m.idMedida

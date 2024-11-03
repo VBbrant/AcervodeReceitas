@@ -4,12 +4,15 @@ require_once ROOT_PATH . "receitas/conn.php";
 ?>
 <?php
 
-$sql_medidas = "SELECT sistema FROM medida";
+$sql_medidas = "SELECT idMedida, sistema AS nome FROM medida";
 $result_medidas = $conn->query($sql_medidas);
 $medidas = [];
+
 while ($row = $result_medidas->fetch_assoc()) {
-    $medidas[] = $row['sistema'];
+    $medidas[] = $row;
 }
+
+
 
 $sql_ingredientes = "SELECT idIngrediente, nome FROM ingrediente";
 $result_ingredientes = $conn->query($sql_ingredientes);
@@ -27,6 +30,13 @@ $result_cozinheiros = $conn->query($sql_cozinheiros);
 $cozinheiros = [];
 while ($row = $result_cozinheiros->fetch_assoc()) {
     $cozinheiros[] = $row;
+}
+
+$sql_categorias = "SELECT idCategoria, nome FROM categoria";
+$result_categorias = $conn->query($sql_categorias);
+$categorias = [];
+while ($row = $result_categorias->fetch_assoc()) {
+    $categorias[] = $row;
 }
 
 
@@ -51,7 +61,7 @@ while ($row = $result_cozinheiros->fetch_assoc()) {
     
     <div class="container my-4">
         <h2 class="text-center">Adicionar Nova Receita</h2>
-        <form method="POST" action="../../CRUD/processarAdicionar.php">
+        <form id="recipeForm" onsubmit="updateIngredientsJson()" method="POST" action="../../CRUD/processarAdicionar.php" enctype="multipart/form-data">
             <div class="mb-3">
                 <label for="nome_rec" class="form-label">Nome da Receita:</label>
                 <input type="text" class="form-control" id="nome_rec" name="nome_rec" required>
@@ -90,6 +100,15 @@ while ($row = $result_cozinheiros->fetch_assoc()) {
                 </select>
             </div>
 
+            <div class="mb-3">
+                <label for="categoria" class="form-label">Categoria:</label>
+                <select class="form-select" id="categoria" name="id_categoria" required>
+                    <option value="">Selecione a Categoria</option>
+                    <?php foreach ($categorias as $categoria): ?>
+                        <option value="<?= $categoria['idCategoria'] ?>"><?= $categoria['nome'] ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
 
             <div class="mb-3">
                 <label for="link_imagem" class="form-label">Link da Imagem:</label>
@@ -106,37 +125,27 @@ while ($row = $result_cozinheiros->fetch_assoc()) {
             <!-- Div -->
             <div class="mb-3">
                 <label for="ingredientSearch" class="form-label">Ingredientes</label>
-
                 <div class="input-group mb-2" style="position: relative;">
                     <input type="text" id="ingredientSearch" class="form-control" placeholder="Pesquisar ingrediente...">
                     <span class="input-group-text" onclick="filterIngredients()"><i class="fas fa-search"></i></span>
-                    
                     <button type="button" class="btn btn-primary" id="addIngredientOptions">+</button>
-
-                    <div id="ingredientList" class="list-group">   
-                    </div>
+                    <div id="ingredientList" class="list-group"></div>
                 </div>
-
-                <div id="selectedIngredients" class="mb-3"> 
-                </div>
+                <div id="selectedIngredients" class="mb-3"></div>
             </div>
 
-            
             <input type="hidden" name="ingredientes" id="ingredientesJson">
-
-
-
             <button type="submit" class="btn btn-primary w-100">Adicionar Receita</button>
         </form>
         <div id="additionalOptions" class="dropdown-menu">
             <a href="<?= BASE_URL;?>receitas/Paginas/Ingredientes/addIngrediente.php" class="dropdown-item">Adicionar Ingrediente</a>
-            <a href="<?= BASE_URL;?>receitas/Paginas/medidas/addMedida.php" 
-                class="dropdown-item">Adicionar Medida</a>
+            <a href="<?= BASE_URL;?>receitas/Paginas/medidas/addMedida.php" class="dropdown-item">Adicionar Medida</a>
         </div>
-    </div>
+
+        <script>
+            const ingredientsData = <?php echo json_encode($ingredientes); ?>;
+            const measurementsData = <?php echo json_encode($medidas); ?>; // Lista de medidas (idMedida e nome)
+        </script>
+
     
-    <script>
-        const ingredientsData = <?php echo json_encode($ingredientes); ?>;
-        const measurementsData = <?php echo json_encode($medidas); ?>;
-    </script>
-<?php include ROOT_PATH . 'receitas/elementoPagina/rodape.php'; ?>
+        <?php include ROOT_PATH . 'receitas/elementoPagina/rodape.php'; ?>

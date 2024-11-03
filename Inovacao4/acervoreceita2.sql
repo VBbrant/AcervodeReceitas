@@ -18,7 +18,7 @@ CREATE TABLE `usuario` (
 
 CREATE TABLE `categoria` (
   `idCategoria` int NOT NULL AUTO_INCREMENT,
-  `descricao` varchar(100) NOT NULL,
+  `nome` varchar(100) NOT NULL,
   PRIMARY KEY (`idCategoria`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -60,10 +60,13 @@ CREATE TABLE `livro` (
 
 CREATE TABLE `medida` (
   `idMedida` int NOT NULL AUTO_INCREMENT,
-  `quantidade` decimal(10,2) NOT NULL,
   `sistema` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`idMedida`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+ALTER TABLE `receita_ingrediente`
+ADD COLUMN `quantidade` DECIMAL(10,2) NOT NULL;
+
 
 CREATE TABLE `receita` (
   `idReceita` int NOT NULL AUTO_INCREMENT,
@@ -74,6 +77,7 @@ CREATE TABLE `receita` (
   `descricao` text,
   `inedita` enum('S','N') NOT NULL,
   `link_imagem` varchar(255) DEFAULT NULL,
+  `arquivo_imagem` varchar (255) DEFAULT NULL,
   `idCozinheiro` int DEFAULT NULL,
   `idCategoria` INT,
   PRIMARY KEY (`idReceita`),
@@ -96,6 +100,10 @@ CREATE TABLE `receita_ingrediente` (
   CONSTRAINT `receita_ingrediente_ibfk_2` FOREIGN KEY (`idIngrediente`) REFERENCES `ingrediente` (`idIngrediente`) ON DELETE CASCADE,
   CONSTRAINT `receita_ingrediente_ibfk_3` FOREIGN KEY (`idMedida`) REFERENCES `medida` (`idMedida`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+ALTER TABLE `receita_ingrediente`
+ADD COLUMN `quantidade` DECIMAL(10,2) NOT NULL;
+
 
 CREATE TABLE `degustacao` (
   `idDegustacao` int NOT NULL AUTO_INCREMENT,
@@ -162,14 +170,14 @@ INSERT INTO funcionario (nome, rg, data_nascimento, data_admissao, salario, nome
 ('Kirigaya Kazuto', '789123456', '1988-08-05', '2020-10-12', 3200.00, NULL, 8, 9);
 
 -- Inserir categorias (não tem dependências)
-INSERT INTO categoria (descricao) VALUES
+INSERT INTO categoria (nome) VALUES
 ('Carnes'),
 ('Massas'),
 ('Sobremesas'),
 ('Bebidas');
 
 -- Agora podemos inserir as receitas (depende de funcionario como cozinheiro)
-INSERT INTO receita (nome_rec, data_criacao, modo_preparo, num_porcao, descricao, inedita, link_imagem, idCozinheiro, idCategoria) VALUES
+INSERT INTO receita (nome_rec, data_criacao, modo_preparo, num_porcao, descricao, inedita, arquivo_imagem, idCozinheiro, idCategoria) VALUES
 ('Arras Carne Seca', '2023-01-15', 'Modo de preparo da carne seca...', 4, 'Deliciosa carne seca desfiada, temperada com especiarias.', 'S', 'receitas/imagens/arrasCarneSeca.png', 7, 1),
 ('Churrasco Maracanã', '2023-02-20', 'Modo de preparo do churrasco...', 6, 'O famoso Churrasco Maracanã é uma verdadeira explosão de sabores.', 'N', 'receitas/imagens/churrascoMaracana.png', 7, 1),
 ('Feijoada', '2023-03-10', 'Modo de preparo da feijoada...', 8, 'Feijoada completa e saborosa, feita com uma seleção especial de carnes.', 'N', 'receitas/imagens/feijoada.png', 7, 1),
@@ -196,38 +204,38 @@ INSERT INTO ingrediente (nome, descricao) VALUES
 ('Cebola', 'Cebola picada para tempero'),
 ('Creme de Leite', 'Creme de leite para cremosidade');
 
-INSERT INTO medida (quantidade, sistema) VALUES
-(500, 'g'),        -- Carne Seca para Arras Carne Seca
-(1, 'dente'),      -- Alho para temperar
-(2, 'colheres'),   -- Óleo para refogar
-(1, 'kg'),         -- Carne Bovina para Feijoada e Churrasco
-(300, 'g'),        -- Linguiça para Churrasco
-(250, 'g'),        -- Feijão Preto para Feijoada
-(1, 'unidade'),    -- Cebola para tempero
-(200, 'ml');       -- Creme de Leite para Strogonoff
+-- Inserção das unidades de medida únicas na tabela 'medida'
+INSERT INTO medida (sistema) VALUES
+('g'),          -- gramas
+('dente'),      -- unidade de alho
+('colheres'),   -- colheres
+('kg'),         -- quilogramas
+('unidade'),    -- unidade
+('ml');         -- mililitros
 
 -- Ingredientes para Arras Carne Seca
-INSERT INTO receita_ingrediente (idReceita, idIngrediente, idMedida) VALUES
-(5, 1, 1),   -- 500g de Carne Seca
-(5, 2, 2),   -- 1 dente de Alho
-(5, 3, 3);   -- 2 colheres de Óleo
+INSERT INTO receita_ingrediente (idReceita, idIngrediente, idMedida, quantidade) VALUES
+(5, 1, 1, 500),   -- 500g de Carne Seca
+(5, 2, 2, 1),     -- 1 dente de Alho
+(5, 3, 3, 2);     -- 2 colheres de Óleo
 
 -- Ingredientes para Churrasco Maracanã
-INSERT INTO receita_ingrediente (idReceita, idIngrediente, idMedida) VALUES
-(6, 4, 4),   -- 1 kg de Carne Bovina
-(6, 5, 5);   -- 300g de Linguiça
+INSERT INTO receita_ingrediente (idReceita, idIngrediente, idMedida, quantidade) VALUES
+(6, 4, 4, 1),     -- 1 kg de Carne Bovina
+(6, 5, 1, 300);   -- 300g de Linguiça
 
 -- Ingredientes para Feijoada
-INSERT INTO receita_ingrediente (idReceita, idIngrediente, idMedida) VALUES
-(7, 6, 6),   -- 250g de Feijão Preto
-(7, 4, 4),   -- 1 kg de Carne Bovina
-(7, 7, 7);   -- 1 unidade de Cebola
+INSERT INTO receita_ingrediente (idReceita, idIngrediente, idMedida, quantidade) VALUES
+(7, 6, 1, 250),   -- 250g de Feijão Preto
+(7, 4, 4, 1),     -- 1 kg de Carne Bovina
+(7, 7, 5, 1);     -- 1 unidade de Cebola
 
 -- Ingredientes para Strogonoff
-INSERT INTO receita_ingrediente (idReceita, idIngrediente, idMedida) VALUES
-(8, 4, 4),   -- 1 kg de Carne Bovina
-(8, 8, 8),   -- 200 ml de Creme de Leite
-(8, 2, 2);   -- 1 dente de Alho
+INSERT INTO receita_ingrediente (idReceita, idIngrediente, idMedida, quantidade) VALUES
+(8, 4, 4, 1),     -- 1 kg de Carne Bovina
+(8, 8, 6, 200),   -- 200 ml de Creme de Leite
+(8, 2, 2, 1);     -- 1 dente de Alho
+
 
 -- Inserindo registros de degustação para o degustador com id 8
 INSERT INTO degustacao (data_degustacao, nota_degustacao, idDegustador, idReceita) VALUES

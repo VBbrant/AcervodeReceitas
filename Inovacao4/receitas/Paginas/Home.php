@@ -21,7 +21,7 @@
 
     <?php include ROOT_PATH . 'receitas/conn.php';
 
-    $sql_featured = "SELECT r.idReceita, r.nome_rec, r.descricao, r.link_imagem, f.nome as chef_name 
+    $sql_featured = "SELECT r.idReceita, r.nome_rec, r.descricao, r.link_imagem, r.arquivo_imagem ,f.nome as chef_name 
                     FROM receita r 
                     LEFT JOIN funcionario f ON r.idCozinheiro = f.idFun 
                     ORDER BY r.data_criacao DESC 
@@ -56,7 +56,7 @@
                         <!-- Altere o link do href para apontar para "verReceita.php" com o ID da receita -->
                         <a href="receitas/verReceitaIndividual.php?id=<?php echo $recipe['idReceita']; ?>" class="text-decoration-none">
                             <div class="recipe-card position-relative rounded-4 overflow-hidden">
-                                <img src="<?php echo BASE_URL . htmlspecialchars($recipe['link_imagem']); ?>" 
+                                <img src="<?php echo BASE_URL . htmlspecialchars($recipe['arquivo_imagem']); ?>" 
                                     class="w-100" 
                                     alt="<?php echo htmlspecialchars($recipe['nome_rec']); ?>"
                                     style="height: 200px; object-fit: cover;">

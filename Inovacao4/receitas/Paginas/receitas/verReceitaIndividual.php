@@ -23,7 +23,7 @@ include 'processarVerIndividual.php';
         <div class="container mt-5">
             <!-- Imagem e título da receita -->
             <div class="text-center">
-                <img src="<?php echo BASE_URL . $receita['link_imagem']; ?>" alt="Imagem da Receita" class="img-fluid rounded">
+            <img src="<?php echo !empty($receita['link_imagem']) ? $receita['link_imagem'] : BASE_URL . $receita['arquivo_imagem']; ?>" alt="Imagem da Receita" class="img-fluid rounded">
                 <h1 class="mt-4"><?php echo htmlspecialchars($receita['nome_rec']); ?></h1>
                 <p class="lead"><?php echo htmlspecialchars($receita['descricao']); ?></p>
                 <button class="btn btn-dark">Editar</button>
@@ -34,7 +34,6 @@ include 'processarVerIndividual.php';
                 <div class="rating">
                     <span class="score">
                     <?php 
-                    // Exibir a média das notas de degustação com formatação
                     $notaMedia = $receita['media_nota'] ?? 0;
                     echo "Nota média: " . number_format($notaMedia, 1, ',', '');
                     ?>
@@ -42,17 +41,16 @@ include 'processarVerIndividual.php';
                     </span>
                     <span class="stars">
                         <?php
-                            // Calcula o número de estrelas com base na nota (escala de 0 a 5)
+
                             $num_estrelas = round($notaMedia / 2, 1);
                             $estrelas_completas = floor($num_estrelas);
                             $meia_estrela = ($num_estrelas - $estrelas_completas) >= 0.5;
 
-                            // Renderiza as estrelas completas
                             for ($i = 0; $i < $estrelas_completas; $i++) {
                                 echo '<i class="fas fa-star"></i>';
                             }
 
-                            // Renderiza meia estrela, se necessário
+
                             if ($meia_estrela) {
                                 echo '<i class="fas fa-star-half-alt"></i>';
                             }
