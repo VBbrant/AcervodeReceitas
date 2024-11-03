@@ -1,68 +1,75 @@
 <?php
-require_once "../../../config.php";
+require_once "../../config.php";
 require_once ROOT_PATH . "receitas/conn.php";
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nome_rec = $_POST['nome_rec'];
-    $data_criacao = $_POST['data_criacao'];
-    $modo_preparo = $_POST['modo_preparo'];
-    $num_porcao = $_POST['num_porcao'];
-    $descricao = $_POST['descricao'];
-    $inedita = $_POST['inedita'];
-    $link_imagem = $_POST['link_imagem'];
-    $ingredientes = json_decode($_POST['ingredientes'], true); // Espera-se JSON com ingredientes, medida e quantidade
 
-    // Adiciona a receita ao banco de dados
-    $stmt = $conn->prepare("INSERT INTO receita (nome_rec, data_criacao, modo_preparo, num_porcao, descricao, inedita, link_imagem) VALUES (?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("sssisss", $nome_rec, $data_criacao, $modo_preparo, $num_porcao, $descricao, $inedita, $link_imagem);
-    $stmt->execute();
-    $recipe_id = $stmt->insert_id;
-    $stmt->close();
+// Receita
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (isset($_POST['nome_rec'], $_POST['data_criacao'], $_POST['modo_preparo'])) {
 
-    // Verifica se há ingredientes para adicionar
-    if (!empty($ingredientes) && is_array($ingredientes)) {
-        foreach ($ingredientes as $ingrediente_data) {
-            $ingrediente_nome = $ingrediente_data['nome'];
-            $quantidade = $ingrediente_data['quantidade'];
-            $sistema = $ingrediente_data['sistema'];
+        $nome_rec = $_POST['nome_rec'];
+        $data_criacao = $_POST['data_criacao'];
+        $modo_preparo = $_POST['modo_preparo'];
+        $num_porcao = $_POST['num_porcao'];
+        $descricao = $_POST['descricao'];
+        $inedita = $_POST['inedita'];
+        $id_cozinheiro = $_POST['id_cozinheiro'];
+        $link_imagem = $_POST['link_imagem'];
 
-            // Adiciona o ingrediente ao banco de dados ou ignora se já existir
-            $stmt = $conn->prepare("INSERT INTO ingrediente (nome) VALUES (?) ON DUPLICATE KEY UPDATE idIngrediente=LAST_INSERT_ID(idIngrediente)");
-            $stmt->bind_param("s", $ingrediente_nome);
+        $caminho_imagem = null;
+
+        // Verifica se um arquivo de imagem foi enviado
+        if (!empty($_FILES['arquivo_imagem']['name'])) {
+            $diretorioDestino = ROOT_PATH . "receitas/imagens/";
+            $extensao = pathinfo($_FILES['arquivo_imagem']['name'], PATHINFO_EXTENSION);
+            $nomeArquivo = $nome_rec . "." . $extensao;
+            $caminho_imagem = "receitas/imagens/" . $nomeArquivo;
+
+            if (!move_uploaded_file($_FILES['arquivo_imagem']['tmp_name'], $diretorioDestino . $nomeArquivo)) {
+                echo "Erro ao fazer upload da imagem.";
+                exit;
+            }
+        } elseif (!empty($link_imagem)) {
+            $caminho_imagem = $link_imagem;
+        }
+
+        $conn->begin_transaction();
+
+        try {
+            $sql_receita = "INSERT INTO receita (nome_rec, data_criacao, modo_preparo, num_porcao, descricao, inedita, link_imagem, idCozinheiro) 
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            $stmt = $conn->prepare($sql_receita);
+            $stmt->bind_param("sssssssi", $nome_rec, $data_criacao, $modo_preparo, $num_porcao, $descricao, $inedita, $caminho_imagem, $id_cozinheiro);
             $stmt->execute();
-            $ingrediente_id = $stmt->insert_id;
-            $stmt->close();
 
-            // Adiciona a medida para o ingrediente
-            $stmt = $conn->prepare("INSERT INTO medida (quantidade, sistema) VALUES (?, ?) ON DUPLICATE KEY UPDATE idMedida=LAST_INSERT_ID(idMedida)");
-            $stmt->bind_param("ds", $quantidade, $sistema);
-            $stmt->execute();
-            $medida_id = $stmt->insert_id;
-            $stmt->close();
-
-            // Associa o ingrediente e a medida à receita na tabela intermediária
-            $stmt = $conn->prepare("INSERT INTO receita_ingrediente (idReceita, idIngrediente, idMedida) VALUES (?, ?, ?)");
-            $stmt->bind_param("iii", $recipe_id, $ingrediente_id, $medida_id);
-            $stmt->execute();
+            $conn->commit();
+            echo "Receita adicionada com sucesso!";
+            header("Location: ". BASE_URL . "receitas/Paginas/home.php");
+        } catch (Exception $e) {
+            $conn->rollback();
+            echo "Erro ao adicionar a receita: " . $e->getMessage();
+        } finally {
             $stmt->close();
         }
+
     }
+    //Funcionario
+     elseif (isset($_POST['id-funcionario'], $_POST['nome-funcionario'], $_POST['rg'])) {
+        $id_funcionario = $_POST['id-funcionario'];
+        $nome_funcionario = $_POST['nome-funcionario'];
+        $rg = $_POST['rg'];
+        $data_admissao = $_POST['data-admissao'];
+        $salario = $_POST['salario'];
+        $cargo = $_POST['cargo'];
+        $nome_fantasia = $_POST['nome-fantasia'];
 
-    // Redireciona para a página inicial após a inserção
-    header("Location: " . BASE_URL . "receitas/Paginas/Home.php");
-    exit();
+        echo "<script>alert('Funcionário incluído com sucesso!');</script>";
+
+    } else {
+        echo "Erro: Formulário inválido ou campos ausentes.";
+    }
 }
 
-//Funcionario
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $id_funcionario = $_POST['id-funcionario'];
-    $nome_funcionario = $_POST['nome-funcionario'];
-    $rg = $_POST['rg'];
-    $data_admissao = $_POST['data-admissao'];
-    $salario = $_POST['salario'];
-    $cargo = $_POST['cargo'];
-    $nome_fantasia = $_POST['nome-fantasia'];
+$conn->close();
 
-    echo "<script>alert('Funcionário incluído com sucesso!');</script>";
-}
 ?>

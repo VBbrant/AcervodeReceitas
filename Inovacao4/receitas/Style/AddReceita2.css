@@ -1,0 +1,82 @@
+.container {
+    width: 80%;
+    max-width: 700px;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.form-label {
+    font-weight: bold;
+    color: #555;
+}
+
+/* Lista Rolável */
+#ingredientList {
+    position: absolute;
+    top: 100%; 
+    width: 100%; 
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    background-color: white;
+    z-index: 1000;
+    display: none; 
+}
+
+
+.ingredient-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 10px;
+    margin: 5px;
+    background-color: #e0e0e0;
+    border-radius: 15px;
+}
+
+.ingredient-tag span {
+    margin-right: 5px;
+}
+
+.ingredient-tag .remove-tag {
+    cursor: pointer;
+    color: #ff0000;
+    margin-left: 10px;
+}
+
+
+.ingredient-quantity {
+    width: 80px;
+    margin-left: 5px;
+}
+
+
+#additionalOptions {
+    display: none;         
+    position: absolute; 
+    top: 126%;               
+    left: 76%;              
+    margin-left: 5px;        
+    z-index: 1000;           
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+#additionalOptions a:hover{
+    background-color: aqua;
+    cursor: pointer;
+}
+
+
+#additionalOptions.show {
+    display: block;
+}
+

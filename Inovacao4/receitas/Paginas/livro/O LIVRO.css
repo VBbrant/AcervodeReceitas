@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body {
+  background-color: #f4f4f4;
+  font-family: sans-serif;
+}
+
+.container {
+  width: 80%;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  border-radius: 5px;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+h2 {
+  margin-bottom: 10px;
+  color: #555;
+}
+
+p {
+  line-height: 1.6;
+  color: #666;
+}
+
+.author {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.author img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin: 0 auto;
+}
+
+.author p {
+  margin-top: 10px;
+  font-size: 16px;
+  color: #333;
+}
+
+.book {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+}
+
+.book h2 {
+  text-align: center;
+}
+
+.book p {
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Fórmula Mágica do Chef</h1>
+
+  <p>Desvende os segredos da cozinha com a Fórmula Mágica do Chef! Este livro te ensinará a preparar pratos incríveis, do básico ao sofisticado, com técnicas simples e eficazes. </p>
+
+  <p>Aprenda receitas deliciosas, dicas de culinária, truques de mestre e muito mais. Prepare-se para impressionar seus amigos e familiares com seus novos

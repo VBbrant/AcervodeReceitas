@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Gerar Relatório</title>
+  <style>
+    body {
+      background-color: #f0e6d0; /* Background color */
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+
+    h1 {
+      color: #d97e2e; /* Orange color for heading */
+    }
+
+    table {
+      border-collapse: collapse;
+      margin: 20px auto;
+      width: 50%;
+    }
+
+    th, td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #d97e2e;
+      color: white;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      margin: 8px 0;
+      box-sizing: border-box;
+    }
+
+    input[type="date"] {
+      width: 100%;
+      padding: 8px;
+      margin: 8px 0;
+      box-sizing: border-box;
+    }
+
+    button {
+      background-color: #d97e2e; /* Orange button */
+      color: white;
+      padding: 10px 20px;
+      margin: 8px 0;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Gerar Relatório</h1>
+  <p>Lista de quantidades vendidas por fornecedores:</p>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nome</th>
+        <th>Quantidade</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>01</td>
+        <td>Marcos Braz</td>
+        <td>10</td>
+      </tr>
+      <tr>
+        <td>02</td>
+        <td>Filled State</td>
+        <td>Filled State</td>
+      </tr>
+    </tbody>
+  </table>
+  <label for="nome-parametro">Nome Parâmetro:</label>
+  <input type="text"
