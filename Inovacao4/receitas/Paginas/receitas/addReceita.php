@@ -146,6 +146,7 @@ while ($row = $result_categorias->fetch_assoc()) {
             const ingredientsData = <?php echo json_encode($ingredientes); ?>;
             const measurementsData = <?php echo json_encode($medidas); ?>; // Lista de medidas (idMedida e nome)
         </script>
+        <script src="<?= BASE_URL;?>receitas/Scripts/addReceita.php"></script>
 
     
         <?php include ROOT_PATH . 'receitas/elementoPagina/rodape.php'; ?>

@@ -11,7 +11,7 @@
             </a>
             <ul class="submenu">
                 <li><a href="<?php echo BASE_URL; ?>receitas/Paginas/receitas/addReceita.php">Adicionar Receita</a></li>
-                <li><a href="/recipes/edit.php">Editar Receita</a></li>
+                <li><a href="<?php echo BASE_URL; ?>receitas/Paginas/receitas/EditarReceita.php">Editar Receita</a></li>
                 <li><a href="/recipes/delete.php">Excluir Receita</a></li>
             </ul>
         </li>
