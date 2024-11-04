@@ -27,6 +27,8 @@ include 'processarVerIndividual.php';
                 <h1 class="mt-4"><?php echo htmlspecialchars($receita['nome_rec']); ?></h1>
                 <p class="lead"><?php echo htmlspecialchars($receita['descricao']); ?></p>
                 <a href="EditarReceita.php?id=<?php echo $idReceita; ?>" class="btn btn-dark">Editar</a>
+                <a href="excluirReceita.php?id=<?php echo $idReceita; ?>" class="btn btn-dark">Excluir</a>
+
             </div>
 
             <!-- Avaliação -->
