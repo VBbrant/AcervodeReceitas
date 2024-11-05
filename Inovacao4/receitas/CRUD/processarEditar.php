@@ -2,107 +2,153 @@
 require_once "../../config.php";
 require_once ROOT_PATH . "receitas/conn.php";
 
-// Verifica se o ID da receita foi passado
-$idReceita = $_GET['id'] ?? null;
-if (!$idReceita) {
-    echo "ID da receita não fornecido.";
-    exit;
-}
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Recebendo os dados do formulário
-    $nome_rec = $_POST['nome_rec'];
-    $data_criacao = $_POST['data_criacao'];
-    $modo_preparo = $_POST['modo_preparo'];
-    $num_porcao = $_POST['num_porcao'];
-    $descricao = $_POST['descricao'];
-    $inedita = $_POST['inedita'];
-    $id_cozinheiro = $_POST['id_cozinheiro'];
-    $id_categoria = $_POST['id_categoria'];
-    $link_imagem = $_POST['link_imagem'] ?? null;
-    $ingredientes = json_decode($_POST['ingredientes'], true); // Decodifica JSON dos ingredientes
-
-    $arquivo_imagem = null;
-
-    // Verifica se um novo arquivo de imagem foi enviado e faz o upload
-    if (isset($_FILES['arquivo_imagem']) && $_FILES['arquivo_imagem']['error'] === UPLOAD_ERR_OK) {
-        $diretorioDestino = ROOT_PATH . "receitas/imagens/";
-        $extensao = strtolower(pathinfo($_FILES['arquivo_imagem']['name'], PATHINFO_EXTENSION));
-
-        // Gera um nome de arquivo único
-        $nomeArquivo = preg_replace('/[^\w-]/', '', $nome_rec) . "_" . uniqid() . "." . $extensao;
-        $arquivo_imagem = "receitas/imagens/" . $nomeArquivo;
-
-        // Cria o diretório se não existir
-        if (!is_dir($diretorioDestino)) {
-            mkdir($diretorioDestino, 0777, true);
-        }
-
-        // Move o arquivo para o diretório de destino
-        if (!move_uploaded_file($_FILES['arquivo_imagem']['tmp_name'], $diretorioDestino . $nomeArquivo)) {
-            echo "Erro ao fazer upload da imagem.";
-            exit;
-        }
-    }
-
-    // Inicia a transação
-    $conn->begin_transaction();
+    $form_type = $_POST['form_type'] ?? '';
 
     try {
-        // Atualiza os dados principais da receita
-        $sql_update_receita = "
-            UPDATE receita 
-            SET nome_rec = ?, data_criacao = ?, modo_preparo = ?, num_porcao = ?, descricao = ?, 
-                inedita = ?, link_imagem = ?, arquivo_imagem = ?, idCozinheiro = ?, idCategoria = ?
-            WHERE idReceita = ?
-        ";
-        $stmt = $conn->prepare($sql_update_receita);
-        
-        // Usa o novo arquivo de imagem, se existir, senão mantém o existente
-        $imagem_final = $arquivo_imagem ?? $receita['arquivo_imagem'];
-        
-        $stmt->bind_param(
-            "sssissssiii", 
-            $nome_rec, $data_criacao, $modo_preparo, $num_porcao, $descricao, 
-            $inedita, $link_imagem, $imagem_final, $id_cozinheiro, $id_categoria, $idReceita
-        );
-        $stmt->execute();
+        switch ($form_type) {
+            case 'receita':
+                // Verifica o ID da receita ao tentar editar uma receita
+                $idReceita = $_POST['id_receita'] ?? null;
+                if (!$idReceita) {
+                    echo "ID da receita não fornecido.";
+                    exit;
+                }
 
-        // Remove ingredientes antigos associados à receita
-        $sql_delete_ingredientes = "DELETE FROM receita_ingrediente WHERE idReceita = ?";
-        $stmt_delete = $conn->prepare($sql_delete_ingredientes);
-        $stmt_delete->bind_param("i", $idReceita);
-        $stmt_delete->execute();
+                // Recebendo os dados do formulário
+                $nome_rec = $_POST['nome_rec'];
+                $data_criacao = $_POST['data_criacao'];
+                $modo_preparo = $_POST['modo_preparo'];
+                $num_porcao = $_POST['num_porcao'];
+                $descricao = $_POST['descricao'];
+                $inedita = $_POST['inedita'];
+                $id_cozinheiro = $_POST['id_cozinheiro'];
+                $id_categoria = $_POST['id_categoria'];
+                $link_imagem = $_POST['link_imagem'] ?? null;
+                $ingredientes = json_decode($_POST['ingredientes'], true);
 
-        // Insere os ingredientes atualizados
-        if (is_array($ingredientes) && count($ingredientes) > 0) {
-            $sql_insert_ingrediente = "
-                INSERT INTO receita_ingrediente (idReceita, idIngrediente, idMedida, quantidade) 
-                VALUES (?, ?, ?, ?)
-            ";
-            $stmt_ingrediente = $conn->prepare($sql_insert_ingrediente);
+                // Processamento do upload da imagem
+                $arquivo_imagem = null;
+                if (isset($_FILES['arquivo_imagem']) && $_FILES['arquivo_imagem']['error'] === UPLOAD_ERR_OK) {
+                    $diretorioDestino = ROOT_PATH . "receitas/imagens/";
+                    $extensao = strtolower(pathinfo($_FILES['arquivo_imagem']['name'], PATHINFO_EXTENSION));
+                    $nomeArquivo = preg_replace('/[^\w-]/', '', $nome_rec) . "_" . uniqid() . "." . $extensao;
+                    $arquivo_imagem = "receitas/imagens/" . $nomeArquivo;
 
-            foreach ($ingredientes as $ingrediente) {
-                $idIngrediente = $ingrediente['idIngrediente'];
-                $quantidade = $ingrediente['quantidade'];
-                $idMedida = $ingrediente['idMedida'];
+                    if (!is_dir($diretorioDestino)) {
+                        mkdir($diretorioDestino, 0777, true);
+                    }
 
-                $stmt_ingrediente->bind_param("iiid", $idReceita, $idIngrediente, $idMedida, $quantidade);
-                $stmt_ingrediente->execute();
-            }
+                    if (!move_uploaded_file($_FILES['arquivo_imagem']['tmp_name'], $diretorioDestino . $nomeArquivo)) {
+                        echo "<script>alert('Erro ao fazer upload da imagem.'); window.history.back();</script>";
+                        exit;
+                    }
+                }
+
+                // Atualização da receita
+                $conn->begin_transaction();
+                $sql_update_receita = "
+                    UPDATE receita 
+                    SET nome_rec = ?, data_criacao = ?, modo_preparo = ?, num_porcao = ?, descricao = ?, 
+                        inedita = ?, link_imagem = ?, arquivo_imagem = ?, idCozinheiro = ?, idCategoria = ?
+                    WHERE idReceita = ?
+                ";
+                $stmt = $conn->prepare($sql_update_receita);
+
+                // Definindo o valor final para a imagem
+                $imagem_final = $arquivo_imagem ?? null;
+
+                $stmt->bind_param(
+                    "sssissssiii", 
+                    $nome_rec, $data_criacao, $modo_preparo, $num_porcao, $descricao, 
+                    $inedita, $link_imagem, $imagem_final, $id_cozinheiro, $id_categoria, $idReceita
+                );
+                $stmt->execute();
+
+                // Removendo ingredientes antigos
+                $sql_delete_ingredientes = "DELETE FROM receita_ingrediente WHERE idReceita = ?";
+                $stmt_delete = $conn->prepare($sql_delete_ingredientes);
+                $stmt_delete->bind_param("i", $idReceita);
+                $stmt_delete->execute();
+
+                // Inserindo ingredientes novos
+                if (is_array($ingredientes) && count($ingredientes) > 0) {
+                    $sql_insert_ingrediente = "
+                        INSERT INTO receita_ingrediente (idReceita, idIngrediente, idMedida, quantidade) 
+                        VALUES (?, ?, ?, ?)
+                    ";
+                    $stmt_ingrediente = $conn->prepare($sql_insert_ingrediente);
+
+                    foreach ($ingredientes as $ingrediente) {
+                        $idIngrediente = $ingrediente['idIngrediente'] ?? null;
+                        $quantidade = $ingrediente['quantidade'] ?? null;
+                        $idMedida = $ingrediente['idMedida'] ?? null;
+
+                        if ($idIngrediente && $idMedida && $quantidade) {
+                            $stmt_ingrediente->bind_param("iiid", $idReceita, $idIngrediente, $idMedida, $quantidade);
+                            $stmt_ingrediente->execute();
+                        }
+                    }
+                }
+
+                $conn->commit();
+                echo "<script>alert('Receita atualizada com sucesso!'); window.location.href='" . BASE_URL . "receitas/Paginas/home.php';</script>";
+                break;
+
+            case 'ingrediente':
+                // Editando ou adicionando novo ingrediente
+                $id_ingrediente = $_POST['id_ingrediente'] ?? null;
+                $nome_ingrediente = $_POST['nome'];
+                $descricao = $_POST['descricao'];
+
+                if ($id_ingrediente) {
+                    // Atualizar ingrediente existente
+                    $sql_ingrediente = "UPDATE ingrediente SET nome = ?, descricao = ? WHERE idIngrediente = ?";
+                    $stmt = $conn->prepare($sql_ingrediente);
+                    $stmt->bind_param("ssi", $nome_ingrediente, $descricao, $id_ingrediente);
+                } else {
+                    // Adicionar novo ingrediente
+                    $sql_ingrediente = "INSERT INTO ingrediente (nome, descricao) VALUES (?, ?)";
+                    $stmt = $conn->prepare($sql_ingrediente);
+                    $stmt->bind_param("ss", $nome_ingrediente, $descricao);
+                }
+                $stmt->execute();
+                echo "<script>alert('Ingrediente atualizado com sucesso!'); window.location.href='" . BASE_URL . "receitas/Paginas/home.php';</script>";
+                break;
+
+            case 'medida':
+                // Adicionando ou editando medida
+                $id_medida = $_POST['id_medida'] ?? null;
+                $nome_medida = $_POST['nome'];
+
+                if ($id_medida) {
+                    // Atualizar medida existente
+                    $sql_medida = "UPDATE medida SET nome = ? WHERE idMedida = ?";
+                    $stmt = $conn->prepare($sql_medida);
+                    $stmt->bind_param("si", $nome_medida, $id_medida);
+                } else {
+                    // Adicionar nova medida
+                    $sql_medida = "INSERT INTO medida (nome) VALUES (?)";
+                    $stmt = $conn->prepare($sql_medida);
+                    $stmt->bind_param("s", $nome_medida);
+                }
+                $stmt->execute();
+                echo "<script>alert('Medida atualizada com sucesso!'); window.location.href='" . BASE_URL . "receitas/Paginas/home.php';</script>";
+                break;
+
+            default:
+                echo "<script>alert('Tipo de formulário não reconhecido.'); window.history.back();</script>";
+                break;
         }
-
-        // Confirma a transação
-        $conn->commit();
-        echo "Receita atualizada com sucesso!";
-        
-        // Redireciona para a página de visualização da receita ou exibe uma mensagem de sucesso
-        header("Location: " . BASE_URL . "receitas/Paginas/receitas/verReceitaIndividual.php?id=" . $idReceita);
-        exit;
-
     } catch (Exception $e) {
-        // Reverte a transação em caso de erro
         $conn->rollback();
-        echo "Erro ao atualizar a receita: " . $e->getMessage();
+        echo "<script>alert('Ocorreu um erro ao processar o formulário.'); window.history.back();</script>";
+    } finally {
+        // Fechando todas as declarações
+        if (isset($stmt)) $stmt->close();
+        if (isset($stmt_delete)) $stmt_delete->close();
+        if (isset($stmt_ingrediente)) $stmt_ingrediente->close();
+        $conn->close();
     }
 }
+?>

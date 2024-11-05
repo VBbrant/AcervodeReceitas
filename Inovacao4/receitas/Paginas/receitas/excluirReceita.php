@@ -2,35 +2,28 @@
 require_once "../../../config.php";
 require_once ROOT_PATH . "receitas/conn.php";
 
-// Recebe o ID da receita para excluir
 $idReceita = $_GET['id'] ?? null;
 if (!$idReceita) {
     echo "ID da receita não fornecido.";
     exit;
 }
 
-// Verifica se a requisição é POST para confirmar a exclusão
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Inicia uma transação para garantir a integridade
     $conn->begin_transaction();
     
     try {
-        // Remove os ingredientes associados à receita primeiro (caso exista uma tabela de associação)
         $sql_delete_ingredientes = "DELETE FROM receita_ingrediente WHERE idReceita = ?";
         $stmt_delete_ingredientes = $conn->prepare($sql_delete_ingredientes);
         $stmt_delete_ingredientes->bind_param("i", $idReceita);
         $stmt_delete_ingredientes->execute();
 
-        // Exclui a receita
         $sql_delete_receita = "DELETE FROM receita WHERE idReceita = ?";
         $stmt_delete_receita = $conn->prepare($sql_delete_receita);
         $stmt_delete_receita->bind_param("i", $idReceita);
         $stmt_delete_receita->execute();
 
-        // Confirma a exclusão
         $conn->commit();
         
-        // Redireciona para a lista de receitas ou página de confirmação
         header("Location: " . BASE_URL . "receitas/Paginas/receitas/verReceita.php?excluido=1");
         exit;
     } catch (Exception $e) {

@@ -21,7 +21,7 @@
 
 <body class="d-flex align-items-center justify-content-center vh-100">
     <?php include ROOT_PATH . 'receitas/elementoPagina/cabecalho.php'; ?>
-
+    <input type="hidden" name="form_type" value="funcionario">
     <div class="container" id="Formulario">
         <div class="bg-white p-5 rounded shadow w-100" style="max-width: 600px;">
             <h1 class="text-center mb-4">Incluir Funcionário</h1>

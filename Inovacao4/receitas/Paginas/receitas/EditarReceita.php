@@ -62,6 +62,8 @@ $receita_ingredientes = $stmt_receita_ingredientes->get_result()->fetch_all(MYSQ
     <div class="container my-4">
         <h2 class="text-center">Editar Receita</h2>
         <form id="recipeForm" onsubmit="updateIngredientsJson()" method="POST" action="../../CRUD/processarEditar.php?id=<?php echo $idReceita; ?>" enctype="multipart/form-data">
+            <input type="hidden" name="form_type" value="receita">
+            <input type="hidden" name="id_ingrediente" value="<?php echo $id_ingrediente; ?>">
             <div class="mb-3">
                 <label for="nome_rec" class="form-label">Nome da Receita:</label>
                 <input type="text" class="form-control" id="nome_rec" name="nome_rec" value="<?php echo htmlspecialchars($receita['nome_rec']); ?>" required>
@@ -151,58 +153,9 @@ $receita_ingredientes = $stmt_receita_ingredientes->get_result()->fetch_all(MYSQ
         <script>
             const ingredientsData = <?php echo json_encode($ingredientes); ?>;
             const measurementsData = <?php echo json_encode($medidas); ?>;
-            const selectedIngredients = <?php echo json_encode($receita_ingredientes); ?>; // Ingredientes já associados
+            const selectedIngredients = <?php echo json_encode($receita_ingredientes); ?>;
         </script>
     </div>
 
-    <script>
-    
-          document.addEventListener('DOMContentLoaded', function() {
-          // Renderiza os ingredientes previamente selecionados ao carregar a página
-          selectedIngredients.forEach(ingredient => {
-              renderSelectedIngredient(ingredient);
-          });
-          updateIngredientsJson();
-      });
-
-      function renderSelectedIngredient(ingredient) {
-          const tag = document.createElement('div');
-          tag.className = 'ingredient-tag';
-          tag.style.display = 'flex';
-          tag.style.alignItems = 'center';
-          tag.style.marginBottom = '5px';
-          tag.dataset.id = ingredient.idIngrediente;
-
-          // Gera o HTML da tag com os dados da receita
-          tag.innerHTML = `
-              <span style="margin-right: 8px;">${ingredient.nome}</span>
-              <input type="number" class="form-control form-control-sm ingredient-quantity" placeholder="Quantidade" min="1" required 
-                    value="${ingredient.quantidade}" style="width: 80px; margin-right: 8px;">
-              <select class="form-select form-select-sm ingredient-measure" required style="width: 100px; margin-right: 8px;">
-                  ${measurementsData.map(m => `<option value="${m.idMedida}" ${m.idMedida == ingredient.idMedida ? 'selected' : ''}>${m.nome}</option>`).join('')}
-              </select>
-              <button type="button" class="btn btn-sm btn-danger" onclick="removeTag(this)">x</button>
-          `;
-
-          // Eventos para atualizar o JSON ao modificar quantidade ou medida
-          tag.querySelector('.ingredient-quantity').addEventListener('input', updateIngredientsJson);
-          tag.querySelector('.ingredient-measure').addEventListener('change', updateIngredientsJson);
-
-          document.getElementById('selectedIngredients').appendChild(tag);
-      }
-
-      // Função para atualizar o campo hidden com os dados dos ingredientes
-      function updateIngredientsJson() {
-          const ingredientTags = document.querySelectorAll('.ingredient-tag');
-          const selectedIngredients = Array.from(ingredientTags).map(tag => ({
-              idIngrediente: tag.dataset.id,
-              quantidade: tag.querySelector('.ingredient-quantity').value,
-              idMedida: tag.querySelector('.ingredient-measure').value
-          }));
-          
-          document.getElementById('ingredientesJson').value = JSON.stringify(selectedIngredients);
-      }
-        
-
-    </script>
+    <script src="<?php echo BASE_URL . 'receitas/Scripts/EditarReceita.js';?>"></script>
 <?php include ROOT_PATH . 'receitas/elementoPagina/rodape.php'; ?>

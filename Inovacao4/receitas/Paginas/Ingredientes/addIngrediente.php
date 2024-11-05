@@ -18,15 +18,16 @@
     <div class="container my-4">
     <h2 class="text-center">Adicionar Novo ingredinte</h2>
         <form method="POST" action="../../CRUD/processarAdicionar.php">
+            <input type="hidden" name="form_type" value="ingrediente">
                 <div class="mb-3">
                     <label for="nome_rec" class="form-label">Nome do ingrediente:</label>
-                    <input type="text" class="form-control" id="nome_rec" name="nome_rec" required>
+                    <input type="text" class="form-control" id="nome" name="nome" required>
                 </div>
                 <div class="mb-3">
                     <label for="modo_preparo" class="form-label">Descrição:</label>
-                    <textarea class="form-control" id="modo_preparo" name="modo_preparo" rows="5"></textarea>
+                    <textarea class="form-control" id="descricao" name="descricao" rows="5"></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary w-100">Adicionar Receita</button>
+                <button type="submit" class="btn btn-primary w-100">Adicionar ingrediente</button>
         </form>
     </div>
 <?php include ROOT_PATH . 'receitas/elementoPagina/rodape.php'; ?>

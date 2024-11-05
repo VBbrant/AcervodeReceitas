@@ -23,7 +23,7 @@
             </a>
             <ul class="submenu">
                 <li><a href="/reviews/write.php">Escrever Avaliação</a></li>
-                <li><a href="/reviews/edit.php">Editar Avaliação</a></li>
+                <li><a href="<?php echo BASE_URL; ?>receitas/Paginas/receitas/EditarReceita.php">Editar Avaliação</a></li>
                 <li><a href="/reviews/delete.php">Excluir Avaliação</a></li>
             </ul>
         </li>
@@ -35,7 +35,7 @@
             </a>
             <ul class="submenu">
                 <li><a href="/books/create.php">Criar Livro</a></li>
-                <li><a href="/books/edit.php">Editar Livro</a></li>
+                <li><a href="<?php echo BASE_URL; ?>receitas/Paginas/receitas/EditarReceita.php">Editar Livro</a></li>
                 <li><a href="/books/delete.php">Excluir Livro</a></li>
             </ul>
         </li>
@@ -46,8 +46,8 @@
                 <i class="fas fa-chevron-down float-end"></i>
             </a>
             <ul class="submenu">
-                <li><a href="/ingredients/add.php">Adicionar Ingrediente</a></li>
-                <li><a href="/ingredients/edit.php">Editar Ingrediente</a></li>
+                <li><a href="<?php echo BASE_URL; ?>receitas/Paginas/ingredientes/addIngrediente.php">Adicionar Ingrediente</a></li>
+                <li><a href="<?php echo BASE_URL; ?>receitas/Paginas/ingredientes/editarIngrediente.php">Editar Ingrediente</a></li>
                 <li><a href="/ingredients/delete.php">Excluir Ingrediente</a></li>
             </ul>
         </li>

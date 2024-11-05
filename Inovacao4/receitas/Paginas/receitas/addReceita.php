@@ -62,6 +62,7 @@ while ($row = $result_categorias->fetch_assoc()) {
     <div class="container my-4">
         <h2 class="text-center">Adicionar Nova Receita</h2>
         <form id="recipeForm" onsubmit="updateIngredientsJson()" method="POST" action="../../CRUD/processarAdicionar.php" enctype="multipart/form-data">
+         <input type="hidden" name="form_type" value="receita">
             <div class="mb-3">
                 <label for="nome_rec" class="form-label">Nome da Receita:</label>
                 <input type="text" class="form-control" id="nome_rec" name="nome_rec" required>

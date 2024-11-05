@@ -64,8 +64,6 @@ CREATE TABLE `medida` (
   PRIMARY KEY (`idMedida`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-ALTER TABLE `receita_ingrediente`
-ADD COLUMN `quantidade` DECIMAL(10,2) NOT NULL;
 
 
 CREATE TABLE `receita` (
