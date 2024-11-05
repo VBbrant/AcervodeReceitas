@@ -15,11 +15,11 @@
 <?php include ROOT_PATH . 'receitas/elementoPagina/cabecalho.php'; ?>
     <div class="container my-4">
         <h2 class="text-center">Adicionar Nova Medida</h2>
-        <form method="POST" action="../../CRUD/processarAdicionar.php">
+        <form method="POST" action="<?php echo BASE_URL; ?>receitas/CRUD/processarAdicionar.php">
             <input type="hidden" name="form_type" value="medida">
             <div class="mb-3">
                 <label for="nome_medida" class="form-label">Nome da Medida:</label>
-                <input type="text" class="form-control" id="nome_medida" name="nome" required>
+                <input type="text" class="form-control" id="nome_medida" name="nome_medida" required>
             </div>
             <button type="submit" class="btn btn-primary w-100">Adicionar Medida</button>
         </form>

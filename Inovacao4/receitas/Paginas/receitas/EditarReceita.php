@@ -29,7 +29,6 @@ $sql_categorias = "SELECT idCategoria, nome FROM categoria";
 $result_categorias = $conn->query($sql_categorias);
 $categorias = $result_categorias->fetch_all(MYSQLI_ASSOC);
 
-// Carrega os ingredientes associados à receita
 $sql_receita_ingredientes = "
     SELECT ri.idIngrediente, i.nome, ri.quantidade, ri.idMedida
     FROM receita_ingrediente ri

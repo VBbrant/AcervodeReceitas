@@ -101,12 +101,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             try {
                 $stmt->execute();
-                echo "<script>alert('Ingrediente adicionado com sucesso!'); window.location.href='" . BASE_URL . "receitas/Paginas/home.php';</script>";
+                echo "<script>alert('Ingrediente adicionado com sucesso!'); window.location.href='" . BASE_URL . "receitas/Paginas/ingredientes/listaIngrediente.php';</script>";
             } catch (Exception $e) {
                 echo "<script>alert('Erro ao processar o formulário: " . $e->getMessage() . "'); window.history.back();</script>";
             } finally {
                 $stmt->close();
 
+            }
+            break;
+        case 'medida':
+            $sistema = $_POST['nome_medida'];
+            $sql_sistema = "INSERT INTO medida (sistema) VALUES (?)";
+            $stmt = $conn->prepare($sql_sistema);
+            $stmt->bind_param("s", $sistema);
+
+            try{
+                $stmt->execute();
+                echo "<script>alert('Medida adicionada com sucesso!'); window.location.href='" . BASE_URL . "receitas/Paginas/medidas/listaMedida.php';</script>";
+            } catch (Exception $e){
+                echo "<script>alert('Erro ao processar o formulário: " . $e->getMessage() . "'); window.history.back();</script>"; 
+            } finally {
+                $stmt->close();
             }
             break;
         default:

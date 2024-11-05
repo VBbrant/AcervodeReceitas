@@ -113,27 +113,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $stmt->bind_param("ss", $nome_ingrediente, $descricao);
                 }
                 $stmt->execute();
-                echo "<script>alert('Ingrediente atualizado com sucesso!'); window.location.href='" . BASE_URL . "receitas/Paginas/home.php';</script>";
+                echo "<script>alert('Ingrediente atualizado com sucesso!'); window.location.href='" . BASE_URL . "receitas/Paginas/ingredientes/listaIngrediente.php';</script>";
                 break;
 
             case 'medida':
-                // Adicionando ou editando medida
                 $id_medida = $_POST['id_medida'] ?? null;
-                $nome_medida = $_POST['nome'];
+                $nome_medida = $_POST['sistema'];
 
                 if ($id_medida) {
-                    // Atualizar medida existente
-                    $sql_medida = "UPDATE medida SET nome = ? WHERE idMedida = ?";
+                    $sql_medida = "UPDATE medida SET sistema = ? WHERE idMedida = ?";
                     $stmt = $conn->prepare($sql_medida);
                     $stmt->bind_param("si", $nome_medida, $id_medida);
-                } else {
-                    // Adicionar nova medida
-                    $sql_medida = "INSERT INTO medida (nome) VALUES (?)";
+                } else {   
+                    $sql_medida = "INSERT INTO medida (sistema) VALUES (?)";
                     $stmt = $conn->prepare($sql_medida);
                     $stmt->bind_param("s", $nome_medida);
                 }
                 $stmt->execute();
-                echo "<script>alert('Medida atualizada com sucesso!'); window.location.href='" . BASE_URL . "receitas/Paginas/home.php';</script>";
+                echo "<script>alert('Medida atualizada com sucesso!'); window.location.href='" . BASE_URL . "receitas/Paginas/medidas/listaMedida.php';</script>";
                 break;
 
             default:
