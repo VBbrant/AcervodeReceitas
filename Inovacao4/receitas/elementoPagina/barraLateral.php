@@ -41,7 +41,7 @@
         </li>
         
         <li class="has-submenu">
-            <a href="#" onclick="toggleSubmenu(this)">
+            <a href="<?php echo BASE_URL; ?>receitas/Paginas/ingredientes/listaIngrediente.php" onclick="toggleSubmenu(this)">
                 <i class="fas fa-pepper-hot"></i> Ingredientes
                 <i class="fas fa-chevron-down float-end"></i>
             </a>
