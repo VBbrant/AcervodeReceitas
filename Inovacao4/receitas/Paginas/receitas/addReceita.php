@@ -53,7 +53,7 @@ while ($row = $result_categorias->fetch_assoc()) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>receitas/Style/AddReceita2.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>receitas/Style/AddReceita3.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>receitas/Style/estiloCabecalho.css">
 </head>
 <body>
@@ -101,6 +101,10 @@ while ($row = $result_categorias->fetch_assoc()) {
             </div>
 
             <div class="mb-3">
+                <p> <?php echo BASE_URL . "receitas/Scripts/addReceita.js";?></p>
+            </div>
+
+            <div class="mb-3">
                 <label for="categoria" class="form-label">Categoria:</label>
                 <select class="form-select" id="categoria" name="id_categoria" required>
                     <option value="">Selecione a Categoria</option>
@@ -144,9 +148,9 @@ while ($row = $result_categorias->fetch_assoc()) {
 
         <script>
             const ingredientsData = <?php echo json_encode($ingredientes); ?>;
-            const measurementsData = <?php echo json_encode($medidas); ?>; // Lista de medidas (idMedida e nome)
+            const measurementsData = <?php echo json_encode($medidas); ?>;
         </script>
-        <script src="<?= BASE_URL;?>receitas/Scripts/addReceita.php"></script>
+        <script src="<?php echo BASE_URL . 'receitas/Scripts/addReceita.js';?>"></script>
 
     
         <?php include ROOT_PATH . 'receitas/elementoPagina/rodape.php'; ?>

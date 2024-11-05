@@ -1,0 +1,44 @@
+/* login.css */
+
+body {
+    background-image: url('../imagens/loginImage.png');
+    background-size: cover; 
+    background-position: center; 
+    position: relative; 
+    height: 100vh; 
+    margin: 0; 
+}
+
+
+body::after {
+    content: ""; 
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 165, 0, 0.5); 
+    z-index: 1; 
+}
+
+
+.login-box {
+    background-color: white; 
+    opacity: 0.9; 
+    z-index: 2; 
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+
+.btn-dark {
+    background-color: #343a40; 
+    border: none; 
+}
+
+.btn-dark:hover {
+    background-color: #23272b; 
+}
+
+.logo-img{
+    align-items: center;
+}

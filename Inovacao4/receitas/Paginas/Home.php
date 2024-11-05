@@ -25,7 +25,7 @@
                     FROM receita r 
                     LEFT JOIN funcionario f ON r.idCozinheiro = f.idFun 
                     ORDER BY r.data_criacao DESC 
-                    LIMIT 4";
+                    LIMIT 6";
     $result_featured = $conn->query($sql_featured);
 
     $sql_reviews = "SELECT r.idReceita, r.nome_rec, f.nome as reviewer_name, r.descricao 

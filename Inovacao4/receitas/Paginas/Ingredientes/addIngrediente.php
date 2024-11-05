@@ -1,80 +1,35 @@
+<?php require_once '../../../config.php'; ?>
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="Pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Adicionar Ingrediente</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
-    <style>
-        body {
-            background-image: url('https://placehold.co/800x600');
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-        }
-    </style>
+    <title>SaborArte</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL;?>receitas/Style/estiloCabecalho.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL;?>receitas/Style/home3.css">
+    
 </head>
-<body class="flex items-center justify-center min-h-screen">
-    <div class="bg-white bg-opacity-70 p-8 rounded-lg shadow-lg w-full max-w-2xl">
-        <h1 class="text-4xl font-bold text-center mb-8">
-            Adicionar Ingrediente
-        </h1>
-
-        <form action="" method="POST">
-            <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2" for="nome-ingrediente">
-                    Nome Ingrediente
-                </label>
-                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="nome-ingrediente" name="nome-ingrediente" placeholder="Digite aqui" type="text" value="<?php echo $ingredient_name; ?>" />
-            </div>
-            <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2" for="descricao-ingrediente">
-                    Descrição do Ingrediente
-                </label>
-                <textarea class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="descricao-ingrediente" name="descricao-ingrediente" placeholder="Digite aqui" rows="4"><?php echo $ingredient_description; ?></textarea>
-            </div>
-            <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2" for="foto-ingrediente">
-                    Foto do Ingrediente
-                </label>
-                <div class="relative">
-                    <img src="<?php echo $ingredient_photo; ?>" alt="Placeholder image of an ingredient, such as a jar of salt" class="w-full h-48 object-cover rounded-lg">
-                    <div class="absolute inset-0 flex items-center justify-center">
-                        <i class="fas fa-image text-white text-4xl"></i>
-                    </div>
+<body>
+<?php include ROOT_PATH . 'receitas/elementoPagina/cabecalho.php'; ?>
+    <div class="container my-4">
+    <h2 class="text-center">Adicionar Novo ingredinte</h2>
+        <form method="POST" action="../../CRUD/processarAdicionar.php">
+                <div class="mb-3">
+                    <label for="nome_rec" class="form-label">Nome do ingrediente:</label>
+                    <input type="text" class="form-control" id="nome_rec" name="nome_rec" required>
                 </div>
-            </div>
-
-            <div class="flex justify-between">
-                <button class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="reset">
-                    Cancelar
-                </button>
-                <button class="bg-black hover:bg-gray-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
-                    Adicionar
-                </button>
-            </div>
+                <div class="mb-3">
+                    <label for="modo_preparo" class="form-label">Descrição:</label>
+                    <textarea class="form-control" id="modo_preparo" name="modo_preparo" rows="5"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Adicionar Receita</button>
         </form>
-
-        <?php if ($_SERVER['REQUEST_METHOD'] === 'POST'): ?>
-        <div class="mt-8">
-            <h2 class="text-2xl font-bold mb-4">Ingrediente Adicionado</h2>
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="id-ingrediente">
-                        ID Ingrediente
-                    </label>
-                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="id-ingrediente" type="text" value="<?php echo $ingredient_id; ?>" disabled />
-                </div>
-                <div>
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="nome-ingrediente-list">
-                        Nome Ingrediente
-                    </label>
-                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="nome-ingrediente-list" type="text" value="<?php echo $ingredient_name; ?>" disabled />
-                </div>
-            </div>
-        </div>
-        <?php endif; ?>
     </div>
-</body>
-</html>
+<?php include ROOT_PATH . 'receitas/elementoPagina/rodape.php'; ?>
+
+
+

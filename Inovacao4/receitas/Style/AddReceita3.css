@@ -62,7 +62,7 @@ h2 {
 #additionalOptions {
     display: none;         
     position: absolute; 
-    top: 126%;               
+    top: 170%;               
     left: 76%;              
     margin-left: 5px;        
     z-index: 1000;           
@@ -71,7 +71,7 @@ h2 {
     padding: 10px;
 }
 #additionalOptions a:hover{
-    background-color: aqua;
+    background-color: red;
     cursor: pointer;
 }
 
