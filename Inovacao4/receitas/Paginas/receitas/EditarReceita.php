@@ -52,7 +52,7 @@ $receita_ingredientes = $stmt_receita_ingredientes->get_result()->fetch_all(MYSQ
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>receitas/Style/AddReceita2.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>receitas/Style/AddReceita3.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>receitas/Style/estiloCabecalho.css">
 </head>
 <body>
@@ -62,7 +62,8 @@ $receita_ingredientes = $stmt_receita_ingredientes->get_result()->fetch_all(MYSQ
         <h2 class="text-center">Editar Receita</h2>
         <form id="recipeForm" onsubmit="updateIngredientsJson()" method="POST" action="../../CRUD/processarEditar.php?id=<?php echo $idReceita; ?>" enctype="multipart/form-data">
             <input type="hidden" name="form_type" value="receita">
-            <input type="hidden" name="id_ingrediente" value="<?php echo $id_ingrediente; ?>">
+            <input type="hidden" name="id_receita" value="<?php echo $idReceita; ?>">
+            
             <div class="mb-3">
                 <label for="nome_rec" class="form-label">Nome da Receita:</label>
                 <input type="text" class="form-control" id="nome_rec" name="nome_rec" value="<?php echo htmlspecialchars($receita['nome_rec']); ?>" required>

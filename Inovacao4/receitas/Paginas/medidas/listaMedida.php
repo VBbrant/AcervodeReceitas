@@ -16,8 +16,8 @@ $result = $conn->query($sql);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>receitas/Style/lista.css">
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>receitas/Style/estiloCabecalho.css">       
+    <link rel="stylesheet" href="<?php echo BASE_URL . 'receitas/Style/lista.css';?>">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>receitas/Style/estiloCabecalho.css">      
 </head>
 <body>
 <?php include ROOT_PATH . 'receitas/elementoPagina/cabecalho.php'; ?>  
@@ -29,19 +29,31 @@ $result = $conn->query($sql);
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th class="checkbox-cell"><input type="checkbox" onclick="toggleAllCheckboxes(this)"></th>
+                    <th class="checkbox-cell">
+                        <!-- Checkbox para selecionar todos -->
+                        <input type="checkbox" id="selectAll" class="custom-checkbox" onclick="toggleAllCheckboxes(this)" style="display: none;">
+                        <label for="selectAll" class="custom-label">
+                            <i class="far fa-square unchecked-icon"></i>
+                            <i class="fas fa-check-square checked-icon"></i>
+                        </label>
+                    </th>
                     <th>Sistema</th>
                     <th class="text-end">Ações</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="selected-row">
                 <?php while ($medida = $result->fetch_assoc()): ?>
                 <tr>
                     <td class="checkbox-cell">
-                        <input type="checkbox" name="itensSelecionados[]" value="<?php echo $medida['idMedida']; ?>" onclick="highlightRow(this)">
+                        <!-- Checkbox customizado para cada linha -->
+                        <input type="checkbox" id="checkbox<?php echo $medida['idMedida']; ?>" class="custom-checkbox" name="itensSelecionados[]" value="<?php echo $medida['idMedida']; ?>" style="display: none;" onclick="highlightRow(this)">
+                        <label for="checkbox<?php echo $medida['idMedida']; ?>" class="custom-label">
+                            <i class="far fa-square unchecked-icon"></i>
+                            <i class="fas fa-check-square checked-icon"></i>
+                        </label>
                     </td>
-                    <td><?php echo htmlspecialchars($medida['sistema']); ?></td>
-                    <td class="text-end">
+                    <td class="sistema-cell"><?php echo htmlspecialchars($medida['sistema']); ?></td>
+                    <td class="text-end acoes-cell">
                         <a href="<?php echo BASE_URL; ?>receitas/Paginas/medidas/verMedida.php?id=<?php echo $medida['idMedida']; ?>" class="btn btn-info btn-sm">
                             <i class="fas fa-eye"></i> Ver
                         </a>
@@ -49,7 +61,7 @@ $result = $conn->query($sql);
                             <i class="fas fa-edit"></i> Editar
                         </a>
                         <a href="<?php echo BASE_URL; ?>receitas/Paginas/medidas/excluirMedida.php?id=<?php echo $medida['idMedida']; ?>" 
-                           class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir esta medida?');">
+                        class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir esta medida?');">
                             <i class="fas fa-trash-alt"></i> Excluir
                         </a>
                     </td>
@@ -57,7 +69,7 @@ $result = $conn->query($sql);
                 <?php endwhile; ?>
             </tbody>
         </table>
-        
+
         <div class="text-end">
             <button type="button" class="btn btn-warning" id="btnExcluirMassa" onclick="ativarExclusaoMassa()">
                 <i class="fas fa-trash-alt"></i> Excluir em Massa

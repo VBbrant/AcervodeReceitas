@@ -31,7 +31,13 @@ $result = $conn->query($sql);
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th class="checkbox-cell"><input type="checkbox" onclick="toggleAllCheckboxes(this)"></th>
+                    <th class="checkbox-cell">
+                        <input type="checkbox" id="selectAllIngredientes" class="custom-checkbox" onclick="toggleAllCheckboxes(this)" style="display: none;">
+                        <label for="selectAllIngredientes" class="custom-label">
+                            <i class="far fa-square unchecked-icon"></i>
+                            <i class="fas fa-check-square checked-icon"></i>
+                        </label>
+                    </th>
                     <th>Nome</th>
                     <th>Descrição</th>
                     <th class="text-end">Ações</th>
@@ -41,7 +47,11 @@ $result = $conn->query($sql);
                 <?php while ($ingrediente = $result->fetch_assoc()): ?>
                 <tr>
                     <td class="checkbox-cell">
-                        <input type="checkbox" name="itensSelecionados[]" value="<?php echo $ingrediente['idIngrediente']; ?>" onclick="highlightRow(this)">
+                        <input type="checkbox" id="checkboxIngrediente<?php echo $ingrediente['idIngrediente']; ?>" class="custom-checkbox" name="itensSelecionados[]" value="<?php echo $ingrediente['idIngrediente']; ?>" style="display: none;" onclick="highlightRow(this)">
+                        <label for="checkboxIngrediente<?php echo $ingrediente['idIngrediente']; ?>" class="custom-label">
+                            <i class="far fa-square unchecked-icon"></i>
+                            <i class="fas fa-check-square checked-icon"></i>
+                        </label>
                     </td>
                     <td><?php echo htmlspecialchars($ingrediente['nome']); ?></td>
                     <td><?php echo htmlspecialchars($ingrediente['descricao']); ?></td>

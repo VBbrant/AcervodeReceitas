@@ -1,2 +1,78 @@
-.selected-row { background-color: blue; } 
-.checkbox-cell { display: none; }    
+body {
+    background-color: orange !important;
+}
+
+.table {
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table .checkbox-cell {
+    width: 0%;
+    text-align: center;
+    visibility: hidden;
+}
+
+
+.table .checkbox-cell .custom-checkbox,
+.table .checkbox-cell .custom-label {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+}
+
+
+.table .sistema-cell,
+.table td:nth-child(2) {
+    width: 30%; 
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.table td:nth-child(3) {
+    width: 45%; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.table .acoes-cell,
+.table td.text-end {
+    width: 20%;
+    white-space: nowrap;
+    text-align: right;
+}
+
+.custom-checkbox {
+    display: none;
+}
+
+.custom-label {
+    cursor: pointer;
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+}
+
+.unchecked-icon {
+    display: inline;
+    font-size: 20px;
+    color: #888;
+}
+
+.checked-icon {
+    display: none;
+    font-size: 20px;
+    color: #4CAF50;
+}
+
+.custom-checkbox:checked + .custom-label .unchecked-icon {
+    display: none;
+}
+
+.custom-checkbox:checked + .custom-label .checked-icon {
+    display: inline;
+}

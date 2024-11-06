@@ -1,10 +1,11 @@
 let exclusaoAtivada = false;
 
 function ativarExclusaoMassa() {
-    exclusaoAtivada = !exclusaoAtivada; // Alterna entre ativado e desativado
+    exclusaoAtivada = !exclusaoAtivada;
 
     document.querySelectorAll('.checkbox-cell').forEach(cell => {
-        cell.style.display = exclusaoAtivada ? 'table-cell' : 'none';
+        cell.style.width = exclusaoAtivada ? '5%' : '0%'; 
+        cell.style.visibility = exclusaoAtivada ? 'visible' : 'hidden'; 
     });
     
     document.getElementById('btnExcluirSelecionados').style.display = exclusaoAtivada ? 'inline-block' : 'none';
@@ -22,6 +23,7 @@ function ativarExclusaoMassa() {
     }
 }
 
+
 function toggleAllCheckboxes(source) {
     const checkboxes = document.querySelectorAll('input[name="itensSelecionados[]"]');
     checkboxes.forEach(checkbox => {
@@ -30,12 +32,18 @@ function toggleAllCheckboxes(source) {
     });
 }
 
-function highlightRow(checkbox) {
+function highlightRow(checkbox) { 
     const row = checkbox.closest('tr');
+    const tds = row.querySelectorAll('td');
+
     if (checkbox.checked) {
-        row.classList.add('selected-row');
+        tds.forEach(td => {
+            td.style.backgroundColor = 'rgb(230, 26, 26)'; 
+        });
     } else {
-        row.classList.remove('selected-row');
+        tds.forEach(td => {
+            td.style.backgroundColor = ''; 
+        });
     }
 }
 

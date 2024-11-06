@@ -8,14 +8,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     try {
         switch ($form_type) {
             case 'receita':
-                // Verifica o ID da receita ao tentar editar uma receita
                 $idReceita = $_POST['id_receita'] ?? null;
                 if (!$idReceita) {
                     echo "ID da receita não fornecido.";
                     exit;
                 }
 
-                // Recebendo os dados do formulário
                 $nome_rec = $_POST['nome_rec'];
                 $data_criacao = $_POST['data_criacao'];
                 $modo_preparo = $_POST['modo_preparo'];
@@ -27,7 +25,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $link_imagem = $_POST['link_imagem'] ?? null;
                 $ingredientes = json_decode($_POST['ingredientes'], true);
 
-                // Processamento do upload da imagem
                 $arquivo_imagem = null;
                 if (isset($_FILES['arquivo_imagem']) && $_FILES['arquivo_imagem']['error'] === UPLOAD_ERR_OK) {
                     $diretorioDestino = ROOT_PATH . "receitas/imagens/";
@@ -45,7 +42,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     }
                 }
 
-                // Atualização da receita
                 $conn->begin_transaction();
                 $sql_update_receita = "
                     UPDATE receita 
@@ -55,7 +51,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 ";
                 $stmt = $conn->prepare($sql_update_receita);
 
-                // Definindo o valor final para a imagem
                 $imagem_final = $arquivo_imagem ?? null;
 
                 $stmt->bind_param(
@@ -65,13 +60,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 );
                 $stmt->execute();
 
-                // Removendo ingredientes antigos
                 $sql_delete_ingredientes = "DELETE FROM receita_ingrediente WHERE idReceita = ?";
                 $stmt_delete = $conn->prepare($sql_delete_ingredientes);
                 $stmt_delete->bind_param("i", $idReceita);
                 $stmt_delete->execute();
 
-                // Inserindo ingredientes novos
                 if (is_array($ingredientes) && count($ingredientes) > 0) {
                     $sql_insert_ingrediente = "
                         INSERT INTO receita_ingrediente (idReceita, idIngrediente, idMedida, quantidade) 
@@ -92,22 +85,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
 
                 $conn->commit();
-                echo "<script>alert('Receita atualizada com sucesso!'); window.location.href='" . BASE_URL . "receitas/Paginas/home.php';</script>";
+                echo "<script>alert('Receita atualizada com sucesso!'); window.location.href='" . BASE_URL . "receitas/Paginas/receitas/verReceita.php';</script>";
                 break;
 
             case 'ingrediente':
-                // Editando ou adicionando novo ingrediente
+                
                 $id_ingrediente = $_POST['id_ingrediente'] ?? null;
                 $nome_ingrediente = $_POST['nome'];
                 $descricao = $_POST['descricao'];
 
                 if ($id_ingrediente) {
-                    // Atualizar ingrediente existente
                     $sql_ingrediente = "UPDATE ingrediente SET nome = ?, descricao = ? WHERE idIngrediente = ?";
                     $stmt = $conn->prepare($sql_ingrediente);
                     $stmt->bind_param("ssi", $nome_ingrediente, $descricao, $id_ingrediente);
                 } else {
-                    // Adicionar novo ingrediente
                     $sql_ingrediente = "INSERT INTO ingrediente (nome, descricao) VALUES (?, ?)";
                     $stmt = $conn->prepare($sql_ingrediente);
                     $stmt->bind_param("ss", $nome_ingrediente, $descricao);

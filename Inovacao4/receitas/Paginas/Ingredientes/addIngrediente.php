@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="<?php echo BASE_URL;?>receitas/Style/estiloCabecalho.css">
     <link rel="stylesheet" href="<?php echo BASE_URL;?>receitas/Style/home3.css">
-    
+ 
 </head>
 <body>
 <?php include ROOT_PATH . 'receitas/elementoPagina/cabecalho.php'; ?>

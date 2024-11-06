@@ -3,13 +3,11 @@ require_once "../../config.php";
 require_once ROOT_PATH . "receitas/conn.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Verifica o tipo de formulário
     $form_type = $_POST['form_type'] ?? '';
 
     switch ($form_type) {
         case 'receita':
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                // Recebendo os dados do formulário
                 $nome_rec = $_POST['nome_rec'];
                 $data_criacao = $_POST['data_criacao'];
                 $modo_preparo = $_POST['modo_preparo'];
@@ -22,7 +20,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $link_imagem = null;
                 $arquivo_imagem = null;
     
-                // Verifica se um arquivo de imagem foi enviado e faz o upload
                 if (isset($_FILES['arquivo_imagem']) && $_FILES['arquivo_imagem']['error'] === UPLOAD_ERR_OK) {
                     $diretorioDestino = ROOT_PATH . "receitas/imagens/";
                     $extensao = strtolower(pathinfo($_FILES['arquivo_imagem']['name'], PATHINFO_EXTENSION));

@@ -19,7 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         $conn->commit();
         
-        header("Location: " . BASE_URL . "receitas/Paginas/ingredientes/listaIngredientes.php?excluido=1");
+        header("Location: " . BASE_URL . "receitas/Paginas/ingredientes/listaIngrediente.php?excluido=1");
         exit;
     } catch (Exception $e) {
         $conn->rollback();

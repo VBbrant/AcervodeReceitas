@@ -29,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $type && count($itensSelecionados) >
         }
         $conn->commit();
 
-        $redirectUrl = BASE_URL . "receitas/Paginas/" . ($type == 'ingrediente' ? "ingredientes/listaIngrediente.php" : ($type == 'receita' ? "receitas/listaReceita.php" : "medidas/listaMedida.php"));
+        $redirectUrl = BASE_URL . "receitas/Paginas/" . ($type == 'ingrediente' ? "ingredientes/listaIngrediente.php" : ($type == 'receita' ? "receitas/verReceita.php" : "medidas/listaMedida.php"));
         header("Location: $redirectUrl?excluido_massa=1");
         exit;
     } catch (Exception $e) {
