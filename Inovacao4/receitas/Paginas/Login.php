@@ -32,6 +32,8 @@
         <div class="login-box p-5 rounded">
             <h2 class="text-center mb-4">LOGIN</h2>
             <form action="../CRUD/processarConta.php" method="post">
+                <input type="hidden" name="form_type" value="login">
+
                 <div class="mb-3">
                     <label for="login" class="form-label">Login</label>
                     <input type="text" class="form-control" id="login" name="login" placeholder="Digite seu Login" required>

@@ -17,11 +17,12 @@ $result = $conn->query($sql);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>receitas/Style/estiloBackground.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>receitas/Style/lista.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>receitas/Style/estiloCabecalho.css">       
     
 </head>
-<body>
+<body class="ingrediente">
 <?php include ROOT_PATH . 'receitas/elementoPagina/cabecalho.php'; ?>  
 
 <div class="container my-4">
@@ -79,8 +80,8 @@ $result = $conn->query($sql);
             <button type="submit" class="btn btn-danger" style="display: none;" id="btnExcluirSelecionados">
                 <i class="fas fa-trash-alt"></i> Excluir Selecionados
             </button>
-            <a href="<?php echo BASE_URL; ?>receitas/Paginas/medidas/addMedida.php" class="btn btn-success">
-                <i class="fas fa-plus"></i> Adicionar Medida
+            <a href="<?php echo BASE_URL; ?>receitas/Paginas/ingredientes/addIngrediente.php" class="btn btn-success">
+                <i class="fas fa-plus"></i> Adicionar Ingrediente
             </a>
         </div>
     </form>

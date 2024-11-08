@@ -1,0 +1,37 @@
+/* Estilo para a página de ingredientes */
+body.ingrediente {
+    background-image: url('../imagens/ingrediente.jpg');
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
+}
+
+body.ingrediente::before {
+    content: "";
+    position: fixed; /* Para a sobreposição cobrir toda a tela */
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(255, 165, 0, 0.5);
+    z-index: -1;
+}
+
+/* Estilo para a página de receitas */
+body.receita {
+    background-image: url('../imagens/receita.jpg');
+    background-size: cover;
+    background-attachment: scroll;
+    background-position: center;
+}
+
+body.receita::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(255, 69, 0, 0.5);
+    z-index: -1;
+}

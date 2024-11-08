@@ -1,84 +1,47 @@
 <?php
-// Simulação de funcionários (substitua isso por uma consulta ao banco de dados)
-$funcionarios = [
-    ['id' => '01', 'nome' => 'Marcos Braz', 'cargo' => 'Cozinheiro'],
-    ['id' => '02', 'nome' => 'Filled State', 'cargo' => 'Filled State'],
-];
+require_once "../../../config.php";
+require_once ROOT_PATH . "receitas/conn.php";
 
-$funcionariosSelecionados = [];
+$idFuncionario = $_GET['id'] ?? null;
+if (!$idFuncionario) {
+    echo "ID da categoria não fornecido.";
+    exit;
+}
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Captura os IDs dos funcionários a serem removidos
-    $funcionariosSelecionados = $_POST['funcionarios_selecionados'] ?? [];
-    
-    // Aqui você pode adicionar lógica para remover os funcionários do banco de dados
-    // Exemplo:
-    // $idsParaRemover = implode(',', $funcionariosSelecionados);
-    // $sql = "DELETE FROM funcionarios WHERE id IN ($idsParaRemover)";
+    $conn->begin_transaction();
 
-    // Exibir mensagem de sucesso (apenas para fins de exemplo)
-    echo "<script>alert('Funcionários removidos com sucesso!');</script>";
+    try {
+        $sql = "DELETE FROM funcionario WHERE idFun = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $idFuncionario);
+        $stmt->execute();
+        $conn->commit();
+
+        header("Location: " . BASE_URL . "receitas/Paginas/categorias/listaCategoria.php?excluido=1");
+        exit;
+    } catch (Exception $e) {
+        $conn->rollback();
+        echo "Erro ao excluir a categoria: " . $e->getMessage();
+    }
 }
 ?>
-
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <style>
-        body {
-            background-image: url('https://placehold.co/800x600');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            filter: sepia(1);
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excluir Funcionário</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body class="flex items-center justify-center h-screen bg-gray-800 bg-opacity-50">
-    <div class="text-center text-white">
-        <h1 class="text-5xl font-bold mb-8">Excluir Funcionário</h1>
-        <div class="flex justify-center space-x-8">
-            <div>
-                <label class="block mb-2">Selecione funcionários</label>
-                <form method="POST" action="">
-                    <select name="funcionario" class="block w-64 p-2 mb-4 text-black rounded">
-                        <?php foreach ($funcionarios as $funcionario): ?>
-                            <option value="<?php echo $funcionario['id']; ?>"><?php echo $funcionario['nome']; ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                    <button type="submit" name="adicionar" class="px-4 py-2 bg-black text-white rounded">Adicionar</button>
-                </form>
-            </div>
-            <div>
-                <label class="block mb-2">Funcionários selecionados</label>
-                <form method="POST" action="">
-                    <table class="w-full text-black bg-white rounded">
-                        <thead>
-                            <tr>
-                                <th class="px-4 py-2">Id</th>
-                                <th class="px-4 py-2">Nome</th>
-                                <th class="px-4 py-2">Cargo</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($funcionarios as $funcionario): ?>
-                                <tr>
-                                    <td class="border px-4 py-2">
-                                        <input type="checkbox" name="funcionarios_selecionados[]" value="<?php echo $funcionario['id']; ?>">
-                                        <?php echo $funcionario['id']; ?>
-                                    </td>
-                                    <td class="border px-4 py-2"><?php echo $funcionario['nome']; ?></td>
-                                    <td class="border px-4 py-2"><?php echo $funcionario['cargo']; ?></td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                    <button type="submit" name="remover" class="mt-4 px-4 py-2 bg-black text-white rounded">Remover funcionários</button>
-                </form>
-            </div>
-        </div>
-    </div>
+<body>
+<div class="container mt-5">
+    <h2>Confirmar Exclusão</h2>
+    <p>Tem certeza de que deseja excluir este Funcionário?</p>
+    <form method="POST">
+        <button type="submit" class="btn btn-danger">Excluir</button>
+        <a href="<?php echo BASE_URL; ?>receitas/Paginas/funcionarios/listaFuncionario.php" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
 </body>
 </html>

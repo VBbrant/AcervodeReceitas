@@ -10,29 +10,45 @@ if (!$idReceita) {
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $conn->begin_transaction();
-    
+
     try {
+        // Primeiro, busque o caminho da imagem para exclusão
+        $sql_select_imagem = "SELECT arquivo_imagem FROM receita WHERE idReceita = ?";
+        $stmt_select_imagem = $conn->prepare($sql_select_imagem);
+        $stmt_select_imagem->bind_param("i", $idReceita);
+        $stmt_select_imagem->execute();
+        $stmt_select_imagem->bind_result($arquivo_imagem);
+        $stmt_select_imagem->fetch();
+        $stmt_select_imagem->close();
+
+        // Verifica se o arquivo de imagem existe e exclui-o do servidor
+        if ($arquivo_imagem && file_exists(ROOT_PATH . $arquivo_imagem)) {
+            unlink(ROOT_PATH . $arquivo_imagem); // Exclui a imagem do servidor
+        }
+
         $sql_delete_ingredientes = "DELETE FROM receita_ingrediente WHERE idReceita = ?";
         $stmt_delete_ingredientes = $conn->prepare($sql_delete_ingredientes);
         $stmt_delete_ingredientes->bind_param("i", $idReceita);
         $stmt_delete_ingredientes->execute();
+        $stmt_delete_ingredientes->close();
 
         $sql_delete_receita = "DELETE FROM receita WHERE idReceita = ?";
         $stmt_delete_receita = $conn->prepare($sql_delete_receita);
         $stmt_delete_receita->bind_param("i", $idReceita);
         $stmt_delete_receita->execute();
+        $stmt_delete_receita->close();
 
         $conn->commit();
         
         header("Location: " . BASE_URL . "receitas/Paginas/receitas/verReceita.php?excluido=1");
         exit;
     } catch (Exception $e) {
-        // Em caso de erro, desfaz a transação
         $conn->rollback();
         echo "Erro ao excluir a receita: " . $e->getMessage();
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="pt-br">

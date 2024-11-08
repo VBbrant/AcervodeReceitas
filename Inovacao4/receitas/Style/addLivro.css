@@ -1,0 +1,50 @@
+/* Botão de lupa e botão de adicionar receita */
+#searchButton {
+    background-color: #007bff;
+    color: white;
+    border: none;
+}
+
+#addButton {
+    background-color: #28a745;
+    color: white;
+    border: none;
+}
+
+#recipeList {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    max-height: 150px;
+    overflow-y: auto;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    display: none;
+    z-index: 1;
+}
+
+#recipeList div {
+    padding: 8px;
+    cursor: pointer;
+}
+
+#recipeList div:hover {
+    background-color: #f0f0f0;
+}
+
+.recipe-container .recipe-tag {
+    display: inline-block;
+    background-color: #f8f9fa;
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    margin: 5px;
+    border-radius: 20px;
+    position: relative;
+}
+
+.recipe-container .recipe-tag .remove {
+    margin-left: 10px;
+    cursor: pointer;
+    color: red;
+}

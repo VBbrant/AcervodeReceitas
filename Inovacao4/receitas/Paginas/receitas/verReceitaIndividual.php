@@ -21,7 +21,6 @@ include 'processarVerIndividual.php';
     <?php include ROOT_PATH . 'receitas/elementoPagina/cabecalho.php';?>
     <div class="conteudo-receita">
         <div class="container mt-5">
-            <!-- Imagem e título da receita -->
             <div class="text-center">
             <img src="<?php echo !empty($receita['link_imagem']) ? $receita['link_imagem'] : BASE_URL . $receita['arquivo_imagem']; ?>" alt="Imagem da Receita" class="img-fluid rounded">
                 <h1 class="mt-4"><?php echo htmlspecialchars($receita['nome_rec']); ?></h1>
@@ -31,7 +30,6 @@ include 'processarVerIndividual.php';
 
             </div>
 
-            <!-- Avaliação -->
             <div class="avaliacao-container">
                 <div class="rating">
                     <span class="score">
@@ -57,7 +55,6 @@ include 'processarVerIndividual.php';
                                 echo '<i class="fas fa-star-half-alt"></i>';
                             }
 
-                            // Renderiza estrelas vazias para completar 5
                             for ($i = $estrelas_completas + $meia_estrela; $i < 5; $i++) {
                                 echo '<i class="far fa-star"></i>';
                             }

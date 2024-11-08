@@ -40,6 +40,19 @@ CREATE TABLE `funcionario` (
   CONSTRAINT `funcionario_ibfk_2` FOREIGN KEY (`idCargo`) REFERENCES `cargo` (`idCargo`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+CREATE TABLE `registro_tokens` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `token` varchar(32) NOT NULL,
+  `nome` varchar(100),
+  `rg` varchar(15),
+  `data_nascimento` date NULL,
+  `data_admissao` date NULL,
+  `salario` decimal(10,2) NULL,
+  `nome_fantasia` varchar(100) NULL,
+  `idCargo` int NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 
 CREATE TABLE `ingrediente` (
   `idIngrediente` int NOT NULL AUTO_INCREMENT,
@@ -53,6 +66,8 @@ CREATE TABLE `livro` (
   `titulo` varchar(100) NOT NULL,
   `isbn` varchar(20) DEFAULT NULL,
   `idEditor` int DEFAULT NULL,
+  `link_imagem` varchar(80) DEFAULT NULL,
+  `arquivo_imagem` varchar(80) DEFAULT NULL,
   PRIMARY KEY (`idLivro`),
   KEY `idEditor` (`idEditor`),
   CONSTRAINT `livro_ibfk_1` FOREIGN KEY (`idEditor`) REFERENCES `funcionario` (`idFun`)
@@ -63,7 +78,6 @@ CREATE TABLE `medida` (
   `sistema` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`idMedida`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
 
 
 CREATE TABLE `receita` (
@@ -101,6 +115,14 @@ CREATE TABLE `receita_ingrediente` (
 
 ALTER TABLE `receita_ingrediente`
 ADD COLUMN `quantidade` DECIMAL(10,2) NOT NULL;
+
+CREATE TABLE `livro_receita` (
+  `idLivro` int NOT NULL,
+  `idReceita` int NOT NULL,
+  PRIMARY KEY (`idLivro`, `idReceita`),
+  FOREIGN KEY (`idLivro`) REFERENCES `livro` (`idLivro`),
+  FOREIGN KEY (`idReceita`) REFERENCES `receita` (`idReceita`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 CREATE TABLE `degustacao` (

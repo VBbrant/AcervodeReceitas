@@ -71,7 +71,7 @@ h2 {
     padding: 10px;
 }
 #additionalOptions a:hover{
-    background-color: red;
+    background-color: aqua;
     cursor: pointer;
 }
 

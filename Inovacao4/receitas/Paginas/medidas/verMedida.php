@@ -8,7 +8,6 @@ if (!$idMedida) {
     exit;
 }
 
-// Consulta para obter os detalhes da medida
 $sql = "SELECT * FROM medida WHERE idMedida = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $idMedida);

@@ -37,9 +37,10 @@ $stmt->close();
         <label class="form-label">Nome da Categoria:</label>
         <input type="text" class="form-control" value="<?php echo htmlspecialchars($categoria['nome']); ?>" readonly>
     </div>
-    <div class="mb-3">
-        <label class="form-label">Descrição:</label>
-        <textarea class="form-control" rows="5" readonly><?php echo htmlspecialchars($categoria['descricao']); ?></textarea>
+    <div class="text-end">
+        <a href="<?php echo BASE_URL; ?>receitas/Paginas/categorias/editarCategoria.php?id=<?php echo $idCategoria; ?>" class="btn btn-primary">
+            <i class="fas fa-edit"></i> Editar
+        </a>
     </div>
 </div>
 <?php include ROOT_PATH . 'receitas/elementoPagina/rodape.php'; ?>

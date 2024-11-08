@@ -2,7 +2,7 @@
 require_once '../../../config.php';
 require_once ROOT_PATH . 'receitas/conn.php';
 
-$sql = "SELECT * FROM categoria";
+$sql = "SELECT * FROM livro";
 $result = $conn->query($sql);
 ?>
 
@@ -11,7 +11,7 @@ $result = $conn->query($sql);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SaborArte - Lista de Categorias</title>
+    <title>SaborArte - Lista de Medidas</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome for icons -->
@@ -23,9 +23,9 @@ $result = $conn->query($sql);
 <?php include ROOT_PATH . 'receitas/elementoPagina/cabecalho.php'; ?>  
 
 <div class="container my-4">
-    <h2 class="text-center">Lista de Categorias</h2>
+    <h2 class="text-center">Lista de Livros</h2>
     <form method="POST" action="<?php echo BASE_URL; ?>receitas/CRUD/processarExcluirEmMassa.php" id="formExcluirMassa" onsubmit="return confirmarExclusaoEmMassa()">
-        <input type="hidden" name="type" value="categoria">
+        <input type="hidden" name="type" value="livro">
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -37,31 +37,32 @@ $result = $conn->query($sql);
                             <i class="fas fa-check-square checked-icon"></i>
                         </label>
                     </th>
-                    <th>Nome da Categoria</th>
+                    <th>Nome</th>
+                    <th>ISBN</th>
                     <th class="text-end">Ações</th>
                 </tr>
             </thead>
             <tbody class="selected-row">
-                <?php while ($categoria = $result->fetch_assoc()): ?>
+                <?php while ($livro = $result->fetch_assoc()): ?>
                 <tr>
                     <td class="checkbox-cell">
-                        <!-- Checkbox customizado para cada linha -->
-                        <input type="checkbox" id="checkbox<?php echo $categoria['idCategoria']; ?>" class="custom-checkbox" name="itensSelecionados[]" value="<?php echo $categoria['idCategoria']; ?>" style="display: none;" onclick="highlightRow(this)">
-                        <label for="checkbox<?php echo $categoria['idCategoria']; ?>" class="custom-label">
+                        <input type="checkbox" id="checkbox<?php echo $livro['idLivro']; ?>" class="custom-checkbox" name="itensSelecionados[]" value="<?php echo $medida['idMedida']; ?>" style="display: none;" onclick="highlightRow(this)">
+                        <label for="checkbox<?php echo $livro['idLivro']; ?>" class="custom-label">
                             <i class="far fa-square unchecked-icon"></i>
                             <i class="fas fa-check-square checked-icon"></i>
                         </label>
                     </td>
-                    <td class="nome-cell"><?php echo htmlspecialchars($categoria['nome']); ?></td>
+                    <td class="sistema-cell"><?php echo htmlspecialchars($livro['titulo']); ?></td>
+                    <td class="sistema-cell"><?php echo htmlspecialchars($livro['isbn']); ?></td>
                     <td class="text-end acoes-cell">
-                        <a href="<?php echo BASE_URL; ?>receitas/Paginas/categorias/verCategoria.php?id=<?php echo $categoria['idCategoria']; ?>" class="btn btn-info btn-sm">
+                        <a href="<?php echo BASE_URL; ?>receitas/Paginas/livros/verLivro.php?id=<?php echo $livro['idLivro']; ?>" class="btn btn-info btn-sm">
                             <i class="fas fa-eye"></i> Ver
                         </a>
-                        <a href="<?php echo BASE_URL; ?>receitas/Paginas/categorias/editarCategoria.php?id=<?php echo $categoria['idCategoria']; ?>" class="btn btn-primary btn-sm">
+                        <a href="<?php echo BASE_URL; ?>receitas/Paginas/livross/editarLivro.php?id=<?php echo $livro['idLivro']; ?>" class="btn btn-primary btn-sm">
                             <i class="fas fa-edit"></i> Editar
                         </a>
-                        <a href="<?php echo BASE_URL; ?>receitas/Paginas/categorias/excluirCategoria.php?id=<?php echo $categoria['idCategoria']; ?>" 
-                        class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir esta categoria?');">
+                        <a href="<?php echo BASE_URL; ?>receitas/Paginas/livros/excluirLivro.php?id=<?php echo $livro['idLivro']; ?>" 
+                        class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir esta medida?');">
                             <i class="fas fa-trash-alt"></i> Excluir
                         </a>
                     </td>
@@ -77,8 +78,8 @@ $result = $conn->query($sql);
             <button type="submit" class="btn btn-danger" style="display: none;" id="btnExcluirSelecionados">
                 <i class="fas fa-trash-alt"></i> Excluir Selecionados
             </button>
-            <a href="<?php echo BASE_URL; ?>receitas/Paginas/categorias/addCategoria.php" class="btn btn-success">
-                <i class="fas fa-plus"></i> Adicionar Categoria
+            <a href="<?php echo BASE_URL; ?>receitas/Paginas/livros/addLivro.php" class="btn btn-success">
+                <i class="fas fa-plus"></i> Adicionar Livro
             </a>
         </div>
     </form>

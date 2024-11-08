@@ -53,7 +53,7 @@ while ($row = $result_categorias->fetch_assoc()) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>receitas/Style/AddReceita3.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>receitas/Style/AddReceita.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>receitas/Style/estiloCabecalho.css">
 </head>
 <body>
@@ -99,10 +99,6 @@ while ($row = $result_categorias->fetch_assoc()) {
                         <option value="<?= $cozinheiro['idFun'] ?>"><?= $cozinheiro['nome'] ?></option>
                     <?php endforeach; ?>
                 </select>
-            </div>
-
-            <div class="mb-3">
-                <p> <?php echo BASE_URL . "receitas/Scripts/addReceita.js";?></p>
             </div>
 
             <div class="mb-3">

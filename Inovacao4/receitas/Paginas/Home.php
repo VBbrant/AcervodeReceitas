@@ -1,5 +1,28 @@
 <!-- index.php -->
-<?php require_once '../../config.php'; ?>
+<?php
+require_once '../../config.php';
+include ROOT_PATH . 'receitas/conn.php';
+
+$sql_featured = "SELECT r.idReceita, r.nome_rec, r.descricao, r.link_imagem, r.arquivo_imagem ,f.nome as chef_name 
+                FROM receita r 
+                LEFT JOIN funcionario f ON r.idCozinheiro = f.idFun 
+                ORDER BY r.data_criacao DESC 
+                LIMIT 6";
+$result_featured = $conn->query($sql_featured);
+
+$sql_reviews = "SELECT r.idReceita, r.nome_rec, f.nome as reviewer_name, r.descricao 
+                FROM receita r 
+                LEFT JOIN funcionario f ON r.idCozinheiro = f.idFun 
+                ORDER BY r.data_criacao DESC 
+                LIMIT 2";
+$result_reviews = $conn->query($sql_reviews);
+
+$sql_avaliacao = "SELECT d.nota_degustacao, d.data_degustacao, r.nome_rec, c.comentario_texto AS descricao
+                FROM degustacao d
+                LEFT JOIN receita r ON d.idReceita = r.idReceita
+                LEFT JOIN comentario c ON d.idDegustacao = c.idDegustacao";
+$result_avaliacao = $conn->query($sql_avaliacao);
+?>
 <!DOCTYPE html>
 <html lang="Pt-br">
 <head>
@@ -15,34 +38,14 @@
     
 </head>
 <body>
-    <div class="background-container"></div>
-   
     <?php include ROOT_PATH . 'receitas/elementoPagina/cabecalho.php'; ?>
 
-    <?php include ROOT_PATH . 'receitas/conn.php';
-
-    $sql_featured = "SELECT r.idReceita, r.nome_rec, r.descricao, r.link_imagem, r.arquivo_imagem ,f.nome as chef_name 
-                    FROM receita r 
-                    LEFT JOIN funcionario f ON r.idCozinheiro = f.idFun 
-                    ORDER BY r.data_criacao DESC 
-                    LIMIT 6";
-    $result_featured = $conn->query($sql_featured);
-
-    $sql_reviews = "SELECT r.idReceita, r.nome_rec, f.nome as reviewer_name, r.descricao 
-                    FROM receita r 
-                    LEFT JOIN funcionario f ON r.idCozinheiro = f.idFun 
-                    ORDER BY r.data_criacao DESC 
-                    LIMIT 2";
-    $result_reviews = $conn->query($sql_reviews);
-    ?>
-  
     <div class="main-banner position-relative">
         <img src="../imagens/banner.png" class="w-100" alt="Background" style="height: 300px; object-fit: cover;">
         <div class="position-absolute top-50 start-50 translate-middle text-center text-white">
             <h1 class="display-4 fw-bold">CRIE E COMPARTILHE<br>NOVAS RECEITAS</h1>
         </div>
     </div>
-
     <section class="featured-recipes py-5">
         <div class="container">
             <h2 class="text-center mb-4">RECEITAS EM DESTAQUE</h2>
@@ -56,7 +59,7 @@
                         <!-- Altere o link do href para apontar para "verReceita.php" com o ID da receita -->
                         <a href="receitas/verReceitaIndividual.php?id=<?php echo $recipe['idReceita']; ?>" class="text-decoration-none">
                             <div class="recipe-card position-relative rounded-4 overflow-hidden">
-                                <img src="<?php echo BASE_URL . htmlspecialchars($recipe['arquivo_imagem']); ?>" 
+                                <img src="<?php echo !empty($recipe['link_imagem']) ? $recipe['link_imagem'] : BASE_URL . $recipe['arquivo_imagem']; ?>" 
                                     class="w-100" 
                                     alt="<?php echo htmlspecialchars($recipe['nome_rec']); ?>"
                                     style="height: 200px; object-fit: cover;">
@@ -101,7 +104,7 @@
             </div>
             
             <div class="text-center mt-4">
-                <a href="livros.php" class="btn btn-dark rounded-pill px-4">Mais Livros</a>
+                <a href="<?= BASE_URL . 'receitas/Paginas/livros/listaLivro.php'?>" class="btn btn-dark rounded-pill px-4">Mais Livros</a>
             </div>
         </div>
     </section>
@@ -113,34 +116,52 @@
             
             <div class="row g-4">
                 <?php
-                if ($result_reviews->num_rows > 0) {
-                    while($review = $result_reviews->fetch_assoc()) {
+                if ($result_avaliacao->num_rows > 0) {
+                    while($avaliacao = $result_avaliacao->fetch_assoc()) {
+                        $fullStars = floor($avaliacao['nota_degustacao'] / 2); 
+                        $hasHalfStar = ($avaliacao['nota_degustacao'] % 2) >= 1; 
+
+                        $avatarPath = !empty($avaliacao['avatar_path']) ? $avaliacao['avatar_path'] : 'path/to/default-avatar.jpg';
                 ?>
                     <div class="col-md-6">
                         <div class="review-card bg-dark text-white p-4 rounded-4">
                             <div class="d-flex align-items-center mb-3">
                                 <div class="reviewer-avatar me-3">
-                                    <img src="path/to/default-avatar.jpg" class="rounded-circle" width="50" height="50" alt="">
+                                    <img src="<?php echo htmlspecialchars($avatarPath); ?>" class="rounded-circle" width="50" height="50" alt="Avatar">
                                 </div>
                                 <div>
-                                    <h4 class="h6 mb-1"><?php echo htmlspecialchars($review['reviewer_name']); ?></h4>
+                                    <h4 class="h6 mb-1"><?php echo htmlspecialchars($avaliacao['nome_rec']); ?></h4>
                                     <div class="stars">
-                                        <?php for($i = 0; $i < 5; $i++) { ?>
-                                            <i class="fas fa-star text-warning"></i>
-                                        <?php } ?>
+                                        <?php 
+                                        for ($i = 0; $i < $fullStars; $i++) { 
+                                            echo '<i class="fas fa-star text-warning"></i>';
+                                        }
+                                        if ($hasHalfStar) {
+                                            echo '<i class="fas fa-star-half-alt text-warning"></i>';
+                                        }
+                                        for ($i = $fullStars + $hasHalfStar; $i < 5; $i++) {
+                                            echo '<i class="far fa-star text-warning"></i>';
+                                        }
+                                        ?>
                                     </div>
                                 </div>
                             </div>
-                            <p class="mb-0"><?php echo htmlspecialchars($review['descricao']); ?></p>
+                            <p class="mb-0"><?php echo htmlspecialchars($avaliacao['descricao']); ?></p>
                         </div>
                     </div>
                 <?php
                     }
+                } else {
+                    echo "<p class='text-center'>Nenhuma avaliação disponível.</p>";
                 }
                 ?>
             </div>
+            <div class="text-center mt-4">
+                <a href="<?= BASE_URL . 'receitas/Paginas/avaliacoes/listaAvaliacao.php'?>" class="btn btn-dark rounded-pill px-4">Mais avaliações</a>
+            </div>
         </div>
     </section>
+
     <footer class="mt-4 text-center">
         <p>&copy; 2024 SaborArte. Todos os direitos reservados.</p>
     </footer>
