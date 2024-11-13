@@ -139,6 +139,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 echo "<script>alert('Categoria atualizada com sucesso!'); window.location.href='" . BASE_URL . "receitas/Paginas/categorias/listaCategoria.php';</script>";
 
             case 'livro':
+                if ($_POST['form_type'] == 'livro') {
+                    $idLivro = $_POST['idLivro'];
+                    $nome = $_POST['nome'];
+                    $isbn = $_POST['codigo'];
+                    $idEditor = $_POST['id_editor'];
+                    $linkImagem = $_POST['link_imagem'] ?? null;
+                    $arquivoImagem = $_FILES['arquivo_imagem'] ?? null;
+                
+                    // Atualizar imagem se houver upload
+                    $imagemCaminho = null;
+                    if (!empty($arquivoImagem['name'])) {
+                        $result = $conn->query("SELECT arquivo_imagem FROM livro WHERE idLivro = $idLivro");
+                        $livro = $result->fetch_assoc();
+                        if ($livro['arquivo_imagem']) unlink(__DIR__ . $livro['arquivo_imagem']);
+                
+                        $ext = pathinfo($arquivoImagem['name'], PATHINFO_EXTENSION);
+                        $imagemCaminho = "/imagens/livros/". uniqid() . "." . $ext;
+                        move_uploaded_file($arquivoImagem['tmp_name'], __DIR__ . $imagemCaminho);
+                    }
+                
+                    // Atualizar livro
+                    $sql = "UPDATE livro SET titulo = ?, isbn = ?, idEditor = ?, link_imagem = ?, arquivo_imagem = ? WHERE idLivro = ?";
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bind_param("ssissi", $nome, $isbn, $idEditor, $linkImagem, $imagemCaminho, $idLivro);
+                    $stmt->execute();
+                
+                    header("Location: successPage.php");
+                }
                 break;
             
             case 'avaliacao':

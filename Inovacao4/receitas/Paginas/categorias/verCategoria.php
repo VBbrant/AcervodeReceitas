@@ -35,9 +35,10 @@ $stmt->close();
     <h2 class="text-center">Detalhes da Categoria</h2>
     <div class="mb-3">
         <label class="form-label">Nome da Categoria:</label>
-        <input type="text" class="form-control" value="<?php echo htmlspecialchars($categoria['nome']); ?>" readonly>
+        <input type="text" class="form-control" value="<?php echo htmlspecialchars($categoria['nome']); ?>" disabled>
     </div>
     <div class="text-end">
+    <button id="btnVoltar" onclick="voltarPagina()" style="background-color: gray; color: white; padding: 10px 20px; border: none; cursor: pointer; font-size: 16px;">Voltar</button>
         <a href="<?php echo BASE_URL; ?>receitas/Paginas/categorias/editarCategoria.php?id=<?php echo $idCategoria; ?>" class="btn btn-primary">
             <i class="fas fa-edit"></i> Editar
         </a>

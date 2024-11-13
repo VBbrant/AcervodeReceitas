@@ -22,7 +22,10 @@
             <label for="nome" class="form-label">Nome da Categoria:</label>
             <input type="text" class="form-control" id="nome" name="nome" required>
         </div>
-        <button type="submit" class="btn btn-primary w-100">Adicionar Categoria</button>
+        <div class="d-flex justify-content-end mt-3">
+            <button id="btnVoltar" onclick="voltarPagina()" style="background-color: gray; color: white; padding: 10px 20px; border: none; cursor: pointer; font-size: 16px;">Voltar</button>
+            <button type="submit" class="btn btn-primary w-100">Adicionar Categoria</button>
+        </div>
     </form>
 </div>
 <?php include ROOT_PATH . 'receitas/elementoPagina/rodape.php'; ?>

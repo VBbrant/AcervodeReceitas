@@ -45,19 +45,19 @@ if (!$avaliacao) {
     <form>
         <div class="mb-3">
             <label class="form-label">Receita:</label>
-            <input type="text" class="form-control" value="<?php echo htmlspecialchars($avaliacao['nome_rec']); ?>" readonly>
+            <input type="text" class="form-control" value="<?php echo htmlspecialchars($avaliacao['nome_rec']); ?>" disabled>
         </div>
         <div class="mb-3">
             <label class="form-label">Data da Degustação:</label>
-            <input type="text" class="form-control" value="<?php echo htmlspecialchars($avaliacao['data_degustacao']); ?>" readonly>
+            <input type="text" class="form-control" value="<?php echo htmlspecialchars($avaliacao['data_degustacao']); ?>" disabled>
         </div>
         <div class="mb-3">
             <label class="form-label">Nota de Degustação:</label>
-            <input type="text" class="form-control" value="<?php echo htmlspecialchars($avaliacao['nota_degustacao']); ?> &#9733;" readonly>
+            <input type="text" class="form-control" value="<?php echo htmlspecialchars($avaliacao['nota_degustacao']); ?> &#9733;" disabled>
         </div>
         <div class="mb-3">
             <label class="form-label">Comentário:</label>
-            <textarea class="form-control" rows="3" readonly><?php echo htmlspecialchars($avaliacao['comentario_texto']); ?></textarea>
+            <textarea class="form-control" rows="3" disabled><?php echo htmlspecialchars($avaliacao['comentario_texto']); ?></textarea>
         </div>
         <div class="text-end">
             <a href="<?php echo BASE_URL; ?>receitas/Paginas/avaliacoes/editarAvaliacao.php?id=<?php echo $idAvaliacao; ?>" class="btn btn-primary">

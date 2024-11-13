@@ -38,27 +38,27 @@ $stmt->close();
     <form>
         <div class="mb-3">
             <label class="form-label">Nome:</label>
-            <input type="text" class="form-control" value="<?php echo htmlspecialchars($funcionario['nome']); ?>" readonly>
+            <input type="text" class="form-control" value="<?php echo htmlspecialchars($funcionario['nome']); ?>" disabled>
         </div>
         <div class="mb-3">
             <label class="form-label">RG:</label>
-            <input type="number" class="form-control" value="<?php echo htmlspecialchars($funcionario['rg']); ?>" readonly>
+            <input type="number" class="form-control" value="<?php echo htmlspecialchars($funcionario['rg']); ?>" disabled>
         </div>
         <div class="mb-3">
             <label class="form-label">Date de nascimento:</label>
-            <input type="date" class="form-control" value="<?php echo htmlspecialchars($funcionario['data_nascimento']); ?>" readonly>
+            <input type="date" class="form-control" value="<?php echo htmlspecialchars($funcionario['data_nascimento']); ?>" disabled>
         </div>
         <div class="mb-3">
             <label class="form-label">Date de admissão:</label>
-            <input type="date" class="form-control" value="<?php echo htmlspecialchars($funcionario['data_admissao']); ?>" readonly>
+            <input type="date" class="form-control" value="<?php echo htmlspecialchars($funcionario['data_admissao']); ?>" disabled>
         </div>
         <div class="mb-3">
             <label class="form-label">Salário:</label>
-            <input type="number" class="form-control" value="<?php echo htmlspecialchars($funcionario['salario']); ?>" readonly>
+            <input type="number" class="form-control" value="<?php echo htmlspecialchars($funcionario['salario']); ?>" disabled>
         </div>
         <div class="mb-3">
             <label class="form-label">Apelido:</label>
-            <input type="text" class="form-control" value="<?php echo htmlspecialchars($funcionario['nome_fantasia']); ?>" readonly>
+            <input type="text" class="form-control" value="<?php echo htmlspecialchars($funcionario['nome_fantasia']); ?>" disabled>
         </div>
 
         <div class="text-end">

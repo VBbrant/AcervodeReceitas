@@ -85,3 +85,14 @@ function toggleLinkInput() {
     }
 }
 
+//botãoVOltar-----------------------------
+function voltarPagina() {
+    window.history.back();
+  }
+
+function abrirConfiguracoes() {
+window.location.href = "configuracoes.php";
+}
+
+
+  

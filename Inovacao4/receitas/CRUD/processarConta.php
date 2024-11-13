@@ -14,9 +14,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             if (!empty($login) && !empty($senha)) {
                 // Consulta para verificar o usuário e dados do funcionário
-                $sql = "SELECT u.idLogin, u.senha, f.idCargo, f.idFun, f.nome AS nomeFunc, f.nome_fantasia 
+                $sql = "SELECT u.idLogin, u.senha, u.imagem_perfil, f.idCargo, f.idFun, f.nome AS nomeFunc, f.nome_fantasia, c.nome 
                         FROM usuario u 
-                        JOIN funcionario f ON u.idLogin = f.idLogin 
+                        JOIN funcionario f ON u.idLogin = f.idLogin
+                        JOIN cargo c ON f.idCargo = c.idCargo 
                         WHERE u.email = '$login'";
                 $result = mysqli_query($conn, $sql);
 
@@ -28,7 +29,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         $_SESSION['idCargo'] = $usuario['idCargo'];
                         $_SESSION['idFun'] = $usuario['idFun'];
                         $_SESSION['nomeFunc'] = $usuario['nomeFunc'];
-                        $_SESSION['nome_fantasia'] = $usuario['nome_fantasia'];
+                        $_SESSION['apelido'] = $usuario['nome_fantasia'];
+                        $_SESSION['cargo'] = $usuario['nome'];
+                        $_SESSION['imagem_perfil'] = $usuario['imagem_perfil'] ?? null;
+
+                        if ($usuario['imagemPerfil']) {
+                            $_SESSION['imagem_perfil'] = $usuario['imagem_perfil'];
+                        }
 
                         // Redireciona com base no cargo
                         switch ($usuario['idCargo']) {
@@ -36,16 +43,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 header("Location: ../Paginas/Home.php"); // ADM
                                 break;
                             case 7:
-                                header("Location: ../Paginas/cozinheiro_dashboard.php"); // Cozinheiro
+                                header("Location: ../Paginas/Home.php"); // Cozinheiro
                                 break;
                             case 8:
-                                header("Location: ../Paginas/editor_dashboard.php"); // Editor
+                                header("Location: ../Paginas/Home.php"); // Editor
                                 break;
                             case 9:
-                                header("Location: ../Paginas/degustador_dashboard.php"); // Degustador
+                                header("Location: ../Paginas/Home.php"); // Degustador
                                 break;
                             case 10:
-                                header("Location: ../Paginas/analista_dashboard.php"); // Analista de Sistema
+                                header("Location: ../Paginas/Home.php"); // Analista de Sistema
                                 break;
                             default:
                                 echo "<script>alert('Cargo não reconhecido.'); window.location.href='../Paginas/Login.php';</script>";
@@ -115,8 +122,97 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
             }
             break;
+        case 'perfil':
+            // Defina o diretório de upload e obtenha as informações do usuário
+            $diretorioUpload = ROOT_PATH . 'receitas/imagens/perfil/';
+            $idUsuario = $_SESSION['idLogin']; // Supondo que o ID do usuário está salvo na sessão
+        
+            // Verifique se um arquivo foi enviado
+            if (isset($_FILES['imagemPerfil']) && $_FILES['imagemPerfil']['error'] === UPLOAD_ERR_OK) {
+                $caminhoTemporario = $_FILES['imagemPerfil']['tmp_name'];
+                $nomeArquivo = $idUsuario . '_' . time() . '_' . $_FILES['imagemPerfil']['name'];
+                $caminhoDestino = $diretorioUpload . $nomeArquivo;
+        
+                // Consulte a imagem anterior no banco de dados
+                $sql = "SELECT imagem_perfil FROM usuario WHERE idLogin = ?";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("i", $idUsuario);
+                $stmt->execute();
+                $resultado = $stmt->get_result();
+                $usuario = $resultado->fetch_assoc();
+        
+                // Apague a imagem antiga se existir
+                if ($usuario['imagem_perfil'] && file_exists($diretorioUpload . $usuario['imagem_perfil'])) {
+                    unlink($diretorioUpload . $usuario['imagem_perfil']);
+                }
+        
+                // Mova o novo arquivo para o diretório de upload
+                if (move_uploaded_file($caminhoTemporario, $caminhoDestino)) {
+                    $sqlAtualizar = "UPDATE usuario SET imagem_perfil = ? WHERE idLogin = ?";
+                    $stmtAtualizar = $conn->prepare($sqlAtualizar);
+                    $stmtAtualizar->bind_param("si", $nomeArquivo, $idUsuario);
+                    $stmtAtualizar->execute();
+                    
+                    $_SESSION['imagem_perfil'] = $nomeArquivo;
+        
+                    // Redirecione para o perfil com uma mensagem de sucesso
+                    echo "<script>window.history.back();</script>";
+                } else {
+                    echo "Erro ao mover o arquivo.";
+                }
+            } else {
+                echo "Erro no envio da imagem.";
+            }
             
+            break;
             
+        case "mudarSenha":
+            $idUsuario = $_SESSION['idLogin']; // ID do usuário logado
+            $senha_atual = $_POST['senha_atual'];
+            $nova_senha = $_POST['nova_senha'];
+            $repita_nova_senha = $_POST['repita_nova_senha'];
+        
+            // Verifica se as senhas novas são iguais
+            if ($nova_senha !== $repita_nova_senha) {
+                echo "As senhas não coincidem.";
+                exit;
+            }
+        
+            // Verifica a senha atual
+            $sql_usuario = "SELECT senha FROM usuario WHERE idLogin = ?";
+            $stmt_usuario = $conn->prepare($sql_usuario);
+            $stmt_usuario->bind_param("i", $idUsuario);
+            $stmt_usuario->execute();
+            $result_usuario = $stmt_usuario->get_result();
+            $usuario = $result_usuario->fetch_assoc();
+        
+            if (!$usuario) {
+                echo "Usuário não encontrado.";
+                exit;
+            }
+        
+            // Verifica se a senha atual corresponde
+            if (!password_verify($senha_atual, $usuario['senha'])) {
+                echo "Senha atual incorreta.";
+                exit;
+            }
+        
+            // Atualiza a senha no banco de dados
+            $nova_senha_hash = password_hash($nova_senha, PASSWORD_DEFAULT); // Gera um hash da nova senha
+            $sql_atualizar_senha = "UPDATE usuario SET senha = ? WHERE idLogin = ?";
+            $stmt_atualizar_senha = $conn->prepare($sql_atualizar_senha);
+            $stmt_atualizar_senha->bind_param("si", $nova_senha_hash, $idUsuario);
+        
+            if ($stmt_atualizar_senha->execute()) {
+                echo "Senha alterada com sucesso!";
+                // Redireciona ou exibe sucesso
+                echo "<script>window.history.back();</script>";
+                exit;
+            } else {
+                echo "Erro ao atualizar a senha.";
+                exit;
+            }       
+            break;
         default:
             echo "<script>alert('Tipo de formulário não reconhecido.'); window.history.back();</script>";
             break;

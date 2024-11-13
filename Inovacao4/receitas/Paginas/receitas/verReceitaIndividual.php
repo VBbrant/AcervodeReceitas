@@ -25,9 +25,15 @@ include 'processarVerIndividual.php';
             <img src="<?php echo !empty($receita['link_imagem']) ? $receita['link_imagem'] : BASE_URL . $receita['arquivo_imagem']; ?>" alt="Imagem da Receita" class="img-fluid rounded">
                 <h1 class="mt-4"><?php echo htmlspecialchars($receita['nome_rec']); ?></h1>
                 <p class="lead"><?php echo htmlspecialchars($receita['descricao']); ?></p>
-                <a href="EditarReceita.php?id=<?php echo $idReceita; ?>" class="btn btn-dark">Editar</a>
-                <a href="excluirReceita.php?id=<?php echo $idReceita; ?>" class="btn btn-dark">Excluir</a>
-
+                <?php if ($_SESSION['cargo'] === 'ADM' || $_SESSION['cargo'] === 'Cozinheiro') : ?>
+                    <?php if (
+                            ($_SESSION['idLogin'] === $receita['idCozinheiro'] && $_SESSION['cargo'] === 'Cozinheiro') || 
+                            $_SESSION['cargo'] === 'ADM'
+                            ) : ?>
+                        <a href="EditarReceita.php?id=<?php echo $idReceita; ?>" class="btn btn-dark">Editar</a>
+                        <a href="excluirReceita.php?id=<?php echo $idReceita; ?>" class="btn btn-dark">Excluir</a>
+                    <?php endif; ?>
+                <?php endif; ?>
             </div>
 
             <div class="avaliacao-container">

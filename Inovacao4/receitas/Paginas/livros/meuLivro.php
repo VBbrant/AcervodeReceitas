@@ -1,8 +1,10 @@
-<?php
+<?php session_start();
 require_once '../../../config.php';
 require_once ROOT_PATH . 'receitas/conn.php';
 
-$sql = "SELECT * FROM livro";
+$idEditorSessao = $_SESSION['id_fun'];
+
+$sql = "SELECT * FROM livro WHERE idCargo = 8";
 $result = $conn->query($sql);
 ?>
 
@@ -58,17 +60,13 @@ $result = $conn->query($sql);
                         <a href="<?php echo BASE_URL; ?>receitas/Paginas/livros/verLivro.php?id=<?php echo $livro['idLivro']; ?>" class="btn btn-info btn-sm">
                             <i class="fas fa-eye"></i> Ver
                         </a>
-                        <?php if ($_SESSION['cargo'] !== "ADM"): ?>
-                            <?php if ($livro['idFun'] == $idEditorSessao): ?>
-                                <a href="<?php echo BASE_URL; ?>receitas/Paginas/livros/editarLivro.php?id=<?php echo $livro['idLivro']; ?>" class="btn btn-primary btn-sm">
-                                    <i class="fas fa-edit"></i> Editar
-                                </a>
-                                <a href="<?php echo BASE_URL; ?>receitas/Paginas/livros/excluirLivro.php?id=<?php echo $livro['idLivro']; ?>" 
-                                class="btn btn-danger btn-sm">
-                                    <i class="fas fa-trash-alt"></i> Excluir
-                                </a>
-                            <?php endif; ?>
-                        <?php endif; ?>
+                        <a href="<?php echo BASE_URL; ?>receitas/Paginas/livros/editarLivro.php?id=<?php echo $livro['idLivro']; ?>" class="btn btn-primary btn-sm">
+                            <i class="fas fa-edit"></i> Editar
+                        </a>
+                        <a href="<?php echo BASE_URL; ?>receitas/Paginas/livros/excluirLivro.php?id=<?php echo $livro['idLivro']; ?>" 
+                        class="btn btn-danger btn-sm">
+                            <i class="fas fa-trash-alt"></i> Excluir
+                        </a>
                     </td>
                 </tr>
                 <?php endwhile; ?>

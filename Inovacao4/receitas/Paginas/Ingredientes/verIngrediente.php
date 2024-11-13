@@ -39,11 +39,11 @@ $stmt->close();
     <form>
         <div class="mb-3">
             <label class="form-label">Nome do Ingrediente:</label>
-            <input type="text" class="form-control" value="<?php echo htmlspecialchars($ingrediente['nome']); ?>" readonly>
+            <input type="text" class="form-control" value="<?php echo htmlspecialchars($ingrediente['nome']); ?>" disabled>
         </div>
         <div class="mb-3">
             <label class="form-label">Descrição:</label>
-            <textarea class="form-control" rows="5" readonly><?php echo htmlspecialchars($ingrediente['descricao']); ?></textarea>
+            <textarea class="form-control" rows="5" disabled><?php echo htmlspecialchars($ingrediente['descricao']); ?></textarea>
         </div>
         <div class="text-end">
             <a href="<?php echo BASE_URL; ?>receitas/Paginas/ingredientes/editarIngrediente.php?id=<?php echo $idIngrediente; ?>" class="btn btn-primary">

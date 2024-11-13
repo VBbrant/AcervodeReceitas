@@ -4,13 +4,9 @@ header .navbar {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     padding: 0.5rem 1rem;
     height: 70px;
-}
-
-header .header-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 100%;
 }
 
 /* Logo */
@@ -19,22 +15,23 @@ header .logo-img {
     width: auto;
 }
 
-/* Buttons */
-header .menu-button,
-header .profile-button {
+/* Profile Button */
+.profile-button {
     background: none;
     border: none;
     padding: 0.5rem;
     color: #333;
-    transition: color 0.3s ease;
+    position: relative; /* Para garantir que a imagem do perfil não afete os outros elementos */
 }
 
-header .menu-button:hover,
-header .profile-button:hover {
-    color: #007bff;
+.profile-button .profile-img {
+    width: 40px;       /* Define o tamanho da imagem */
+    height: 40px;      /* Define o tamanho da imagem */
+    border-radius: 50%; /* Torna a imagem redonda */
+    object-fit: cover;  /* Faz a imagem se ajustar ao tamanho sem distorcer */
 }
 
-/* Search */
+/* Search Input */
 header .search-container {
     position: relative;
     width: 300px;

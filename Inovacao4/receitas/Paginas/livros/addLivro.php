@@ -51,7 +51,7 @@ while ($row = $result_editores->fetch_assoc()) {
     
     <div class="container my-4">
         <h2 class="text-center">Adicionar Novo Livro</h2>
-        <form method="POST" action="../../CRUD/processarAdicionar.php" >
+        <form method="POST" action="../../CRUD/processarAdicionar.php" enctype="multipart/form-data">
          <input type="hidden" name="form_type" value="livro">
             <div class="mb-3">
                 <label for="" class="form-label">Nome do Livro:</label>
@@ -100,7 +100,10 @@ while ($row = $result_editores->fetch_assoc()) {
                 <input type="file" class="form-control" id="arquivo_imagem" name="arquivo_imagem" 
                     accept="image/*" onchange="toggleLinkInput()">
             </div>
-            <button type="submit" class="btn btn-primary w-100">Adicionar Receita</button>
+            <div class="d-flex justify-content-end mt-3">
+                <button id="btnVoltar" onclick="voltarPagina()" style="background-color: gray; color: white; padding: 10px 20px; border: none; cursor: pointer; font-size: 16px;">Voltar</button>
+                <button type="submit" class="btn btn-primary w-100">Adicionar Categoria</button>
+            </div>
         </form>
     </div>
 

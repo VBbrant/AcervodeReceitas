@@ -2,9 +2,8 @@
 include '../../../config.php';
 include ROOT_PATH . 'receitas/conn.php';
 
-$sql = "
-SELECT 
-    r.idReceita, 
+$sql = "SELECT 
+    r.idReceita, r.idCozinheiro, 
     r.nome_rec AS titulo, 
     r.descricao, 
     COALESCE(d.nota_degustacao, 0) AS avaliacao,
@@ -118,13 +117,21 @@ $viewMode = $_GET['view'] ?? 'grid'; // Padrão: exibição em grid (grade)
                                 <a href="<?php echo BASE_URL; ?>receitas/Paginas/receitas/verReceitaIndividual.php?id=<?php echo $receita['idReceita']; ?>" class="btn btn-info btn-sm">
                                     <i class="fas fa-eye"></i> Ver
                                 </a>
-                                <a href="<?php echo BASE_URL; ?>receitas/Paginas/receitas/editarReceita.php?id=<?php echo $receita['idReceita']; ?>" class="btn btn-primary btn-sm">
-                                    <i class="fas fa-edit"></i> Editar
-                                </a>
-                                <a href="<?php echo BASE_URL; ?>receitas/Paginas/receitas/excluirReceita.php?id=<?php echo $receita['idReceita']; ?>" 
-                                class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir esta medida?');">
-                                    <i class="fas fa-trash-alt"></i> Excluir
-                                </a>
+                                <?php if ($_SESSION['cargo'] === 'ADM' || $_SESSION['cargo'] === 'Cozinheiro') : ?>
+                                    <?php if (
+                                        ($_SESSION['idLogin'] === $receita['idCozinheiro'] && $_SESSION['cargo'] === 'Cozinheiro') || 
+                                        $_SESSION['cargo'] === 'ADM'
+                                    ) : ?>
+                                        <a href="<?= BASE_URL; ?>receitas/Paginas/receitas/editarReceita.php?id=<?= $receita['idReceita']; ?>" class="btn btn-primary btn-sm">
+                                            <i class="fas fa-edit"></i> Editar
+                                        </a>
+                                        <a href="<?= BASE_URL; ?>receitas/Paginas/receitas/excluirReceita.php?id=<?= $receita['idReceita']; ?>" 
+                                        class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir esta medida?');">
+                                            <i class="fas fa-trash-alt"></i> Excluir
+                                        </a>
+                                    <?php endif; ?>
+                                <?php endif; ?>
+
                             </td>
                         </tr>
                         <?php endwhile; ?>

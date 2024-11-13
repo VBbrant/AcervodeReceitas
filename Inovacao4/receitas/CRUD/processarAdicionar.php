@@ -138,75 +138,44 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
             break;
         case 'livro':
-            if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                $titulo = $_POST['nome'];
+            if ($_POST['form_type'] == 'livro') {
+                $nome = $_POST['nome'];
                 $isbn = $_POST['codigo'];
-                $id_editor = $_POST['id_editor'];
-                
-                $link_imagem = null;
-                $arquivo_imagem = null;
-        
-                // Verifica se há um upload de imagem ou um link de imagem
-                if (isset($_FILES['arquivo_imagem']) && $_FILES['arquivo_imagem']['error'] === UPLOAD_ERR_OK) {
-                    $diretorioDestino = ROOT_PATH . "livros/imagens/livro/";
-                    $extensao = strtolower(pathinfo($_FILES['arquivo_imagem']['name'], PATHINFO_EXTENSION));
-                    
-                    $nomeArquivo = preg_replace('/[^\w-]/', '', $titulo) . "_" . uniqid() . "." . $extensao;
-                    $arquivo_imagem = "livros/imagens/livro/" . $nomeArquivo;
-        
-                    if (!is_dir($diretorioDestino)) {
-                        mkdir($diretorioDestino, 0777, true);
-                    }
-        
-                    if (!move_uploaded_file($_FILES['arquivo_imagem']['tmp_name'], $diretorioDestino . $nomeArquivo)) {
-                        echo "Erro ao fazer upload da imagem.";
-                        exit;
-                    }
-                } elseif (!empty($_POST['link_imagem'])) {
-                    $link_imagem = $_POST['link_imagem'];
+                $idEditor = $_POST['id_editor'];
+                $linkImagem = $_POST['link_imagem'] ?? null;
+                $arquivoImagem = $_FILES['arquivo_imagem'] ?? null;
+            
+                // Caminho para armazenar a imagem se for feita a escolha por upload
+                $imagemCaminho = null;
+                if (!empty($arquivoImagem['name'])) {
+                    $ext = pathinfo($arquivoImagem['name'], PATHINFO_EXTENSION);
+                    $imagemCaminho = "/imagens/livros/". uniqid() . "." . $ext;
+                    move_uploaded_file($arquivoImagem['tmp_name'], __DIR__ . $imagemCaminho);
                 }
-        
-                $conn->begin_transaction();
-        
-                try {
-                    // Insere o livro na tabela `livro`
-                    $sql_livro = "INSERT INTO livro (titulo, isbn, idEditor, link_imagem, arquivo_imagem) 
-                                    VALUES (?, ?, ?, ?, ?)";
-                    $stmt = $conn->prepare($sql_livro);
-                    $stmt->bind_param("ssiss", $titulo, $isbn, $id_editor, $link_imagem, $arquivo_imagem);
-                    $stmt->execute();
-                    
-                    $id_livro = $conn->insert_id;
-        
-                    // Processa as receitas associadas ao livro
-                    $receitas = isset($_POST['idReceita']) ? explode(',', $_POST['idReceita']) : [];
-        
-                    if (count($receitas) > 0) {
-                        $sql_livro_receita = "INSERT INTO livro_receita (idLivro, idReceita) VALUES (?, ?)";
-                        $stmt_livro_receita = $conn->prepare($sql_livro_receita);
-        
-                        foreach ($receitas as $idReceita) {
-                            $stmt_livro_receita->bind_param("ii", $id_livro, $idReceita);
-                            $stmt_livro_receita->execute();
-                        }
-        
-                        echo "Receitas associadas ao livro com sucesso!";
-                    } else {
-                        echo "Nenhuma receita foi associada.";
+            
+                // Salvar no banco de dados
+                $sql = "INSERT INTO livro (titulo, isbn, idEditor, link_imagem, arquivo_imagem) VALUES (?, ?, ?, ?, ?)";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("ssiss", $nome, $isbn, $idEditor, $linkImagem, $imagemCaminho);
+                $stmt->execute();
+                
+                // Associar receitas
+                $idLivro = $conn->insert_id;
+                if (!empty($_POST['idReceita'])) {
+                    foreach (explode(',', $_POST['idReceita']) as $idReceita) {
+                        $conn->query("INSERT INTO livro_receita (idLivro, idReceita) VALUES ($idLivro, $idReceita)");
                     }
-        
-                    $conn->commit();
-                    echo "<script>alert('Livro adicionado com sucesso!'); window.location.href='" . BASE_URL . "livros/Paginas/home.php';</script>";
-                } catch (Exception $e) {
-                    $conn->rollback();
-                    echo "<script>alert('Erro ao processar o formulário: " . $e->getMessage() . "'); window.history.back();</script>";
-                } finally {
-                    $stmt->close();
-                    if (isset($stmt_livro_receita)) {
-                        $stmt_livro_receita->close();
-                    }
+                }
+            
+                if ($_SESSION['cargo'] === "Editor") {
+                    header("Location: " . BASE_URL . "/receitas/Paginas/livros/meuLivro.php?sucesso=1");
+                    exit(); // Certifique-se de sair após o redirecionamento
+                } else{
+                    header("Location: " . BASE_URL . "receitas/Paginas/livros/listaLivro.php?sucesso=1");
+                    exit();
                 }
             }
+            
             break;
             
             

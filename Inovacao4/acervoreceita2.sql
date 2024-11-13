@@ -13,6 +13,7 @@ CREATE TABLE `usuario` (
   `nome` varchar(100) NOT NULL,
   `email` varchar(100) NOT NULL,
   `senha` varchar(255) NOT NULL,
+  `imagem_perfil` varchar(120) default null,
   PRIMARY KEY (`idLogin`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -66,8 +67,8 @@ CREATE TABLE `livro` (
   `titulo` varchar(100) NOT NULL,
   `isbn` varchar(20) DEFAULT NULL,
   `idEditor` int DEFAULT NULL,
-  `link_imagem` varchar(80) DEFAULT NULL,
-  `arquivo_imagem` varchar(80) DEFAULT NULL,
+  `link_imagem` varchar(255) DEFAULT NULL,
+  `arquivo_imagem` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`idLivro`),
   KEY `idEditor` (`idEditor`),
   CONSTRAINT `livro_ibfk_1` FOREIGN KEY (`idEditor`) REFERENCES `funcionario` (`idFun`)
@@ -123,6 +124,12 @@ CREATE TABLE `livro_receita` (
   FOREIGN KEY (`idLivro`) REFERENCES `livro` (`idLivro`),
   FOREIGN KEY (`idReceita`) REFERENCES `receita` (`idReceita`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+ALTER TABLE livro_receita
+DROP FOREIGN KEY livro_receita_ibfk_1;
+
+ALTER TABLE livro_receita
+ADD CONSTRAINT livro_receita_ibfk_1 FOREIGN KEY (idLivro) REFERENCES livro(idLivro) ON DELETE CASCADE;
 
 
 CREATE TABLE `degustacao` (

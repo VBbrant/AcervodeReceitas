@@ -17,11 +17,23 @@ $sql_reviews = "SELECT r.idReceita, r.nome_rec, f.nome as reviewer_name, r.descr
                 LIMIT 2";
 $result_reviews = $conn->query($sql_reviews);
 
-$sql_avaliacao = "SELECT d.nota_degustacao, d.data_degustacao, r.nome_rec, c.comentario_texto AS descricao
+$sql_avaliacao = "SELECT d.nota_degustacao, d.data_degustacao, r.nome_rec, c.comentario_texto AS descricao, u.nome as nomeUsuario, f.nome, u.imagem_perfil as avatar
                 FROM degustacao d
                 LEFT JOIN receita r ON d.idReceita = r.idReceita
+                LEFT JOIN funcionario f ON d.idDegustador = f.idFun
+                LEFT JOIN usuario u ON f.idLogin = u.idLogin
                 LEFT JOIN comentario c ON d.idDegustacao = c.idDegustacao";
 $result_avaliacao = $conn->query($sql_avaliacao);
+
+$sql_featured_books = "SELECT l.idLivro, l.titulo, l.link_imagem, l.arquivo_imagem, f.nome as editor_name
+                       FROM livro l
+                       LEFT JOIN funcionario f ON l.idEditor = f.idFun
+                       ORDER BY l.idLivro DESC
+                       LIMIT 3"; // Limita a 6 livros em destaque
+
+$result_featured_books = $conn->query($sql_featured_books);
+
+
 ?>
 <!DOCTYPE html>
 <html lang="Pt-br">
@@ -91,46 +103,58 @@ $result_avaliacao = $conn->query($sql_avaliacao);
             <h2 class="text-center mb-4">LIVROS EM DESTAQUE</h2>
             
             <div class="row g-4 justify-content-center">
-                <div class="col-md-4">
-                    <div class="book-card text-center">
-                        <div class="book-cover mb-3">
-                            <img src="../imagens/livro.jpg" alt="Saboreie" class="rounded-4" style="width: 200px; height: 280px; object-fit: cover;">
+                <?php while ($book = $result_featured_books->fetch_assoc()): ?>
+                    <div class="col-md-4">
+                        <div class="book-card text-center">
+                            <!-- Adicionando o link ao redor da imagem e do título para redirecionar para verLivro.php -->
+                            <a href="<?= BASE_URL; ?>receitas/Paginas/livros/verLivro.php?id=<?php echo $book['idLivro']; ?>">
+                                <div class="book-cover mb-3">
+                                    <!-- Verifica se arquivo_imagem é NULL e, caso seja, usa o link_imagem como URL -->
+                                    <img src="<?php echo !empty($book['link_imagem']) ? $book['link_imagem'] : BASE_URL .'/receitas' .$book['arquivo_imagem']; ?>" alt="Imagem do Livro" class="img-fluid rounded"
+                                    alt="<?php echo htmlspecialchars($book['titulo']); ?>" 
+                                        class="rounded-4" 
+                                        style="width: 200px; height: 280px; object-fit: cover;">
+                                </div>
+                                <h3 class="h5"><?php echo htmlspecialchars($book['titulo']); ?></h3>
+                            </a>
+                            <p class="text-muted">por <?php echo htmlspecialchars($book['editor_name']); ?></p>
                         </div>
-                        <h3 class="h5">SABOREIE</h3>
-                        <p class="text-muted">por David Luiz</p>
                     </div>
-                </div>
-                <!-- Add more book cards as needed -->
+                <?php endwhile; ?>
             </div>
             
             <div class="text-center mt-4">
-                <a href="<?= BASE_URL . 'receitas/Paginas/livros/listaLivro.php'?>" class="btn btn-dark rounded-pill px-4">Mais Livros</a>
+                <a href="<?= BASE_URL . 'receitas/Paginas/livros/listaLivro.php' ?>" class="btn btn-dark rounded-pill px-4">Mais Livros</a>
             </div>
         </div>
     </section>
+
+
 
     <!-- Featured Reviews Section -->
     <section class="featured-reviews py-5">
         <div class="container">
             <h2 class="text-center mb-4">AVALIAÇÕES EM DESTAQUE</h2>
-            
+
             <div class="row g-4">
                 <?php
                 if ($result_avaliacao->num_rows > 0) {
                     while($avaliacao = $result_avaliacao->fetch_assoc()) {
                         $fullStars = floor($avaliacao['nota_degustacao'] / 2); 
-                        $hasHalfStar = ($avaliacao['nota_degustacao'] % 2) >= 1; 
+                        $hasHalfStar = ($avaliacao['nota_degustacao'] % 2) >= 1;
 
-                        $avatarPath = !empty($avaliacao['avatar_path']) ? $avaliacao['avatar_path'] : 'path/to/default-avatar.jpg';
+                        // Ajuste aqui para pegar o caminho da imagem do usuário que fez o comentário
+                        $avatarPath = !empty($avaliacao['avatar']) ? BASE_URL . 'receitas/imagens/perfil/' . $avaliacao['avatar'] : BASE_URL . 'path/to/default-avatar.jpg';
                 ?>
                     <div class="col-md-6">
                         <div class="review-card bg-dark text-white p-4 rounded-4">
                             <div class="d-flex align-items-center mb-3">
                                 <div class="reviewer-avatar me-3">
+                                    <!-- Exibe a imagem do usuário -->
                                     <img src="<?php echo htmlspecialchars($avatarPath); ?>" class="rounded-circle" width="50" height="50" alt="Avatar">
                                 </div>
                                 <div>
-                                    <h4 class="h6 mb-1"><?php echo htmlspecialchars($avaliacao['nome_rec']); ?></h4>
+                                    <h4 class="h6 mb-1"><?php echo htmlspecialchars($avaliacao['nomeUsuario']); ?></h4>
                                     <div class="stars">
                                         <?php 
                                         for ($i = 0; $i < $fullStars; $i++) { 
@@ -146,6 +170,7 @@ $result_avaliacao = $conn->query($sql_avaliacao);
                                     </div>
                                 </div>
                             </div>
+                            <h5 class="h6 mb-1"><?php echo htmlspecialchars($avaliacao['nome_rec']); ?></h5>
                             <p class="mb-0"><?php echo htmlspecialchars($avaliacao['descricao']); ?></p>
                         </div>
                     </div>
@@ -161,6 +186,7 @@ $result_avaliacao = $conn->query($sql_avaliacao);
             </div>
         </div>
     </section>
+
 
     <footer class="mt-4 text-center">
         <p>&copy; 2024 SaborArte. Todos os direitos reservados.</p>
