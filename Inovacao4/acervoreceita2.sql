@@ -32,14 +32,19 @@ CREATE TABLE `funcionario` (
   `data_admissao` date DEFAULT NULL,
   `salario` decimal(10,2) DEFAULT NULL,
   `nome_fantasia` varchar(100) DEFAULT NULL,
+  `telefone` varchar(25) DEFAULT NULL,
   `idLogin` int DEFAULT NULL,
   `idCargo` int DEFAULT NULL,
+  `idRestaurante` int DEFAULT NULL,  -- Chave estrangeira para o restaurante
   PRIMARY KEY (`idFun`),
   KEY `idLogin` (`idLogin`),
   KEY `idCargo` (`idCargo`),
+  KEY `idRestaurante` (`idRestaurante`),  -- Índice para a chave estrangeira
   CONSTRAINT `funcionario_ibfk_1` FOREIGN KEY (`idLogin`) REFERENCES `usuario` (`idLogin`),
-  CONSTRAINT `funcionario_ibfk_2` FOREIGN KEY (`idCargo`) REFERENCES `cargo` (`idCargo`)
+  CONSTRAINT `funcionario_ibfk_2` FOREIGN KEY (`idCargo`) REFERENCES `cargo` (`idCargo`),
+  CONSTRAINT `funcionario_ibfk_3` FOREIGN KEY (`idRestaurante`) REFERENCES `restaurante` (`idRestaurante`)  -- Chave estrangeira para o restaurante
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 
 CREATE TABLE `registro_tokens` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -165,10 +170,12 @@ CREATE TABLE `comentario` (
   CONSTRAINT `comentario_ibfk_1` FOREIGN KEY (`idDegustacao`) REFERENCES `degustacao` (`idDegustacao`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `restaurante` (
+
+CREATE TABLE IF NOT EXISTS `restaurante` (
   `idRestaurante` int NOT NULL AUTO_INCREMENT,
   `nome` varchar(100) NOT NULL,
-  `telefone` varchar(20) DEFAULT NULL,
+  `telefone` varchar(25) DEFAULT NULL,
+  `endereco` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`idRestaurante`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -192,6 +199,17 @@ CREATE TABLE log_sistema (
     data TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Data e hora da ação
     FOREIGN KEY (idUsuario) REFERENCES funcionario(idFun) -- Referência à tabela de funcionários (ou outra tabela de usuários)
 );
+
+CREATE TABLE if not exists notificacoes_temp (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    idLog INT NOT NULL, -- Referência ao log no log_sistema
+    idUsuario INT NOT NULL, -- ID do usuário a ser notificado
+    descricao TEXT NOT NULL, -- Descrição da notificação
+    data TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Data e hora da notificação
+    visto TINYINT(1) DEFAULT 0, -- 0 = Não visto, 1 = Visto
+    FOREIGN KEY (idLog) REFERENCES log_sistema(idLog) ON DELETE CASCADE
+);
+
 
 
 

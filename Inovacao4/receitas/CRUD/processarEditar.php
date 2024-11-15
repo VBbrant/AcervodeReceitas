@@ -345,7 +345,49 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $conn->close();
                 }
                 break;
+            
+            case 'restaurante':
+                try {
+                    $idRestaurante = $_POST['idRestaurante'];
+                    $nome = $_POST['nome'];
+                    $telefone = $_POST['telefone'];
+                    $endereco = $_POST['endereco'];
         
+                    // Atualizar o restaurante
+                    $sql = "UPDATE restaurante SET nome = ?, telefone = ?, endereco = ? WHERE idRestaurante = ?";
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bind_param("sssi", $nome, $telefone, $endereco, $idRestaurante);
+                    $stmt->execute();
+        
+                    // Registrar log de edição
+                    registrarLog($conn, $idUsuario, "edicao", "Restaurante '$nome' editado com sucesso!");
+        
+                    header("Location: ../Paginas/restaurantes/listaRestaurante.php");
+                    exit;
+                } catch (Exception $e) {
+                    echo "Erro ao editar restaurante: " . $e->getMessage();
+                } finally {
+                    $stmt->close();
+                    $conn->close();
+                }
+                break;
+            case 'categoria':
+                $id_categoria = $_POST["id_cargo"] ?? null;
+                $categoria = $_POST["nome"];
+
+                if($id_categoria){
+                    $sql_categoria = "UPDATE cargo SET nome = ? WHERE idCargo =?";
+                    $stmt = $conn->prepare($sql_categoria);
+                    $stmt->bind_param("si", $categoria, $id_categoria);
+                } else{
+                    $sql_categoria = "INSERT INTO cargo (nome) VALUES (?)";
+                    $stmt = $conn->prepare($sql_categoria);
+                    $stmt->bind_param("s", $categoria);
+                }
+                $stmt->execute();
+                registrarLog($conn, $idUsuario, "edicao", "Cargo '$categoria' editada com sucesso!");
+                echo "<script>alert('Cargo atualizada com sucesso!'); window.location.href='" . BASE_URL . "receitas/Paginas/cargos/listaCargo.php';</script>";
+                break;        
             
                 
             default:

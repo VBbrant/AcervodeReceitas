@@ -339,9 +339,47 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $conn->close();
             }
             break;
+        case 'restaurante':
+            try {
+                $nome = $_POST['nome'];
+                $telefone = $_POST['telefone'];
+                $endereco = $_POST['endereco'];
+    
+                // Inserir o restaurante
+                $sql = "INSERT INTO restaurante (nome, telefone, endereco) VALUES (?, ?, ?)";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("sss", $nome, $telefone, $endereco);
+                $stmt->execute();
+    
+                // Registrar log de inclusão
+                registrarLog($conn, $idUsuario, "inclusao", "Restaurante '$nome' adicionado com sucesso!");
+    
+                header("Location: ../Paginas/restaurantes/listaRestaurante.php");
+                exit;
+            } catch (Exception $e) {
+                echo "Erro ao adicionar restaurante: " . $e->getMessage();
+            } finally {
+                $stmt->close();
+                $conn->close();
+            }
+            break;    
             
-            
+        case 'cargo':
+            $categoria = $_POST['nome'];
+            $sql_categoria = "INSERT INTO cargo (nome) VALUES (?)";
+            $stmt = $conn->prepare($sql_categoria);
+            $stmt->bind_param("s", $categoria);
 
+            try{
+                $stmt->execute();
+                registrarLog($conn, $idUsuario, "inclusao", "Cargo '$categoria' adicionado com sucesso!");
+                echo "<script>alert('Cargo adicionado com sucesso!'); window.location.href='" . BASE_URL . "receitas/Paginas/cargos/listaCargo.php';</script>";
+            } catch (Exception $e){
+                echo "<script>alert('Erro ao processar o formulário: " . $e->getMessage() . "'); window.history.back();</script>"; 
+            } finally {
+                $stmt->close();
+            }
+            break;
         default:
             echo "Tipo de formulário não encontrado";
             break;

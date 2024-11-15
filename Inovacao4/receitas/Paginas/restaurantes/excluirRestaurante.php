@@ -33,7 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $conn->commit();
 
         registrarLog($conn, $idUsuario, "exclusao", "Exclusão do restaurante '$nome_restaurante' realizada com sucesso!");
-        header("Location: " . BASE_URL . "receitas/Paginas/restaurantes/listaRestaurantes.php?excluido=1");
+        header("Location: " . BASE_URL . "receitas/Paginas/restaurantes/listaRestaurante.php?excluido=1");
         exit;
     } catch (Exception $e) {
         $conn->rollback();

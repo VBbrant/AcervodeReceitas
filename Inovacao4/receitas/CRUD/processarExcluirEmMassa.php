@@ -43,6 +43,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $type && count($itensSelecionados) >
             case 'funcionario':
                 $stmt = $conn->prepare("DELETE FROM funcionario WHERE idFuncionario = ?");
                 break;
+            case 'restaurante':
+                $stmt = $conn->prepare("DELETE FROM restaurante WHERE idRestaurante = ?");
+                break;
+            case 'categoria':
+                $stmt = $conn->prepare("DELETE FROM cargo WHERE idCargo = ?");
+                break;
             default:
                 throw new Exception("Tipo inválido para exclusão.");
         }
@@ -73,6 +79,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $type && count($itensSelecionados) >
                 $sql_nome = "SELECT nome FROM usuario WHERE idUsuario = ?";
             } elseif ($type == 'funcionario') {
                 $sql_nome = "SELECT nome FROM funcionario WHERE idFuncionario = ?";
+            } elseif ($type == 'restaurante') {
+                $sql_nome = "SELECT nome FROM restaurante WHERE idRestaurante = ?";
+            } elseif ($type == 'cargo') {
+                $sql_nome = "SELECT nome FROM cargo WHERE idCargo = ?";
             }
 
             // Realizar a consulta para pegar o nome
@@ -154,7 +164,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $type && count($itensSelecionados) >
             ($type == 'categoria' ? "categorias/listaCategoria.php" :
             ($type == 'usuario' ? "usuarios/listaUsuario.php" :
             ($type == 'avaliacao' ? "avaliacoes/listaAvaliacao.php" :
-            ($type == 'funcionario' ? "funcionarios/listaFuncionario.php" : ""))))))));
+            ($type == 'restaurante' ? "restaurantes/listaRestaurante.php" :
+            ($type == 'cargo' ? "cargos/listaCargo.php" :
+            ($type == 'funcionario' ? "funcionarios/listaFuncionario.php" : ""))))))))));
 
         header("Location: $redirectUrl?excluido_massa=1");
         exit;

@@ -16,6 +16,10 @@ class ComposerStaticInit5ce13f389270716aa74fac6c4293dda4
         array (
             'setasign\\Fpdi\\' => 14,
         ),
+        'S' => 
+        array (
+            'Symfony\\Component\\Process\\' => 26,
+        ),
         'P' => 
         array (
             'Psr\\Log\\' => 8,
@@ -27,6 +31,10 @@ class ComposerStaticInit5ce13f389270716aa74fac6c4293dda4
             'Mpdf\\PsrHttpMessageShim\\' => 24,
             'Mpdf\\' => 5,
         ),
+        'K' => 
+        array (
+            'Knp\\Snappy\\' => 11,
+        ),
         'D' => 
         array (
             'DeepCopy\\' => 9,
@@ -37,6 +45,10 @@ class ComposerStaticInit5ce13f389270716aa74fac6c4293dda4
         'setasign\\Fpdi\\' => 
         array (
             0 => __DIR__ . '/..' . '/setasign/fpdi/src',
+        ),
+        'Symfony\\Component\\Process\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/process',
         ),
         'Psr\\Log\\' => 
         array (
@@ -57,6 +69,10 @@ class ComposerStaticInit5ce13f389270716aa74fac6c4293dda4
         'Mpdf\\' => 
         array (
             0 => __DIR__ . '/..' . '/mpdf/mpdf/src',
+        ),
+        'Knp\\Snappy\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/knplabs/knp-snappy/src/Knp/Snappy',
         ),
         'DeepCopy\\' => 
         array (

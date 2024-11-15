@@ -1,5 +1,7 @@
 <?php require_once CONFIG_PATH;
-session_start();
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();  // Inicia a sessão se não estiver iniciada
+}
 $userRole = $_SESSION['cargo'];
 ?>
 
@@ -16,7 +18,7 @@ $userRole = $_SESSION['cargo'];
                 </a>
             </div>
             
-            <!-- Right side - Search and Profile -->
+            <!-- Right side - Search, Notifications, and Profile -->
             <div class="d-flex align-items-center">
                 <div class="search-container me-3 d-none d-md-block">
                     <form class="d-flex" role="search">
@@ -26,11 +28,16 @@ $userRole = $_SESSION['cargo'];
                         </button>
                     </form>
                 </div>
-                
+
+                <!-- Notificação de Alterações -->
+                <div class="notification-container me-3" onclick="toggleNotifications()">
+                    <i class="fas fa-bell"></i>
+                    <span id="notificationDot" class="notification-dot"></span>
+                </div>
+
                 <?php
                 $userImage = $_SESSION['imagem_perfil'] ?? null;
                 ?>
-                <!-- Se o usuário tiver uma imagem de perfil, mostra a imagem. Caso contrário, mostra o ícone -->
                 <a href="javascript:void(0)" class="btn profile-button" onclick="toggleProfile()" aria-label="Toggle profile">
                     <?php if ($userImage): ?>
                         <img src="<?php echo BASE_URL . 'receitas/imagens/perfil/' . $userImage; ?>" alt="Perfil" class="profile-img">
@@ -42,19 +49,26 @@ $userRole = $_SESSION['cargo'];
         </div>
     </nav>
 
-    <!-- Sidebar -->
+    <!-- Caixa de notificações -->
+    <div id="notificationBox" class="notification-box" style="display: none;">
+        <div id="notificationContent" class="notification-content">
+            <!-- As notificações serão inseridas aqui dinamicamente -->
+        </div>
+    </div>
+
+
+    <!-- Sidebar, Profile Dropdown, Overlay -->
     <div class="sidebar" id="sidebar">
         <?php include ROOT_PATH . 'receitas/elementoPagina/barraLateral.php'; ?>
     </div>
 
-    <!-- Profile Dropdown -->
     <div class="profile-dropdown" id="profileDropdown">
         <?php include ROOT_PATH . 'receitas/elementoPagina/perfil.php'; ?>
     </div>
 
-    <!-- Overlay -->
     <div class="overlay" id="overlay" onclick="closeAll()"></div>
 </header>
+
 
 <style>
 /* Estilos do botão de perfil */
@@ -271,6 +285,7 @@ $usuario2 = $result_usuario->fetch_assoc();
 </style>
 
 <script>
+
     document.getElementById('profileModal').addEventListener('show.bs.modal', function () {
     });
 
@@ -283,5 +298,122 @@ $usuario2 = $result_usuario->fetch_assoc();
     new bootstrap.Modal(document.getElementById('modalAlterarSenha')).show();
     }
 
-</script>
+    let lastCheckTime = new Date().toISOString(); // Armazena o último horário de verificação
+    let notificationData = {
+        additions: 0,
+        edits: 0,
+        deletions: 0,
+        bulkDeletions: 0
+    };
 
+    function checkNotifications() {
+    fetch('<?=BASE_URL;?>receitas/CRUD/sincronizarNotificacoes.php')
+        .then(response => response.json())
+        .then(data => {
+            const notificationDot = document.getElementById('notificationDot');
+            const notificationContent = document.getElementById('notificationContent');
+            
+            if (data.length > 0) {
+                notificationDot.style.display = 'block';
+                
+                let notificacoesHtml = '<ul>';
+                data.forEach(notificacao => {
+                    notificacoesHtml += `<li>${notificacao.descricao} (${new Date(notificacao.data).toLocaleString()})</li>`;
+                });
+                notificacoesHtml += '</ul>';
+                notificationContent.innerHTML = notificacoesHtml;
+            } else {
+                notificationDot.style.display = 'none';
+                notificationContent.innerHTML = '';
+            }
+        })
+        .catch(error => console.error('Erro ao buscar notificações:', error));
+    }
+
+    function marcarNotificacoesComoVistas() {
+    fetch('<?=BASE_URL;?>receitas/CRUD/marcarNotificacoesComoVistas.php', { method: 'POST' })
+        .then(() => {
+            document.getElementById('notificationDot').style.display = 'none';
+        });
+    }
+
+
+
+
+    function toggleNotifications() {
+        const notificationBox = document.getElementById('notificationBox');
+        if (notificationBox.style.display === 'none' || notificationBox.style.display === '') {
+            notificationBox.style.display = 'block';
+            marcarNotificacoesComoVistas();
+        } else {
+            notificationBox.style.display = 'none';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+    checkNotifications();
+    setInterval(checkNotifications, 15000); // Atualiza a cada 15 segundos
+});
+
+
+</script>
+<style>
+    /* Notificação */
+.notification-container {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.notification-dot {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: red;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: none; /* Esconde inicialmente */
+}
+
+.notification-box {
+    position: absolute;
+    top: 60px !important; /* Ajuste conforme necessário */
+    right: 10px;
+    background-color: #fff;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    width: 200px;
+    padding: 10px;
+    display: none;
+    z-index: 100;
+}
+
+.notification-box p {
+    margin: 0;
+    padding: 5px;
+    color: #333;
+}
+
+.notification-box .btn-close {
+    background-color: transparent;
+    border: none;
+    font-size: 18px;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    cursor: pointer;
+}
+
+.notification-box.show {
+    display: block;
+}
+
+header .navbar {
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 0.5rem 1rem;
+    height: 70px;
+}
+
+</style>

@@ -96,4 +96,5 @@ window.location.href = "configuracoes.php";
 
 //----------------------------------------
 
+
   
