@@ -1,6 +1,8 @@
 <?php
+session_start();
 require_once "../../../config.php";
 require_once ROOT_PATH . "receitas/conn.php";
+$idUsuario = $_SESSION['idLogin'];
 
 $idMedida = $_GET['id'] ?? null;
 if (!$idMedida) {
@@ -12,19 +14,48 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $conn->begin_transaction();
 
     try {
+        // Busca o nome da medida para o log
+        $sql_nome_medida = "SELECT nome FROM medida WHERE idMedida = ?";
+        $stmt_nome_medida = $conn->prepare($sql_nome_medida);
+        $stmt_nome_medida->bind_param("i", $idMedida);
+        $stmt_nome_medida->execute();
+        $stmt_nome_medida->bind_result($nome_medida);
+        $stmt_nome_medida->fetch();
+        $stmt_nome_medida->close();
+
+        // Exclui medida
         $sql_delete_medida = "DELETE FROM medida WHERE idMedida = ?";
         $stmt_delete_medida = $conn->prepare($sql_delete_medida);
         $stmt_delete_medida->bind_param("i", $idMedida);
         $stmt_delete_medida->execute();
+        $stmt_delete_medida->close();
 
         $conn->commit();
-        
+
+        registrarLog($conn, $idUsuario, "exclusao", "Exclusão da medida '$nome_medida' realizada com sucesso!");
         header("Location: " . BASE_URL . "receitas/Paginas/medidas/listaMedida.php?excluido=1");
         exit;
     } catch (Exception $e) {
         $conn->rollback();
         echo "Erro ao excluir a medida: " . $e->getMessage();
     }
+}
+
+function registrarLog($conn, $idUsuario, $tipo, $descricao) {
+    $sql_log = "INSERT INTO log_sistema (idUsuario, tipo_acao, acao, data) VALUES (?, ?, ?, NOW())";
+    $stmt_log = $conn->prepare($sql_log);
+    
+    if ($stmt_log === false) {
+        die('Erro na preparação da consulta: ' . $conn->error);
+    }
+    
+    $stmt_log->bind_param("iss", $idUsuario, $tipo, $descricao);
+
+    if (!$stmt_log->execute()) {
+        die('Erro ao executar a consulta: ' . $stmt_log->error);
+    }
+
+    $stmt_log->close();
 }
 ?>
 
@@ -41,7 +72,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <h2>Confirmar Exclusão</h2>
         <p>Tem certeza de que deseja excluir esta medida?</p>
         
-        <!-- Botão para confirmar a exclusão -->
         <form method="POST" action="<?php echo BASE_URL; ?>receitas/Paginas/medidas/excluirMedida.php?id=<?php echo $idMedida; ?>">
             <button type="submit" class="btn btn-danger">Excluir</button>
             <a href="<?php echo BASE_URL; ?>receitas/Paginas/medidas/listaMedida.php" class="btn btn-secondary">Cancelar</a>

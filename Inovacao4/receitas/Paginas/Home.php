@@ -110,7 +110,7 @@ $result_featured_books = $conn->query($sql_featured_books);
                             <a href="<?= BASE_URL; ?>receitas/Paginas/livros/verLivro.php?id=<?php echo $book['idLivro']; ?>">
                                 <div class="book-cover mb-3">
                                     <!-- Verifica se arquivo_imagem é NULL e, caso seja, usa o link_imagem como URL -->
-                                    <img src="<?php echo !empty($book['link_imagem']) ? $book['link_imagem'] : BASE_URL .'/receitas' .$book['arquivo_imagem']; ?>" alt="Imagem do Livro" class="img-fluid rounded"
+                                    <img src="<?php echo !empty($book['link_imagem']) ? $book['link_imagem'] : BASE_URL .$book['arquivo_imagem']; ?>" alt="Imagem do Livro" class="img-fluid rounded"
                                     alt="<?php echo htmlspecialchars($book['titulo']); ?>" 
                                         class="rounded-4" 
                                         style="width: 200px; height: 280px; object-fit: cover;">

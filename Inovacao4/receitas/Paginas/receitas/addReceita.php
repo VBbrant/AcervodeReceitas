@@ -68,10 +68,6 @@ while ($row = $result_categorias->fetch_assoc()) {
                 <input type="text" class="form-control" id="nome_rec" name="nome_rec" required>
             </div>
             <div class="mb-3">
-                <label for="data_criacao" class="form-label">Data de Criação:</label>
-                <input type="date" class="form-control" id="data_criacao" name="data_criacao">
-            </div>
-            <div class="mb-3">
                 <label for="modo_preparo" class="form-label">Modo de Preparo:</label>
                 <textarea class="form-control" id="modo_preparo" name="modo_preparo" rows="5"></textarea>
             </div>

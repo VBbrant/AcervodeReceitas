@@ -1,9 +1,13 @@
-<?php
+<?php session_start();
 require_once '../../../config.php';
 require_once ROOT_PATH . 'receitas/conn.php';
 
-$sql = "SELECT * FROM livro";
+$sql = "SELECT l.*, f.nome AS editor
+        FROM livro l
+        LEFT JOIN funcionario f ON l.idEditor = f.idFun";
 $result = $conn->query($sql);
+
+$idEditorSessao = $_SESSION['idFun'];
 ?>
 
 <!DOCTYPE html>
@@ -39,6 +43,7 @@ $result = $conn->query($sql);
                     </th>
                     <th>Nome</th>
                     <th>ISBN</th>
+                    <th>Autor(a)</th>
                     <th class="text-end">Ações</th>
                 </tr>
             </thead>
@@ -54,12 +59,13 @@ $result = $conn->query($sql);
                     </td>
                     <td class="sistema-cell"><?php echo htmlspecialchars($livro['titulo']); ?></td>
                     <td class="sistema-cell"><?php echo htmlspecialchars($livro['isbn']); ?></td>
+                    <td class="sistema-cell"><?php echo htmlspecialchars($livro['editor']); ?></td>
                     <td class="text-end acoes-cell">
                         <a href="<?php echo BASE_URL; ?>receitas/Paginas/livros/verLivro.php?id=<?php echo $livro['idLivro']; ?>" class="btn btn-info btn-sm">
                             <i class="fas fa-eye"></i> Ver
                         </a>
-                        <?php if ($_SESSION['cargo'] !== "ADM"): ?>
-                            <?php if ($livro['idFun'] == $idEditorSessao): ?>
+                        <?php if ($_SESSION['cargo'] == "ADM" || $_SESSION['cargo'] == "Editor"): ?>
+                            <?php if ($livro['idEditor'] == $idEditorSessao || $_SESSION['cargo'] == "ADM"): ?>
                                 <a href="<?php echo BASE_URL; ?>receitas/Paginas/livros/editarLivro.php?id=<?php echo $livro['idLivro']; ?>" class="btn btn-primary btn-sm">
                                     <i class="fas fa-edit"></i> Editar
                                 </a>
@@ -69,6 +75,7 @@ $result = $conn->query($sql);
                                 </a>
                             <?php endif; ?>
                         <?php endif; ?>
+                        <a href="<?= BASE_URL;?>receitas/Paginas/livros/PDFLivro.php?id=<?php echo $livro['idLivro']; ?>" class="btn btn-primary btn-sm">Gerar PDF</a>
                     </td>
                 </tr>
                 <?php endwhile; ?>
@@ -89,7 +96,14 @@ $result = $conn->query($sql);
     </form>
 </div>
 
-<?php include ROOT_PATH . 'receitas/elementoPagina/rodape.php'; ?>
+
 
 <script src="<?php echo BASE_URL . 'receitas/Scripts/listas.js';?>"></script>
+<script>
+    function gerarPDF() {
+        const idLivro = "<?php echo $idLivro; ?>"; // Obtém o ID do livro
+        window.open("<?= BASE_URL;?>receitas/Paginas/livros/PDFLivro.php?id=" + <?php $livro['idLivro']; ?>, "_blank"); // Abre o PDF em uma nova aba
+        }
+</script>
+<?php include ROOT_PATH . 'receitas/elementoPagina/rodape.php'; ?>
 

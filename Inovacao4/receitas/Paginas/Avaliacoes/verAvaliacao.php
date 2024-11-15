@@ -36,13 +36,14 @@ if (!$avaliacao) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>receitas/Style/estiloCabecalho.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>receitas/Style/estiloEditar.css">
 </head>
 <body>
 <?php include ROOT_PATH . 'receitas/elementoPagina/cabecalho.php'; ?>
 
-<div class="container my-4">
+<div class="container my-4" id="formulario1">
     <h2 class="text-center">Detalhes da Avaliação</h2>
-    <form>
+    <form id="formulario1">
         <div class="mb-3">
             <label class="form-label">Receita:</label>
             <input type="text" class="form-control" value="<?php echo htmlspecialchars($avaliacao['nome_rec']); ?>" disabled>

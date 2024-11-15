@@ -94,5 +94,6 @@ function abrirConfiguracoes() {
 window.location.href = "configuracoes.php";
 }
 
+//----------------------------------------
 
   

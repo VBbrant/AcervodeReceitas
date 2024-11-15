@@ -20,10 +20,8 @@
             </li>
         <?php endif; ?>
 
-        
-
+        <!-- Avaliações -->
         <?php if ($userRole == 'ADM' || $userRole == 'Degustador') : ?>
-            <!-- Avaliações -->
             <li class="has-submenu">
                 <a href="<?php echo BASE_URL; ?>receitas/Paginas/avaliacoes/listaAvaliacao.php" onclick="toggleSubmenu(this)">
                     <i class="fas fa-star"></i> Avaliações
@@ -35,8 +33,8 @@
             </li>
         <?php endif; ?>
 
+        <!-- Livros -->
         <?php if ($userRole == 'ADM' || $userRole == 'Editor') : ?>
-            <!-- Livros -->
             <li class="has-submenu">
                 <a href="<?php echo BASE_URL; ?>receitas/Paginas/livros/listaLivro.php" onclick="toggleSubmenu(this)">
                     <i class="fas fa-book"></i> Livros
@@ -49,8 +47,8 @@
             </li>
         <?php endif; ?>
 
+        <!-- Ingredientes, Medidas, Categorias e Metas -->
         <?php if ($userRole == 'ADM' || $userRole == 'Cozinheiro') : ?>
-            <!-- Ingredientes -->
             <li class="has-submenu">
                 <a href="<?php echo BASE_URL; ?>receitas/Paginas/ingredientes/listaIngrediente.php" onclick="toggleSubmenu(this)">
                     <i class="fas fa-pepper-hot"></i> Ingredientes
@@ -60,8 +58,7 @@
                     <li><a href="<?php echo BASE_URL; ?>receitas/Paginas/ingredientes/addIngrediente.php">Adicionar Ingrediente</a></li>
                 </ul>
             </li>
-
-            <!-- Medidas -->
+            
             <li class="has-submenu">
                 <a href="<?php echo BASE_URL; ?>receitas/Paginas/medidas/listaMedida.php" onclick="toggleSubmenu(this)">
                     <i class="fas fa-ruler"></i> Medidas
@@ -72,7 +69,6 @@
                 </ul>
             </li>
 
-            <!-- Categorias -->
             <li class="has-submenu">
                 <a href="<?php echo BASE_URL; ?>receitas/Paginas/categorias/listaCategoria.php" onclick="toggleSubmenu(this)">
                     <i class="fas fa-tags"></i> Categorias
@@ -82,21 +78,10 @@
                     <li><a href="<?php echo BASE_URL; ?>receitas/Paginas/categorias/addCategoria.php">Adicionar Categoria</a></li>
                 </ul>
             </li>
-
-            <!-- Metas -->
-            <li class="has-submenu">
-                <a href="<?php echo BASE_URL; ?>receitas/Paginas/metas/listaMeta.php" onclick="toggleSubmenu(this)">
-                    <i class="fas fa-bullseye"></i> Metas
-                    <i class="fas fa-chevron-down float-end"></i>
-                </a>
-                <ul class="submenu">
-                    <li><a href="<?php echo BASE_URL; ?>receitas/Paginas/metas/addMeta.php">Adicionar Meta</a></li>
-                </ul>
-            </li>
         <?php endif; ?>
 
+        <!-- Funcionários, Usuarios, e Parâmetros (exclusivo para ADM) -->
         <?php if ($userRole == 'ADM') : ?>
-            <!-- Funcionários -->
             <li class="has-submenu">
                 <a href="<?php echo BASE_URL; ?>receitas/Paginas/funcionarios/listaFuncionario.php" onclick="toggleSubmenu(this)">
                     <i class="fas fa-user"></i> Funcionários
@@ -116,6 +101,27 @@
                     <li><a href="<?php echo BASE_URL; ?>receitas/Paginas/usuarios/addUsuario.php">Adicionar Usuario</a></li>
                 </ul>
             </li>
-        <?php endif; ?>
+
+            <!-- Parâmetros -->
+            <li class="has-submenu">
+                <a href="<?php echo BASE_URL; ?>receitas/Paginas/parametros/parametros.php" onclick="toggleSubmenu(this)">
+                    <i class="fas fa-cogs"></i> Parâmetros
+                    <i class="fas fa-chevron-down float-end"></i>
+                </a>
+                <ul class="submenu">
+                    <li><a href="<?php echo BASE_URL; ?>receitas/Paginas/parametros/metas/listaMeta.php" onclick="toggleSubmenu(this)">
+                        <i class="fas fa-bullseye"></i> Metas
+                        <i class="fas fa-chevron-down float-end"></i>
+                    </a></li>
+
+                    <li><a href="<?php echo BASE_URL; ?>receitas/Paginas/parametros/metas/addMeta.php">Adicionar Meta</a></li>
+                    <li><a href="<?php echo BASE_URL; ?>receitas/Paginas/parametros/logSistema.php" onclick="toggleSubmenu(this)">
+                        <i class="fas fa-history"></i> Log do Sistema
+                        <i class="fas fa-chevron-down float-end"></i>
+                    </a></li>
+                </ul>
+            </li>
+       
+            <?php endif; ?>
     </ul>
 </nav>

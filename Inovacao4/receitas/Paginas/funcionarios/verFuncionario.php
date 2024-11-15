@@ -8,14 +8,26 @@ if (!$idFuncionario) {
     exit;
 }
 
-// Consulta para obter os detalhes do ingrediente
-$sql = "SELECT * FROM funcionario WHERE idFun = ?";
+// Consulta para obter os detalhes do funcionário
+$sql = "SELECT f.*, c.nome AS cargo_nome, c.idCargo 
+        FROM funcionario f
+        LEFT JOIN cargo c ON c.idCargo = f.idCargo 
+        WHERE f.idFun = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $idFuncionario);
 $stmt->execute();
 $result = $stmt->get_result();
 $funcionario = $result->fetch_assoc();
+
+// Consulta para obter todos os cargos
+$sql_cargos = "SELECT idCargo, nome FROM cargo";
+$result_cargos = $conn->query($sql_cargos);
+$cargos = $result_cargos->fetch_all(MYSQLI_ASSOC);
+
 $stmt->close();
+
+
+
 ?>
 
 <!DOCTYPE html>
@@ -55,6 +67,10 @@ $stmt->close();
         <div class="mb-3">
             <label class="form-label">Salário:</label>
             <input type="number" class="form-control" value="<?php echo htmlspecialchars($funcionario['salario']); ?>" disabled>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Cargo:</label>
+            <input type="text" class="form-control" value="<?php echo htmlspecialchars($funcionario['cargo_nome']); ?>" disabled>
         </div>
         <div class="mb-3">
             <label class="form-label">Apelido:</label>

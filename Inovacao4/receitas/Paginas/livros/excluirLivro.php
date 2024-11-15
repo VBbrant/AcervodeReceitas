@@ -1,6 +1,8 @@
 <?php
+session_start();
 require_once "../../../config.php";
 require_once ROOT_PATH . "receitas/conn.php";
+$idUsuario = $_SESSION['idLogin'];
 
 $idLivro = $_GET['id'] ?? null;
 if (!$idLivro) {
@@ -12,30 +14,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $conn->begin_transaction();
 
     try {
-        // Recupera os dados do livro para verificar a imagem
-        $sql_get_book = "SELECT arquivo_imagem FROM livro WHERE idLivro = ?";
-        $stmt_get_book = $conn->prepare($sql_get_book);
-        $stmt_get_book->bind_param("i", $idLivro);
-        $stmt_get_book->execute();
-        $result_book = $stmt_get_book->get_result();
-        $book = $result_book->fetch_assoc();
-        
-        // Se o livro tem uma imagem, exclui da pasta
-        if ($book['arquivo_imagem']) {
-            $imagePath = "../../../receitas/imagens/livros/" . $book['arquivo_imagem'];
-            if (file_exists($imagePath)) {
-                unlink($imagePath);  // Deleta a imagem
-            }
-        }
+        // Busca o nome do livro para o log
+        $sql_nome_livro = "SELECT titulo FROM livro WHERE idLivro = ?";
+        $stmt_nome_livro = $conn->prepare($sql_nome_livro);
+        $stmt_nome_livro->bind_param("i", $idLivro);
+        $stmt_nome_livro->execute();
+        $stmt_nome_livro->bind_result($nome_livro);
+        $stmt_nome_livro->fetch();
+        $stmt_nome_livro->close();
 
-        // Exclui o livro da tabela
-        $sql_delete_book = "DELETE FROM livro WHERE idLivro = ?";
-        $stmt_delete_book = $conn->prepare($sql_delete_book);
-        $stmt_delete_book->bind_param("i", $idLivro);
-        $stmt_delete_book->execute();
+        // Exclui livro
+        $sql_delete_livro = "DELETE FROM livro WHERE idLivro = ?";
+        $stmt_delete_livro = $conn->prepare($sql_delete_livro);
+        $stmt_delete_livro->bind_param("i", $idLivro);
+        $stmt_delete_livro->execute();
+        $stmt_delete_livro->close();
 
         $conn->commit();
-        
+
+        registrarLog($conn, $idUsuario, "exclusao", "Exclusão do livro '$nome_livro' realizada com sucesso!");
         header("Location: " . BASE_URL . "receitas/Paginas/livros/listaLivro.php?excluido=1");
         exit;
     } catch (Exception $e) {
@@ -43,7 +40,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "Erro ao excluir o livro: " . $e->getMessage();
     }
 }
+
+function registrarLog($conn, $idUsuario, $tipo, $descricao) {
+    $sql_log = "INSERT INTO log_sistema (idUsuario, tipo_acao, acao, data) VALUES (?, ?, ?, NOW())";
+    $stmt_log = $conn->prepare($sql_log);
+    $stmt_log->bind_param("iss", $idUsuario, $tipo, $descricao);
+    $stmt_log->execute();
+    $stmt_log->close();
+}
 ?>
+
 
 <!DOCTYPE html>
 <html lang="pt-br">

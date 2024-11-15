@@ -1,6 +1,7 @@
-<?php
+<?php session_start();
 require_once "../../config.php";
 require_once ROOT_PATH . "receitas/conn.php";
+$idUsuario = $_SESSION['idLogin'];
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $form_type = $_POST['form_type'] ?? '';
@@ -15,7 +16,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
 
                 $nome_rec = $_POST['nome_rec'];
-                $data_criacao = $_POST['data_criacao'];
                 $modo_preparo = $_POST['modo_preparo'];
                 $num_porcao = $_POST['num_porcao'];
                 $descricao = $_POST['descricao'];
@@ -45,7 +45,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $conn->begin_transaction();
                 $sql_update_receita = "
                     UPDATE receita 
-                    SET nome_rec = ?, data_criacao = ?, modo_preparo = ?, num_porcao = ?, descricao = ?, 
+                    SET nome_rec = ?, modo_preparo = ?, num_porcao = ?, descricao = ?, 
                         inedita = ?, link_imagem = ?, arquivo_imagem = ?, idCozinheiro = ?, idCategoria = ?
                     WHERE idReceita = ?
                 ";
@@ -54,8 +54,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $imagem_final = $arquivo_imagem ?? null;
 
                 $stmt->bind_param(
-                    "sssissssiii", 
-                    $nome_rec, $data_criacao, $modo_preparo, $num_porcao, $descricao, 
+                    "ssissssiii", 
+                    $nome_rec, $modo_preparo, $num_porcao, $descricao, 
                     $inedita, $link_imagem, $imagem_final, $id_cozinheiro, $id_categoria, $idReceita
                 );
                 $stmt->execute();
@@ -85,6 +85,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
 
                 $conn->commit();
+                registrarLog($conn, $idUsuario, "edicao", "Receita '$nome_rec' editada com sucesso!");
                 echo "<script>alert('Receita atualizada com sucesso!'); window.location.href='" . BASE_URL . "receitas/Paginas/receitas/verReceita.php';</script>";
                 break;
 
@@ -103,6 +104,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $stmt->bind_param("ss", $nome_ingrediente, $descricao);
                 }
                 $stmt->execute();
+                registrarLog($conn, $idUsuario, "edicao", "Ingrediente '$nome_ingrediente' editada com sucesso!");
                 echo "<script>alert('Ingrediente atualizado com sucesso!'); window.location.href='" . BASE_URL . "receitas/Paginas/ingredientes/listaIngrediente.php';</script>";
                 break;
 
@@ -120,8 +122,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $stmt->bind_param("s", $nome_medida);
                 }
                 $stmt->execute();
+                registrarLog($conn, $idUsuario, "edicao", "Sistema '$nome_medida' editada com sucesso!");
                 echo "<script>alert('Medida atualizada com sucesso!'); window.location.href='" . BASE_URL . "receitas/Paginas/medidas/listaMedida.php';</script>";
                 break;
+
             case 'categoria':
                 $id_categoria = $_POST["id_categoria"] ?? null;
                 $categoria = $_POST["nome"];
@@ -136,38 +140,74 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $stmt->bind_param("s", $categoria);
                 }
                 $stmt->execute();
+                registrarLog($conn, $idUsuario, "edicao", "Categoria '$categoria' editada com sucesso!");
                 echo "<script>alert('Categoria atualizada com sucesso!'); window.location.href='" . BASE_URL . "receitas/Paginas/categorias/listaCategoria.php';</script>";
+                break;
 
             case 'livro':
                 if ($_POST['form_type'] == 'livro') {
-                    $idLivro = $_POST['idLivro'];
-                    $nome = $_POST['nome'];
-                    $isbn = $_POST['codigo'];
-                    $idEditor = $_POST['id_editor'];
-                    $linkImagem = $_POST['link_imagem'] ?? null;
-                    $arquivoImagem = $_FILES['arquivo_imagem'] ?? null;
-                
-                    // Atualizar imagem se houver upload
-                    $imagemCaminho = null;
-                    if (!empty($arquivoImagem['name'])) {
-                        $result = $conn->query("SELECT arquivo_imagem FROM livro WHERE idLivro = $idLivro");
-                        $livro = $result->fetch_assoc();
-                        if ($livro['arquivo_imagem']) unlink(__DIR__ . $livro['arquivo_imagem']);
-                
-                        $ext = pathinfo($arquivoImagem['name'], PATHINFO_EXTENSION);
-                        $imagemCaminho = "/imagens/livros/". uniqid() . "." . $ext;
-                        move_uploaded_file($arquivoImagem['tmp_name'], __DIR__ . $imagemCaminho);
+                    try {
+                        $idLivro = $_POST['idLivro'];
+                        $nome = $_POST['nome'];
+                        $isbn = $_POST['codigo'];
+                        $idEditor = $_POST['id_editor'];
+                        $linkImagem = $_POST['link_imagem'] ?? null;
+                        $arquivoImagem = $_FILES['arquivo_imagem'] ?? null;
+                    
+                        // Update image if there's an upload
+                        $imagemCaminho = null;
+                        if (!empty($arquivoImagem['name'])) {
+                            $result_livro = $conn->query("SELECT arquivo_imagem FROM livro WHERE idLivro = $idLivro");
+                            
+                            if ($result_livro) {
+                                $livro = $result_livro->fetch_assoc();
+                                if ($livro && $livro['arquivo_imagem']) {
+                                    unlink(ROOT_PATH . $livro['arquivo_imagem']);
+                                }
+                            }
+            
+                            $ext = pathinfo($arquivoImagem['name'], PATHINFO_EXTENSION);
+                            $imagemCaminho = "receitas/imagens/livro/" . uniqid() . "." . $ext;
+                            move_uploaded_file($arquivoImagem['tmp_name'], ROOT_PATH . $imagemCaminho);
+                        }
+                    
+                        // Update book details
+                        $sql_livro = "UPDATE livro SET titulo = ?, isbn = ?, idEditor = ?, link_imagem = ?, arquivo_imagem = ? WHERE idLivro = ?";
+                        $stmt_livro = $conn->prepare($sql_livro);
+            
+                        if (!$stmt_livro) {
+                            throw new Exception("Failed to prepare statement: " . $conn->error);
+                        }
+            
+                        $stmt_livro->bind_param("ssissi", $nome, $isbn, $idEditor, $linkImagem, $imagemCaminho, $idLivro);
+                        $stmt_livro->execute();
+                        registrarLog($conn, $idUsuario, "edicao", "Livro '$nome' editado com sucesso!");
+                        
+                        if ($stmt_livro->error) {
+                            throw new Exception("Execute failed: " . $stmt->error);
+                        }
+                    } catch (Exception $e) {
+                        // Handle the error, log it, or display an error message
+                        echo "An error occurred: " . $e->getMessage();
+                    } finally {
+                        // Clean up resources
+                        if (isset($stmt_livro) && $stmt_livro !== false) {
+                            $stmt_livro->close();
+                        }
+                        if (isset($result_livro) && $result_livro !== false) {
+                            $result_livro->close();
+                        }
+                        if ($_SESSION['cargo'] === "Editor") {
+                            header("Location: " . BASE_URL . "/receitas/Paginas/livros/meusLivros.php?sucesso=1");
+                            exit(); // Certifique-se de sair após o redirecionamento
+                        } else{
+                            header("Location: " . BASE_URL . "receitas/Paginas/livros/listaLivro.php?sucesso=1");
+                            exit();
+                        }
                     }
-                
-                    // Atualizar livro
-                    $sql = "UPDATE livro SET titulo = ?, isbn = ?, idEditor = ?, link_imagem = ?, arquivo_imagem = ? WHERE idLivro = ?";
-                    $stmt = $conn->prepare($sql);
-                    $stmt->bind_param("ssissi", $nome, $isbn, $idEditor, $linkImagem, $imagemCaminho, $idLivro);
-                    $stmt->execute();
-                
-                    header("Location: successPage.php");
                 }
                 break;
+                
             
             case 'avaliacao':
                 $idAvaliacao = $_POST['idAvaliacao'] ?? null;
@@ -179,9 +219,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     echo "<script>alert('Dados incompletos!'); window.history.back();</script>";
                     exit;
                 }
-            
+                $conn->begin_transaction();
                 try {
-                    $conn->begin_transaction();
+                    // Recuperar o nome da receita
+                    $sql_receita = "SELECT nome_rec FROM receita WHERE idReceita = ?";
+                    $stmt_receita = $conn->prepare($sql_receita);
+                    $stmt_receita->bind_param("i", $idReceita);
+                    $stmt_receita->execute();
+                    $stmt_receita->bind_result($nome_receita);
+                    $stmt_receita->fetch();
+                    $stmt_receita->close();
             
                     $sql_update_degustacao = "
                         UPDATE degustacao 
@@ -210,7 +257,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $stmt_comentario->execute();
             
                     $conn->commit();
-            
+                    registrarLog($conn, $idUsuario, "edicao", "Avaliação da receita '$nome_receita' editada com sucesso!");
                     echo "<script>alert('Avaliação atualizada com sucesso!'); window.location.href='" . BASE_URL . "receitas/Paginas/avaliacoes/listaAvaliacao.php';</script>";
                 } catch (Exception $e) {
                     $conn->rollback();
@@ -250,7 +297,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $stmt_funcionario->execute();
         
                     $conn->commit();
-        
+                    registrarLog($conn, $idUsuario, "edicao", "Funcionario '$nome' editado(a) com sucesso!");
                     echo "<script>alert('Funcionário atualizado com sucesso!'); window.location.href='" . BASE_URL . "receitas/Paginas/funcionarios/listaFuncionario.php';</script>";
                 } catch (Exception $e) {
                     var_dump($idFuncionario,$idCargo);
@@ -266,6 +313,39 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
                 break;
             
+            case 'meta':
+                try {
+                    $idMeta = $_POST['idMeta'];
+                    $idCozinheiro = $_POST['idCozinheiro'];
+                    $metaReceitas = $_POST['metaReceitas'];
+                    $dataInicio = $_POST['dataInicio'];
+                    $dataFinal = $_POST['dataFinal'];
+
+                    // Recuperar o nome do cozinheiro
+                    $sql_cozinheiro = "SELECT nome FROM funcionario WHERE idFun = ?";
+                    $stmt_cozinheiro = $conn->prepare($sql_cozinheiro);
+                    $stmt_cozinheiro->bind_param("i", $idCozinheiro);
+                    $stmt_cozinheiro->execute();
+                    $stmt_cozinheiro->bind_result($nome_cozinheiro);
+                    $stmt_cozinheiro->fetch();
+                    $stmt_cozinheiro->close();
+    
+                    $sql = "UPDATE Metas SET idCozinheiro = ?, metaReceitas = ?, dataInicio = ?, dataFinal = ? WHERE idMeta = ?";
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bind_param("iissi", $idCozinheiro, $metaReceitas, $dataInicio, $dataFinal, $idMeta);
+                    $stmt->execute();
+                    registrarLog($conn, $idUsuario, "edicao", "Receita '$nome_cozinheiro' editada com sucesso!");
+
+                    header("Location: ../Paginas/parametros/metas/listaMeta.php");
+                    exit;
+                } catch (Exception $e) {
+                    echo "Erro ao editar meta: " . $e->getMessage();
+                } finally {
+                    $stmt->close();
+                    $conn->close();
+                }
+                break;
+        
             
                 
             default:
@@ -282,4 +362,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $conn->close();
     }
 }
+function registrarLog($conn, $idUsuario, $tipo, $descricao) {
+    $sql_log = "INSERT INTO log_sistema (idUsuario, tipo_acao, acao, data) VALUES (?, ?, ?, NOW())";
+    $stmt_log = $conn->prepare($sql_log);
+
+    if ($stmt_log === false) {
+        die('Erro na preparação da consulta: ' . $conn->error);
+    }
+
+    $stmt_log->bind_param("iss", $idUsuario, $tipo, $descricao);
+
+    if (!$stmt_log->execute()) {
+        die('Erro ao executar a consulta: ' . $stmt_log->error);
+    }
+
+    $stmt_log->close();
+}
+
+
+
 ?>

@@ -1,4 +1,6 @@
-<?php
+<?php session_start();
+$idUsuario = $_SESSION['idLogin'];
+
 require_once "../../config.php";
 require_once ROOT_PATH . "receitas/conn.php";
 
@@ -9,28 +11,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         case 'receita':
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $nome_rec = $_POST['nome_rec'];
-                $data_criacao = $_POST['data_criacao'];
                 $modo_preparo = $_POST['modo_preparo'];
                 $num_porcao = $_POST['num_porcao'];
                 $descricao = $_POST['descricao'];
                 $inedita = $_POST['inedita'];
                 $id_cozinheiro = $_POST['id_cozinheiro'];
                 $id_categoria = $_POST['id_categoria'];
-    
+        
                 $link_imagem = null;
                 $arquivo_imagem = null;
-    
+        
                 if (isset($_FILES['arquivo_imagem']) && $_FILES['arquivo_imagem']['error'] === UPLOAD_ERR_OK) {
                     $diretorioDestino = ROOT_PATH . "receitas/imagens/receita/";
                     $extensao = strtolower(pathinfo($_FILES['arquivo_imagem']['name'], PATHINFO_EXTENSION));
-                    
+        
                     $nomeArquivo = preg_replace('/[^\w-]/', '', $nome_rec) . "_" . uniqid() . "." . $extensao;
                     $arquivo_imagem = "receitas/imagens/receita/" . $nomeArquivo;
-    
+        
                     if (!is_dir($diretorioDestino)) {
                         mkdir($diretorioDestino, 0777, true);
                     }
-    
+        
                     if (!move_uploaded_file($_FILES['arquivo_imagem']['tmp_name'], $diretorioDestino . $nomeArquivo)) {
                         echo "Erro ao fazer upload da imagem.";
                         exit;
@@ -38,55 +39,66 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 } elseif (!empty($_POST['link_imagem'])) {
                     $link_imagem = $_POST['link_imagem'];
                 }
-    
-    
+        
                 $conn->begin_transaction();
-    
+        
                 try {
-                    $sql_receita = "INSERT INTO receita (nome_rec, data_criacao, modo_preparo, num_porcao, descricao, inedita, link_imagem, arquivo_imagem, idCozinheiro, idCategoria) 
-                                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    // Inserir a receita
+                    $sql_receita = "INSERT INTO receita (nome_rec, modo_preparo, num_porcao, descricao, inedita, link_imagem, arquivo_imagem, idCozinheiro, idCategoria) 
+                                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
                     $stmt = $conn->prepare($sql_receita);
-                    $stmt->bind_param("sssissssii", $nome_rec, $data_criacao, $modo_preparo, $num_porcao, $descricao, $inedita, $link_imagem, $arquivo_imagem, $id_cozinheiro, $id_categoria);
+                    $stmt->bind_param("ssissssii", $nome_rec, $modo_preparo, $num_porcao, $descricao, $inedita, $link_imagem, $arquivo_imagem, $id_cozinheiro, $id_categoria);
                     $stmt->execute();
-                    
+        
                     $id_receita = $conn->insert_id;
                     $ingredientes = isset($_POST['ingredientes']) ? json_decode($_POST['ingredientes'], true) : null;
-    
+        
                     // Verifique se há ingredientes para inserir
                     if (is_array($ingredientes) && count($ingredientes) > 0) {
                         $sql_ingrediente = "INSERT INTO receita_ingrediente (idReceita, idIngrediente, idMedida, quantidade) VALUES (?, ?, ?, ?)";
                         $stmt_ingrediente = $conn->prepare($sql_ingrediente);
-    
+        
                         foreach ($ingredientes as $ingrediente) {
                             $idIngrediente = $ingrediente['idIngrediente'];
                             $quantidade = $ingrediente['quantidade'];
                             $idMedida = $ingrediente['idMedida'];
-    
+        
                             $stmt_ingrediente->bind_param("iiid", $id_receita, $idIngrediente, $idMedida, $quantidade);
                             $stmt_ingrediente->execute();
                         }
-                        
+        
                         echo "Ingredientes adicionados com sucesso!";
                     } else {
                         echo "Nenhum ingrediente foi selecionado.";
                     }
-    
-    
+        
+                    // Atualizar as metas
+                    $metaUpdateSql = "UPDATE Metas 
+                        SET receitasAtingidas = receitasAtingidas + 1 
+                        WHERE idCozinheiro = ? 
+                        AND receitasAtingidas < metaReceitas";
+        
+                    $stmt = $conn->prepare($metaUpdateSql);
+                    $stmt->bind_param("i", $id_cozinheiro);
+                    $stmt->execute();
+        
                     $conn->commit();
+                    registrarLog($conn, $idUsuario, "inclusao", "Receita '$nome_rec' adicionada com sucesso!");
                     echo "<script>alert('Receita adicionada com sucesso!'); window.location.href='" . BASE_URL . "receitas/Paginas/home.php';</script>";
                 } catch (Exception $e) {
                     $conn->rollback();
                     echo "<script>alert('Erro ao processar o formulário: " . $e->getMessage() . "'); window.history.back();</script>";
                 } finally {
-                    $stmt->close();
+                    if (isset($stmt)) {
+                        $stmt->close();
+                    }
                     if (isset($stmt_ingrediente)) {
                         $stmt_ingrediente->close();
-                    
                     }
-    
                 }
             }
             break;
+        
         
         case 'ingrediente' :
             $nome_ingrediente = $_POST['nome'];
@@ -98,6 +110,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             try {
                 $stmt->execute();
+                registrarLog($conn, $idUsuario, "inclusao", "Ingrediente '$nome_ingrediente' adicionado com sucesso!");
                 echo "<script>alert('Ingrediente adicionado com sucesso!'); window.location.href='" . BASE_URL . "receitas/Paginas/ingredientes/listaIngrediente.php';</script>";
             } catch (Exception $e) {
                 echo "<script>alert('Erro ao processar o formulário: " . $e->getMessage() . "'); window.history.back();</script>";
@@ -114,6 +127,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             try{
                 $stmt->execute();
+                registrarLog($conn, $idUsuario, "inclusao", "Medida '$sistema' adicionada com sucesso!");
                 echo "<script>alert('Medida adicionada com sucesso!'); window.location.href='" . BASE_URL . "receitas/Paginas/medidas/listaMedida.php';</script>";
             } catch (Exception $e){
                 echo "<script>alert('Erro ao processar o formulário: " . $e->getMessage() . "'); window.history.back();</script>"; 
@@ -130,6 +144,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             try{
                 $stmt->execute();
+                registrarLog($conn, $idUsuario, "inclusao", "Categoria '$categoria' adicionada com sucesso!");
                 echo "<script>alert('Medida adicionada com sucesso!'); window.location.href='" . BASE_URL . "receitas/Paginas/categorias/listaCategoria.php';</script>";
             } catch (Exception $e){
                 echo "<script>alert('Erro ao processar o formulário: " . $e->getMessage() . "'); window.history.back();</script>"; 
@@ -149,8 +164,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $imagemCaminho = null;
                 if (!empty($arquivoImagem['name'])) {
                     $ext = pathinfo($arquivoImagem['name'], PATHINFO_EXTENSION);
-                    $imagemCaminho = "/imagens/livros/". uniqid() . "." . $ext;
-                    move_uploaded_file($arquivoImagem['tmp_name'], __DIR__ . $imagemCaminho);
+                    $imagemCaminho = "receitas/imagens/livro/". uniqid() . "." . $ext;
+                    move_uploaded_file($arquivoImagem['tmp_name'], ROOT_PATH . $imagemCaminho);
                 }
             
                 // Salvar no banco de dados
@@ -167,8 +182,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     }
                 }
             
+                registrarLog($conn, $idUsuario, "inclusao", "Livro '$nome' adicionado com sucesso!");
+
                 if ($_SESSION['cargo'] === "Editor") {
-                    header("Location: " . BASE_URL . "/receitas/Paginas/livros/meuLivro.php?sucesso=1");
+                    header("Location: " . BASE_URL . "/receitas/Paginas/livros/meusLivros.php?sucesso=1");
                     exit(); // Certifique-se de sair após o redirecionamento
                 } else{
                     header("Location: " . BASE_URL . "receitas/Paginas/livros/listaLivro.php?sucesso=1");
@@ -177,9 +194,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
             
             break;
-            
-            
-            
+             
         case 'avaliacao':
             $idReceita = $_POST['idReceita'] ?? null;
             $notaDegustacao = $_POST['nota_degustacao'] ?? null;
@@ -195,6 +210,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $conn->begin_transaction();
             
             try {
+                // Recuperar o nome da receita
+                $sql_receita = "SELECT nome_rec FROM receita WHERE idReceita = ?";
+                $stmt_receita = $conn->prepare($sql_receita);
+                $stmt_receita->bind_param("i", $idReceita);
+                $stmt_receita->execute();
+                $stmt_receita->bind_result($nome_receita);
+                $stmt_receita->fetch();
+                $stmt_receita->close();
+                
+                // Inserir a avaliação
                 $sql_degustacao = "INSERT INTO degustacao (data_degustacao, nota_degustacao, idDegustador, idReceita) VALUES (?, ?, ?, ?)";
                 $stmt_degustacao = $conn->prepare($sql_degustacao);
                 $stmt_degustacao->bind_param("sdii", $dataDegustacao, $notaDegustacao, $idDegustador, $idReceita);
@@ -211,7 +236,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
             
                 $conn->commit();
-            
+                
+                // Registrar log
+                registrarLog($conn, $idUsuario, "inclusao", "Avaliação para a receita '$nome_receita' adicionada com sucesso!");
+                
                 echo "<script>alert('Degustação adicionada com sucesso!'); window.location.href='" . BASE_URL . "receitas/Paginas/avaliacoes/listaAvaliacao.php';</script>";
             } catch (Exception $e) {
                 $conn->rollback();
@@ -221,6 +249,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
             
             break;
+            
         case 'funcionario':
             $nome = $_POST['nome'] ?? null;
             $rg = $_POST['rg'] ?? null;
@@ -262,6 +291,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
     
                 $conn->commit();
+                registrarLog($conn, $idUsuario, "inclusao", "Funcionário '$nome' adicionado com sucesso!");
             } catch (Exception $e) {
                 $conn->rollback();
                 echo "<script>alert('Erro ao adicionar funcionário: " . $e->getMessage() . "'); window.history.back();</script>";
@@ -270,6 +300,46 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $stmt_close->close();
             }
             break;
+        case 'meta':
+            try {
+                $idCozinheiro = $_POST['idCozinheiro'];
+                $metaReceitas = $_POST['metaReceitas'];
+                $dataInicio = $_POST['dataInicio'];
+                $dataFinal = $_POST['dataFinal'];
+                
+                // Recuperar o nome do cozinheiro
+                $sql_cozinheiro = "SELECT nome FROM funcionario WHERE idFun = ?";
+                $stmt_cozinheiro = $conn->prepare($sql_cozinheiro);
+                $stmt_cozinheiro->bind_param("i", $idCozinheiro);
+                $stmt_cozinheiro->execute();
+                $stmt_cozinheiro->bind_result($nome_cozinheiro);
+                $stmt_cozinheiro->fetch();
+                $stmt_cozinheiro->close();
+        
+                if (!$nome_cozinheiro) {
+                    echo "<script>alert('Cozinheiro não encontrado!'); window.history.back();</script>";
+                    exit;
+                }
+        
+                // Inserir a meta
+                $sql = "INSERT INTO Metas (idCozinheiro, metaReceitas, dataInicio, dataFinal) VALUES (?, ?, ?, ?)";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("iiss", $idCozinheiro, $metaReceitas, $dataInicio, $dataFinal);
+                $stmt->execute();
+        
+                // Registrar log
+                registrarLog($conn, $idUsuario, "inclusao", "Meta de receitas para o cozinheiro '$nome_cozinheiro' definida com sucesso!");
+        
+                header("Location: ../Paginas/parametros/metas/listaMeta.php");
+                exit;
+            } catch (Exception $e) {
+                echo "Erro ao adicionar meta: " . $e->getMessage();
+            } finally {
+                $stmt->close();
+                $conn->close();
+            }
+            break;
+            
             
 
         default:
@@ -277,5 +347,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             break;
     }
 }
+
+function registrarLog($conn, $idUsuario, $tipo, $descricao) {
+    $sql_log = "INSERT INTO log_sistema (idUsuario, tipo_acao, acao, data) VALUES (?, ?, ?, NOW())";
+    $stmt_log = $conn->prepare($sql_log);
+    
+    // Verificar se a preparação foi bem-sucedida
+    if ($stmt_log === false) {
+        die('Erro na preparação da consulta: ' . $conn->error);
+    }
+    
+    $stmt_log->bind_param("iss", $idUsuario, $tipo, $descricao);
+
+    if (!$stmt_log->execute()) {
+        die('Erro ao executar a consulta: ' . $stmt_log->error);
+    }
+
+    // Fechar a declaração
+    $stmt_log->close();
+}
+
+
+
+
 $conn->close();
 ?>

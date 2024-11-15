@@ -69,10 +69,12 @@ CREATE TABLE `livro` (
   `idEditor` int DEFAULT NULL,
   `link_imagem` varchar(255) DEFAULT NULL,
   `arquivo_imagem` varchar(100) DEFAULT NULL,
+  `dataEntrega` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`idLivro`),
   KEY `idEditor` (`idEditor`),
   CONSTRAINT `livro_ibfk_1` FOREIGN KEY (`idEditor`) REFERENCES `funcionario` (`idFun`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 
 CREATE TABLE `medida` (
   `idMedida` int NOT NULL AUTO_INCREMENT,
@@ -84,7 +86,7 @@ CREATE TABLE `medida` (
 CREATE TABLE `receita` (
   `idReceita` int NOT NULL AUTO_INCREMENT,
   `nome_rec` varchar(100) NOT NULL,
-  `data_criacao` date DEFAULT NULL,
+  `data_criacao` date NOT NULL DEFAULT (CURRENT_DATE), -- Preenchido automaticamente com a data atual
   `modo_preparo` text,
   `num_porcao` int DEFAULT NULL,
   `descricao` text,
@@ -93,11 +95,14 @@ CREATE TABLE `receita` (
   `arquivo_imagem` varchar (255) DEFAULT NULL,
   `idCozinheiro` int DEFAULT NULL,
   `idCategoria` INT,
+  `dataEntrega` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`idReceita`),
   KEY `idCozinheiro` (`idCozinheiro`),
   CONSTRAINT `receita_ibfk_1` FOREIGN KEY (`idCozinheiro`) REFERENCES `funcionario` (`idFun`),
   CONSTRAINT `fk_receita_categoria` FOREIGN KEY (`idCategoria`) REFERENCES `categoria` (`idCategoria`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
 
 -- Tabela intermediária para ligar receita, ingrediente e medida
 CREATE TABLE `receita_ingrediente` (
@@ -105,6 +110,7 @@ CREATE TABLE `receita_ingrediente` (
   `idReceita` int NOT NULL,
   `idIngrediente` int NOT NULL,
   `idMedida` int NOT NULL,
+  `quantidade` DECIMAL(10,2) NOT NULL,
   PRIMARY KEY (`idReceitaIngrediente`),
   KEY `idReceita` (`idReceita`),
   KEY `idIngrediente` (`idIngrediente`),
@@ -114,22 +120,15 @@ CREATE TABLE `receita_ingrediente` (
   CONSTRAINT `receita_ingrediente_ibfk_3` FOREIGN KEY (`idMedida`) REFERENCES `medida` (`idMedida`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-ALTER TABLE `receita_ingrediente`
-ADD COLUMN `quantidade` DECIMAL(10,2) NOT NULL;
 
 CREATE TABLE `livro_receita` (
   `idLivro` int NOT NULL,
   `idReceita` int NOT NULL,
   PRIMARY KEY (`idLivro`, `idReceita`),
-  FOREIGN KEY (`idLivro`) REFERENCES `livro` (`idLivro`),
-  FOREIGN KEY (`idReceita`) REFERENCES `receita` (`idReceita`)
+  FOREIGN KEY (`idLivro`) REFERENCES `livro` (`idLivro`) ON DELETE CASCADE,
+  FOREIGN KEY (`idReceita`) REFERENCES `receita` (`idReceita`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-ALTER TABLE livro_receita
-DROP FOREIGN KEY livro_receita_ibfk_1;
-
-ALTER TABLE livro_receita
-ADD CONSTRAINT livro_receita_ibfk_1 FOREIGN KEY (idLivro) REFERENCES livro(idLivro) ON DELETE CASCADE;
 
 
 CREATE TABLE `degustacao` (
@@ -141,9 +140,10 @@ CREATE TABLE `degustacao` (
   PRIMARY KEY (`idDegustacao`),
   KEY `idDegustador` (`idDegustador`),
   KEY `idReceita` (`idReceita`),
-  CONSTRAINT `degustacao_ibfk_1` FOREIGN KEY (`idDegustador`) REFERENCES `funcionario` (`idFun`),
-  CONSTRAINT `degustacao_ibfk_2` FOREIGN KEY (`idReceita`) REFERENCES `receita` (`idReceita`)
+  CONSTRAINT `degustacao_ibfk_1` FOREIGN KEY (`idDegustador`) REFERENCES `funcionario` (`idFun`) ON DELETE CASCADE,
+  CONSTRAINT `degustacao_ibfk_2` FOREIGN KEY (`idReceita`) REFERENCES `receita` (`idReceita`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 
 CREATE TABLE `referencia` (
   `idReferencia` int NOT NULL AUTO_INCREMENT,
@@ -171,6 +171,29 @@ CREATE TABLE `restaurante` (
   `telefone` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`idRestaurante`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `Metas` (
+    `idMeta` INT PRIMARY KEY AUTO_INCREMENT,
+    `idCozinheiro` INT NOT NULL,
+    `metaReceitas` INT NOT NULL,
+    `receitasAtingidas` INT DEFAULT 0, -- Armazena o número de receitas atingidas
+    `dataInicio` DATE NOT NULL,
+    `dataFinal` DATE NOT NULL,
+    FOREIGN KEY (`idCozinheiro`) REFERENCES `funcionario`(`idFun`)
+);
+
+-- ---------------------------
+
+CREATE TABLE log_sistema (
+    idLog INT AUTO_INCREMENT PRIMARY KEY,
+    idUsuario INT NOT NULL, -- Referência ao id do funcionário (ou outro tipo de usuário)
+    acao TEXT NOT NULL, -- Descrição da ação (exemplo: "Adicionou uma nova receita")
+    tipo_acao ENUM('inclusao', 'edicao', 'exclusao', 'exclusaoEmMassa','outro') NOT NULL, -- Tipo de ação
+    data TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Data e hora da ação
+    FOREIGN KEY (idUsuario) REFERENCES funcionario(idFun) -- Referência à tabela de funcionários (ou outra tabela de usuários)
+);
+
+
 
 
 SET SQL_SAFE_UPDATES = 0;
@@ -204,11 +227,11 @@ INSERT INTO categoria (nome) VALUES
 ('Bebidas');
 
 -- Agora podemos inserir as receitas (depende de funcionario como cozinheiro)
-INSERT INTO receita (nome_rec, data_criacao, modo_preparo, num_porcao, descricao, inedita, arquivo_imagem, idCozinheiro, idCategoria) VALUES
-('Arras Carne Seca', '2023-01-15', 'Modo de preparo da carne seca...', 4, 'Deliciosa carne seca desfiada, temperada com especiarias.', 'S', 'receitas/imagens/arrasCarneSeca.png', 7, 1),
-('Churrasco Maracanã', '2023-02-20', 'Modo de preparo do churrasco...', 6, 'O famoso Churrasco Maracanã é uma verdadeira explosão de sabores.', 'N', 'receitas/imagens/churrascoMaracana.png', 7, 1),
-('Feijoada', '2023-03-10', 'Modo de preparo da feijoada...', 8, 'Feijoada completa e saborosa, feita com uma seleção especial de carnes.', 'N', 'receitas/imagens/feijoada.png', 7, 1),
-('Strogonoff', '2023-04-25', 'Modo de preparo do strogonoff...', 5, 'Clássico strogonoff de carne, cremoso e rico em sabor.', 'N', 'receitas/imagens/strogonoff.png', 7, 1);
+INSERT INTO receita (nome_rec, modo_preparo, num_porcao, descricao, inedita, arquivo_imagem, idCozinheiro, idCategoria) VALUES
+('Arras Carne Seca', 'Modo de preparo da carne seca...', 4, 'Deliciosa carne seca desfiada, temperada com especiarias.', 'S', 'receitas/imagens/arrasCarneSeca.png', 7, 1),
+('Churrasco Maracanã', 'Modo de preparo do churrasco...', 6, 'O famoso Churrasco Maracanã é uma verdadeira explosão de sabores.', 'N', 'receitas/imagens/churrascoMaracana.png', 7, 1),
+('Feijoada', 'Modo de preparo da feijoada...', 8, 'Feijoada completa e saborosa, feita com uma seleção especial de carnes.', 'N', 'receitas/imagens/feijoada.png', 7, 1),
+('Strogonoff', 'Modo de preparo do strogonoff...', 5, 'Clássico strogonoff de carne, cremoso e rico em sabor.', 'N', 'receitas/imagens/strogonoff.png', 7, 1);
 
 -- Atualizando as receitas com o modo de preparo completo sem números
 UPDATE receita SET modo_preparo = 'Corte a carne seca em pedaços e deixe de molho em água por cerca de 12 horas, trocando a água algumas vezes para dessalgar.\nCozinhe a carne seca em uma panela de pressão por 30 minutos ou até ficar macia.\nApós o cozimento, desfie a carne e reserve.\nEm uma panela grande, aqueça o óleo e refogue a cebola e o alho até dourarem.\nAdicione a carne seca desfiada, o tomate picado e os temperos a gosto.\nCozinhe por alguns minutos, mexendo bem, até que todos os ingredientes estejam incorporados.\nSirva com arroz branco e uma salada verde.' WHERE nome_rec = 'Arras Carne Seca';

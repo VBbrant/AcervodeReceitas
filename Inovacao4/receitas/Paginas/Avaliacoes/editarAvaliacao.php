@@ -45,13 +45,14 @@ while ($row = $result_receitas->fetch_assoc()) {
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>receitas/Style/estiloCabecalho.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>receitas/Style/estiloEditar.css">
 </head>
 <body>
     <?php include ROOT_PATH . 'receitas/elementoPagina/cabecalho.php'; ?>
     
-    <div class="container my-4">
+    <div class="container my-4" id="formulario1">
         <h2 class="text-center">Editar Avaliação</h2>
-        <form method="POST" action="../../CRUD/processarEditar.php">
+        <form method="POST" action="../../CRUD/processarEditar.php" id="formulario1">
             <input type="hidden" name="form_type" value="avaliacao">
             <input type="hidden" name="idAvaliacao" value="<?php echo htmlspecialchars($avaliacao['idDegustacao']); ?>">
 

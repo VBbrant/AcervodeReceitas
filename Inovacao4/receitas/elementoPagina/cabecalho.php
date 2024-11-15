@@ -15,7 +15,7 @@ $userRole = $_SESSION['cargo'];
                     <img src="<?php echo BASE_URL; ?>receitas/imagens/logo.png" alt="SaborArte" class="logo-img" height="40">
                 </a>
             </div>
-
+            
             <!-- Right side - Search and Profile -->
             <div class="d-flex align-items-center">
                 <div class="search-container me-3 d-none d-md-block">
@@ -67,15 +67,15 @@ header .profile-button {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 60px; /* Largura fixada para o botão */
-    height: 60px; /* Altura fixada para o botão */
-    border-radius: 50%; /* Torna o botão redondo */
-    overflow: hidden; /* Esconde qualquer parte da imagem que ultrapasse o botão */
+    width: 60px;
+    height: 60px; 
+    border-radius: 50%; 
+    overflow: hidden; 
 }
 
 /* Ajuste da imagem de perfil */
 header .profile-button .profile-img {
-    width: 100%;       /* A imagem ocupa toda a largura do botão */
+    width: 100%;       
     height: 100%;      /* A imagem ocupa toda a altura do botão */
     object-fit: cover; /* Ajusta a imagem sem distorcê-la */
     border-radius: 50%; /* A imagem mantém-se redonda */
@@ -137,6 +137,13 @@ $usuario2 = $result_usuario->fetch_assoc();
             <div class="modal-header">
                 <h5 class="modal-title" id="profileModalLabel">Perfil</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="text-center">
+                <?php if ($userImage): ?>
+                    <img style="width: 120px; height: 120px ; border-radius: 50%;margin-top: 15px; " src="<?php echo BASE_URL . 'receitas/imagens/perfil/' . $userImage; ?>" alt="Perfil" class="profile-img">
+                <?php else: ?>
+                    <i class="fas fa-user"></i>
+                <?php endif; ?>
             </div>
             <form id="profileForm" action="<?= BASE_URL ;?>receitas/CRUD/processarConta.php" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="form_type" value="perfil">
@@ -277,3 +284,4 @@ $usuario2 = $result_usuario->fetch_assoc();
     }
 
 </script>
+

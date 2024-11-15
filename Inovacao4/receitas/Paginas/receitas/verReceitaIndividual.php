@@ -16,6 +16,16 @@ include 'processarVerIndividual.php';
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="<?php echo BASE_URL;?>receitas/Style/receitaLista2.css">
     <link rel="stylesheet" href="<?php echo BASE_URL;?>receitas/Style/estiloCabecalho.css">
+    <style>
+        .conteudo-receita .pin {
+        content: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAUCAYAAACqD+k/AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAhNJREFUeNqUVy1oHFUU/r6bLbRFFoUmqZEhbWgFIFaKKFbWoIilDkKViFghBQsoODgpaEVK9a0obARUUo2sSKGKCQtFAYdA1WhTpqgpD1LSBpNE+3qS3E9rIXOd/fnZ7s3trMC8JnPvfdM33OefMb4P5BWpH60vFGC9mMVK0mgmRtGFJGSg6UIbDYcf3SPtDzQsbBAAOp3FSZCcbtEFoPX1s5X5QQmgm9U5pgy5h8TuCFB9HoL9xVDvFsoZpdde/mAfuHKV6BpPxKEkjykgakEuRxxg7KnDnxTYcWbGMRVt8PDogN0jkSiFgn5RSjHv6qB+8DmXiNVLEgtJHQKy6Lg+Z5VKngAHRVfW60mjIZWgy5fxtQRAfAkpRExuKKy4D4DAgmqOeQAUCaAJGBDqk+dOVNU1b1kSVBY0KBmXvgn7MCTmo+AGDWYgViSzFYf4AA2QgXNOxeyOx7gLmrVymMslZjbCy3xuQ/DGpU1FUoSkClEZgLSoy8oWVt3doEGVlgA0PMNA+wTXLAFK5xgm9TVqMYXjtxscUMAY9uDV7yhg4FnAAxRHMEeFCEM6eutCRlcoYleG0lZIeT9ANcCsGEOVPKpMoToAeIbg8+AkgmDJwDJgkFmsBpoIohtTzbQlhk2emkDJnbyTGtgmNBnAyLMXmqEikTs4ygRUS/xLnXK3XIztbzovxry6aV2ctFO8g6BOaMGv3AB+YeAyknZgaAAAAAElFTkSuQmCC');
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        top: -10px;
+        left: -10px;
+}
+    </style>
 </head>
 <body>
     <?php include ROOT_PATH . 'receitas/elementoPagina/cabecalho.php';?>
@@ -25,10 +35,10 @@ include 'processarVerIndividual.php';
             <img src="<?php echo !empty($receita['link_imagem']) ? $receita['link_imagem'] : BASE_URL . $receita['arquivo_imagem']; ?>" alt="Imagem da Receita" class="img-fluid rounded">
                 <h1 class="mt-4"><?php echo htmlspecialchars($receita['nome_rec']); ?></h1>
                 <p class="lead"><?php echo htmlspecialchars($receita['descricao']); ?></p>
-                <?php if ($_SESSION['cargo'] === 'ADM' || $_SESSION['cargo'] === 'Cozinheiro') : ?>
+                <?php if ($_SESSION['cargo'] == 'ADM' || $_SESSION['cargo'] == 'Cozinheiro') : ?>
                     <?php if (
-                            ($_SESSION['idLogin'] === $receita['idCozinheiro'] && $_SESSION['cargo'] === 'Cozinheiro') || 
-                            $_SESSION['cargo'] === 'ADM'
+                            ($_SESSION['idLogin'] == $receita['idCozinheiro'] && $_SESSION['cargo'] == 'Cozinheiro') || 
+                            $_SESSION['cargo'] == 'ADM'
                             ) : ?>
                         <a href="EditarReceita.php?id=<?php echo $idReceita; ?>" class="btn btn-dark">Editar</a>
                         <a href="excluirReceita.php?id=<?php echo $idReceita; ?>" class="btn btn-dark">Excluir</a>
@@ -68,9 +78,17 @@ include 'processarVerIndividual.php';
                     </span>
                 </div>
                 <div class="chef-info">
-                    <i class="fas fa-user"></i>
-                    <span>Chefe <?php echo htmlspecialchars($receita['nome_cozinheiro']); ?></span>
-                </div>
+                                        <?php 
+                                            if (!empty($receita['perfil'])) {
+                                                $avatar = BASE_URL . 'receitas/imagens/perfil/' . $receita['perfil'];} else { $avatar = null;}
+                                        ?>
+                                        <?php if ($avatar !== null) : ?>
+                                            <img src="<?php echo htmlspecialchars($avatar); ?>" class="rounded-circle" width="40" height="40" alt="Avatar">
+                                        <?php else : ?>
+                                            <i class="fas fa-user"></i>
+                                        <?php endif ?>
+                                        <span>Chefe <?php echo htmlspecialchars($receita['chef']); ?></span>
+                                    </div>
             </div>
 
 
