@@ -23,6 +23,14 @@ CREATE TABLE `categoria` (
   PRIMARY KEY (`idCategoria`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+CREATE TABLE IF NOT EXISTS `restaurante` (
+  `idRestaurante` int NOT NULL AUTO_INCREMENT,
+  `nome` varchar(100) NOT NULL,
+  `telefone` varchar(25) DEFAULT NULL,
+  `endereco` varchar(250) DEFAULT NULL,
+  PRIMARY KEY (`idRestaurante`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 
 CREATE TABLE `funcionario` (
   `idFun` int NOT NULL AUTO_INCREMENT,
@@ -149,6 +157,16 @@ CREATE TABLE `degustacao` (
   CONSTRAINT `degustacao_ibfk_2` FOREIGN KEY (`idReceita`) REFERENCES `receita` (`idReceita`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+-- Se você já tem a chave estrangeira, pode alterá-la
+ALTER TABLE degustacao
+DROP FOREIGN KEY degustacao_ibfk_2;
+
+-- Criar a chave estrangeira novamente com a opção ON DELETE CASCADE
+ALTER TABLE degustacao
+ADD CONSTRAINT degustacao_ibfk_2
+FOREIGN KEY (idReceita) REFERENCES receita(idReceita)
+ON DELETE CASCADE;
+
 
 CREATE TABLE `referencia` (
   `idReferencia` int NOT NULL AUTO_INCREMENT,
@@ -171,14 +189,6 @@ CREATE TABLE `comentario` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
-CREATE TABLE IF NOT EXISTS `restaurante` (
-  `idRestaurante` int NOT NULL AUTO_INCREMENT,
-  `nome` varchar(100) NOT NULL,
-  `telefone` varchar(25) DEFAULT NULL,
-  `endereco` varchar(250) DEFAULT NULL,
-  PRIMARY KEY (`idRestaurante`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
 CREATE TABLE `Metas` (
     `idMeta` INT PRIMARY KEY AUTO_INCREMENT,
     `idCozinheiro` INT NOT NULL,
@@ -200,14 +210,6 @@ CREATE TABLE log_sistema (
     FOREIGN KEY (idUsuario) REFERENCES funcionario(idFun) -- Referência à tabela de funcionários (ou outra tabela de usuários)
 );
 
-CREATE TABLE if not exists notificacoes_temp (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    idUsuario INT NOT NULL, -- ID do usuário a ser notificado
-    descricao TEXT NOT NULL, -- Descrição da notificação
-    data TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Data e hora da notificação
-    visto TINYINT(1) DEFAULT 0, -- 0 = Não visto, 1 = Visto
-    FOREIGN KEY (idLog) REFERENCES log_sistema(idLog) ON DELETE CASCADE
-);
 
 
 
