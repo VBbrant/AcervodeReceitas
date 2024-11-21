@@ -1,4 +1,8 @@
 <?php
+// cd C:\xampp\htdocs\AcervodeReceitas
+// composer require --dev phpunit/phpunit
+
+//php vendor/bin/phpunit --bootstrap vendor/autoload.php Inovacao4/receitas/Paginas/tests/CargoTest.php
 define('BD_HOST', 'localhost');
 define('BD_USER', 'root');
 define('BD_PASSWORD', '#Ladynoir1');
