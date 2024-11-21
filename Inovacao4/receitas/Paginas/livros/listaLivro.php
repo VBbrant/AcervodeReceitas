@@ -2,10 +2,26 @@
 require_once '../../../config.php';
 require_once ROOT_PATH . 'receitas/conn.php';
 
+$search = isset($_POST['search']) ? trim($_POST['search']) : '';
+
+// Base da consulta para a tabela "livro" com junção para obter o editor
 $sql = "SELECT l.*, f.nome AS editor
         FROM livro l
         LEFT JOIN funcionario f ON l.idEditor = f.idFun";
-$result = $conn->query($sql);
+
+if (!empty($search)) {
+    $sql .= " WHERE l.titulo LIKE ? OR f.nome LIKE ?";
+}
+
+$stmt = $conn->prepare($sql);
+
+if (!empty($search)) {
+    $likeSearch = "%" . $search . "%";
+    $stmt->bind_param("ss", $likeSearch, $likeSearch);
+}
+
+$stmt->execute();
+$result = $stmt->get_result();
 
 $idEditorSessao = $_SESSION['idFun'];
 ?>
@@ -28,6 +44,7 @@ $idEditorSessao = $_SESSION['idFun'];
 
 <div class="container my-4">
     <h2 class="text-center">Lista de Livros</h2>
+    <?php include ROOT_PATH . 'receitas/elementoPagina/barraPesquisa.php';?>
     <form method="POST" action="<?php echo BASE_URL; ?>receitas/CRUD/processarExcluirEmMassa.php" id="formExcluirMassa" onsubmit="return confirmarExclusaoEmMassa()">
         <input type="hidden" name="type" value="livro">
         <table class="table table-striped">

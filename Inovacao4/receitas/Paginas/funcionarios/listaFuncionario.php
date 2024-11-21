@@ -2,8 +2,23 @@
 require_once '../../../config.php';
 require_once ROOT_PATH . 'receitas/conn.php';
 
+// Verifica se há uma pesquisa sendo feita
+$search = isset($_POST['search']) ? trim($_POST['search']) : '';
+
 $sql = "SELECT * FROM funcionario";
-$result = $conn->query($sql);
+if (!empty($search)) {
+    $sql .= " WHERE nome LIKE ? OR nome_fantasia LIKE ?";
+}
+
+$stmt = $conn->prepare($sql);
+
+if (!empty($search)) {
+    $likeSearch = "%" . $search . "%";
+    $stmt->bind_param("ss", $likeSearch, $likeSearch);
+}
+
+$stmt->execute();
+$result = $stmt->get_result();
 ?>
 
 <!DOCTYPE html>
@@ -24,13 +39,15 @@ $result = $conn->query($sql);
 
 <div class="container my-4">
     <h2 class="text-center">Lista de Funcionários</h2>
+
+    <?php include ROOT_PATH . 'receitas/elementoPagina/barraPesquisa.php';?>
+
     <form method="POST" action="<?php echo BASE_URL; ?>receitas/CRUD/processarExcluirEmMassa.php" id="formExcluirMassa" onsubmit="return confirmarExclusaoEmMassa()">
         <input type="hidden" name="type" value="funcionario">
         <table class="table table-striped">
             <thead>
                 <tr>
                     <th class="checkbox-cell">
-                        <!-- Checkbox para selecionar todos -->
                         <input type="checkbox" id="selectAllFuncionarios" class="custom-checkbox" onclick="toggleAllCheckboxes(this)" style="display: none;">
                         <label for="selectAllFuncionarios" class="custom-label">
                             <i class="far fa-square unchecked-icon"></i>
@@ -45,52 +62,43 @@ $result = $conn->query($sql);
                 </tr>
             </thead>
             <tbody class="selected-row">
-                <?php while ($funcionario = $result->fetch_assoc()): ?>
-                <tr>
-                    <td class="checkbox-cell">
-                        <!-- Checkbox customizado para cada linha -->
-                        <input type="checkbox" id="checkboxFuncionario<?php echo $funcionario['idFun']; ?>" class="custom-checkbox" name="itensSelecionados[]" value="<?php echo $funcionario['idFun']; ?>" style="display: none;" onclick="highlightRow(this)">
-                        <label for="checkboxFuncionario<?php echo $funcionario['idFun']; ?>" class="custom-label">
-                            <i class="far fa-square unchecked-icon"></i>
-                            <i class="fas fa-check-square checked-icon"></i>
-                        </label>
-                    </td>
-                    <td><?php echo htmlspecialchars($funcionario['nome']); ?></td>
-                    <td><?php echo htmlspecialchars($funcionario['data_nascimento']); ?></td>
-                    <td><?php echo htmlspecialchars($funcionario['data_admissao']); ?></td>
-                    <td><?php echo htmlspecialchars($funcionario['nome_fantasia']); ?></td>                    
-                    <td class="acoes-cell" id="botao">
-                        <a href="<?php echo BASE_URL; ?>receitas/Paginas/funcionarios/verFuncionario.php?id=<?php echo $funcionario['idFun']; ?>" class="btn btn-info btn-sm">
-                            <i class="fas fa-eye"></i> Ver
-                        </a>
-                        <a href="<?php echo BASE_URL; ?>receitas/Paginas/funcionarios/editarFuncionario.php?id=<?php echo $funcionario['idFun']; ?>" class="btn btn-primary btn-sm">
-                            <i class="fas fa-edit"></i> Editar
-                        </a>
-                        <a href="<?php echo BASE_URL; ?>receitas/Paginas/funcionarios/excluirFuncionario.php?id=<?php echo $funcionario['idFun']; ?>" 
-                           class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir este funcionário?');">
-                            <i class="fas fa-trash-alt"></i> Excluir
-                        </a>
-                    </td>
-                </tr>
-                <?php endwhile; ?>
+                <?php if ($result->num_rows > 0): ?>
+                    <?php while ($funcionario = $result->fetch_assoc()): ?>
+                    <tr>
+                        <td class="checkbox-cell">
+                            <input type="checkbox" id="checkboxFuncionario<?php echo $funcionario['idFun']; ?>" class="custom-checkbox" name="itensSelecionados[]" value="<?php echo $funcionario['idFun']; ?>" style="display: none;" onclick="highlightRow(this)">
+                            <label for="checkboxFuncionario<?php echo $funcionario['idFun']; ?>" class="custom-label">
+                                <i class="far fa-square unchecked-icon"></i>
+                                <i class="fas fa-check-square checked-icon"></i>
+                            </label>
+                        </td>
+                        <td><?php echo htmlspecialchars($funcionario['nome']); ?></td>
+                        <td><?php echo htmlspecialchars($funcionario['data_nascimento']); ?></td>
+                        <td><?php echo htmlspecialchars($funcionario['data_admissao']); ?></td>
+                        <td><?php echo htmlspecialchars($funcionario['nome_fantasia']); ?></td>                    
+                        <td class="acoes-cell" id="botao">
+                            <a href="<?php echo BASE_URL; ?>receitas/Paginas/funcionarios/verFuncionario.php?id=<?php echo $funcionario['idFun']; ?>" class="btn btn-info btn-sm">
+                                <i class="fas fa-eye"></i> Ver
+                            </a>
+                            <a href="<?php echo BASE_URL; ?>receitas/Paginas/funcionarios/editarFuncionario.php?id=<?php echo $funcionario['idFun']; ?>" class="btn btn-primary btn-sm">
+                                <i class="fas fa-edit"></i> Editar
+                            </a>
+                            <a href="<?php echo BASE_URL; ?>receitas/Paginas/funcionarios/excluirFuncionario.php?id=<?php echo $funcionario['idFun']; ?>" 
+                               class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir este funcionário?');">
+                                <i class="fas fa-trash-alt"></i> Excluir
+                            </a>
+                        </td>
+                    </tr>
+                    <?php endwhile; ?>
+                <?php else: ?>
+                    <tr>
+                        <td colspan="6" class="text-center">Nenhum funcionário encontrado.</td>
+                    </tr>
+                <?php endif; ?>
             </tbody>
         </table>
-        
-        <div class="text-end">
-            <button type="button" class="btn btn-warning" id="btnExcluirMassa" onclick="ativarExclusaoMassa()">
-                <i class="fas fa-trash-alt"></i> Excluir em Massa
-            </button>
-            <button type="submit" class="btn btn-danger" style="display: none;" id="btnExcluirSelecionados">
-                <i class="fas fa-trash-alt"></i> Excluir Selecionados
-            </button>
-            <a href="<?php echo BASE_URL; ?>receitas/Paginas/funcionarios/addFuncionario.php" class="btn btn-success">
-                <i class="fas fa-plus"></i> Adicionar Funcionário
-            </a>
-        </div>
     </form>
 </div>
 
-
 <script src="<?php echo BASE_URL . 'receitas/Scripts/listas.js';?>"></script>
 <?php include ROOT_PATH . 'receitas/elementoPagina/rodape.php'; ?>
-

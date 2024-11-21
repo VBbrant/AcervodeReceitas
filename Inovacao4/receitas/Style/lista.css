@@ -2,6 +2,7 @@
     table-layout: fixed;
     width: 100%;
     border-collapse: collapse;
+    max-width: 1500px;
 }
 
 .table .checkbox-cell {
@@ -84,6 +85,10 @@
     margin: 2px 0;       
     max-width: 90px;     
     font-size: 0.875rem;
+}
+
+.container {
+    margin-top: 100px !important;
 }
 
 

@@ -396,6 +396,7 @@ function registrarLog($conn, $idUsuario, $tipo, $descricao) {
     }
     
     $stmt_log->bind_param("iss", $idUsuario, $tipo, $descricao);
+    
 
     if (!$stmt_log->execute()) {
         die('Erro ao executar a consulta: ' . $stmt_log->error);

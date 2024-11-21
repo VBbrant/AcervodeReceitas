@@ -2,8 +2,23 @@
 require_once '../../../config.php';
 require_once ROOT_PATH . 'receitas/conn.php';
 
+$search = isset($_POST['search']) ? trim($_POST['search']) : '';
+
 $sql = "SELECT * FROM cargo";
-$result = $conn->query($sql);
+if (!empty($search)) {
+    $sql .= " WHERE nome LIKE ?";
+}
+
+$stmt = $conn->prepare($sql);
+
+if (!empty($search)) {
+    $likeSearch = "%" . $search . "%";
+    $stmt->bind_param("s", $likeSearch);
+}
+
+$stmt->execute();
+$result = $stmt->get_result();
+
 ?>
 
 <!DOCTYPE html>
@@ -24,6 +39,8 @@ $result = $conn->query($sql);
 
 <div class="container my-4">
     <h2 class="text-center">Lista de Cargos</h2>
+    <?php include ROOT_PATH . 'receitas/elementoPagina/barraPesquisa.php';?>
+
     <form method="POST" action="<?php echo BASE_URL; ?>receitas/CRUD/processarExcluirEmMassa.php" id="formExcluirMassa" onsubmit="return confirmarExclusaoEmMassa()">
         <input type="hidden" name="type" value="cargo">
         <table class="table table-striped">

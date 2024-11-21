@@ -3,12 +3,30 @@ session_start();
 require_once '../../../../config.php';
 require_once ROOT_PATH . 'receitas/conn.php';
 
-$sql = "SELECT m.*, f.nome AS cozinheiro
+$search = isset($_POST['search']) ? trim($_POST['search']) : '';
+
+// Base da consulta para a tabela "Metas" com junção para obter o nome do cozinheiro
+$sql = "SELECT m.*, f.nome AS cozinheiro 
         FROM Metas m
         LEFT JOIN funcionario f ON m.idCozinheiro = f.idFun";
-$result = $conn->query($sql);
+
+if (!empty($search)) {
+    $sql .= " WHERE m.descricao LIKE ? OR f.nome LIKE ?";
+}
+
+$stmt = $conn->prepare($sql);
+
+if (!empty($search)) {
+    $likeSearch = "%" . $search . "%";
+    $stmt->bind_param("ss", $likeSearch, $likeSearch);
+}
+
+$stmt->execute();
+$result = $stmt->get_result();
 
 $currentDate = new DateTime();
+
+
 ?>
 
 <!DOCTYPE html>
@@ -27,6 +45,7 @@ $currentDate = new DateTime();
 
 <div class="container my-4">
     <h2 class="text-center">Lista de Metas</h2>
+    <?php include ROOT_PATH . 'receitas/elementoPagina/barraPesquisa.php';?>
     <form method="POST" action="<?php echo BASE_URL; ?>receitas/CRUD/processarExcluirEmMassa.php" id="formExcluirMassa" onsubmit="return confirmarExclusaoEmMassa()">
         <input type="hidden" name="type" value="meta">
         <table class="table table-striped">
@@ -108,6 +127,23 @@ $currentDate = new DateTime();
         </div>
     </form>
 </div>
+
+<style>
+.table-success {
+    background-color: #28a745 !important; /* Verde mais intenso */
+    color: #fff !important; /* Texto branco para contraste */
+}
+
+.table-danger {
+    background-color: #dc3545 !important; /* Vermelho mais intenso */
+    color: #fff !important; /* Texto branco */
+}
+
+.table-warning {
+    background-color: #ffc107 !important; /* Amarelo mais intenso */
+    color: #000 !important; /* Texto preto */
+}
+</style>
 
 <script src="<?php echo BASE_URL . 'receitas/Scripts/listas.js';?>"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>

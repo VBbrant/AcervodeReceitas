@@ -202,7 +202,6 @@ CREATE TABLE log_sistema (
 
 CREATE TABLE if not exists notificacoes_temp (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    idLog INT NOT NULL, -- Referência ao log no log_sistema
     idUsuario INT NOT NULL, -- ID do usuário a ser notificado
     descricao TEXT NOT NULL, -- Descrição da notificação
     data TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Data e hora da notificação

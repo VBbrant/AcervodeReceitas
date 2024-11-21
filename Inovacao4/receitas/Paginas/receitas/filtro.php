@@ -2,6 +2,7 @@
 require_once "../../../config.php";
 require_once ROOT_PATH . "receitas/conn.php";
 
+
 $category = $_GET['category'] ?? '';
 $rating = $_GET['rating'] ?? '';
 $viewMode = $_GET['view'] ?? 'grid';

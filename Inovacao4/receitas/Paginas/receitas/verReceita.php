@@ -2,25 +2,38 @@
 include '../../../config.php';
 include ROOT_PATH . 'receitas/conn.php';
 
+$search = isset($_POST['search']) ? trim($_POST['search']) : '';
+
 $sql = "SELECT 
-    r.idReceita, r.idCozinheiro, 
-    r.nome_rec AS titulo, 
-    r.descricao, 
-    COALESCE(d.nota_degustacao, 0) AS avaliacao,
-    r.link_imagem AS LIimagem,
-    r.arquivo_imagem AS ARimagem
-FROM 
-    receita r
-LEFT JOIN 
-    degustacao d ON r.idReceita = d.idReceita
-JOIN 
-    categoria c ON r.idCategoria = c.idCategoria
-";
-$result = $conn->query($sql);
+            r.idReceita, r.idCozinheiro, 
+            r.nome_rec AS titulo, 
+            r.descricao, 
+            COALESCE(d.nota_degustacao, 0) AS avaliacao,
+            r.link_imagem AS LIimagem,
+            r.arquivo_imagem AS ARimagem
+        FROM 
+            receita r
+        LEFT JOIN 
+            degustacao d ON r.idReceita = d.idReceita
+        JOIN 
+            categoria c ON r.idCategoria = c.idCategoria";
+
+if (!empty($search)) {
+    $sql .= " WHERE r.nome_rec LIKE ?";
+}
+
+$stmt = $conn->prepare($sql);
+
+if (!empty($search)) {
+    $likeSearch = "%" . $search . "%";
+    $stmt->bind_param("sss", $likeSearch, $likeSearch, $likeSearch);
+}
+
+$stmt->execute();
+$result = $stmt->get_result();
 
 
-
-$viewMode = $_GET['view'] ?? 'grid'; // Padrão: exibição em grid (grade)
+$viewMode = $_GET['view'] ?? 'grid';
 ?>
 
 <!DOCTYPE html>
@@ -41,7 +54,7 @@ $viewMode = $_GET['view'] ?? 'grid'; // Padrão: exibição em grid (grade)
 <body>
     <?php include ROOT_PATH . 'receitas/elementoPagina/cabecalho.php';?>
 
-    <main class="container my-4">
+    <main class="container my-4" style="margin-top: 100px !important;">
         <h1 class="receitas-title">RECEITAS</h1>
 
         <div class="text-end mb-3">

@@ -20,14 +20,8 @@ $userRole = $_SESSION['cargo'];
             
             <!-- Right side - Search, Notifications, and Profile -->
             <div class="d-flex align-items-center">
-                <div class="search-container me-3 d-none d-md-block">
-                    <form class="d-flex" role="search">
-                        <input class="form-control search-input" type="search" placeholder="Buscar receitas..." aria-label="Search">
-                        <button class="btn search-button" type="submit">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </form>
-                </div>
+                <?php include ROOT_PATH . 'receitas/elementoPagina/pesquisa.php';?>
+
 
                 <!-- Notificação de Alterações -->
                 <div class="notification-container me-3" onclick="toggleNotifications()">
@@ -358,62 +352,6 @@ $usuario2 = $result_usuario->fetch_assoc();
 
 </script>
 <style>
-    /* Notificação */
-.notification-container {
-    position: relative;
-    display: inline-block;
-    cursor: pointer;
-}
 
-.notification-dot {
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    background-color: red;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    display: none; /* Esconde inicialmente */
-}
-
-.notification-box {
-    position: absolute;
-    top: 60px !important; /* Ajuste conforme necessário */
-    right: 10px;
-    background-color: #fff;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    width: 200px;
-    padding: 10px;
-    display: none;
-    z-index: 100;
-}
-
-.notification-box p {
-    margin: 0;
-    padding: 5px;
-    color: #333;
-}
-
-.notification-box .btn-close {
-    background-color: transparent;
-    border: none;
-    font-size: 18px;
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    cursor: pointer;
-}
-
-.notification-box.show {
-    display: block;
-}
-
-header .navbar {
-    background-color: #ffffff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    padding: 0.5rem 1rem;
-    height: 70px;
-}
 
 </style>
