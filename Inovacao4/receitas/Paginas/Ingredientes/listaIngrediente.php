@@ -25,7 +25,7 @@ $result = $conn->query($sql);
 <body class="ingrediente">
 <?php include ROOT_PATH . 'receitas/elementoPagina/cabecalho.php'; ?>  
 
-<div class="container my-4">
+<div class="container my-4" id="lista2">
     <h2 class="text-center">Lista de Ingredientes</h2>
     <form method="POST" action="<?php echo BASE_URL; ?>receitas/CRUD/processarExcluirEmMassa.php" id="formExcluirMassa">
         <input type="hidden" name="type" value="ingrediente">

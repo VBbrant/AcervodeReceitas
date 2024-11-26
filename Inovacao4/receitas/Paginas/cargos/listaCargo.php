@@ -31,13 +31,14 @@ $result = $stmt->get_result();
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>receitas/Style/estiloBackground.css">
     <link rel="stylesheet" href="<?php echo BASE_URL . 'receitas/Style/lista.css';?>">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>receitas/Style/estiloCabecalho.css">      
 </head>
-<body>
+<body class="ingrediente">
 <?php include ROOT_PATH . 'receitas/elementoPagina/cabecalho.php'; ?>  
 
-<div class="container my-4">
+<div class="container my-4" id="lista2">
     <h2 class="text-center">Lista de Cargos</h2>
     <?php include ROOT_PATH . 'receitas/elementoPagina/barraPesquisa.php';?>
 
@@ -71,13 +72,13 @@ $result = $stmt->get_result();
                     </td>
                     <td class="nome-cell"><?php echo htmlspecialchars($categoria['nome']); ?></td>
                     <td class="text-end acoes-cell">
-                        <a href="<?php echo BASE_URL; ?>receitas/Paginas/cargo/verCargo.php?id=<?php echo $categoria['idCargo']; ?>" class="btn btn-info btn-sm">
+                        <a href="<?php echo BASE_URL; ?>receitas/Paginas/cargos/verCargo.php?id=<?php echo $categoria['idCargo']; ?>" class="btn btn-info btn-sm">
                             <i class="fas fa-eye"></i> Ver
                         </a>
 
                         <!-- Condição para não exibir editar e excluir para cargos com id 6, 7, 8, 9, 10 -->
                         <?php if (!in_array($categoria['idCargo'], [6, 7, 8, 9, 10])): ?>
-                            <a href="<?php echo BASE_URL; ?>receitas/Paginas/cargo/editarCargo.php?id=<?php echo $categoria['idCargo']; ?>" class="btn btn-primary btn-sm">
+                            <a href="<?php echo BASE_URL; ?>receitas/Paginas/cargos/editarCargo.php?id=<?php echo $categoria['idCargo']; ?>" class="btn btn-primary btn-sm">
                                 <i class="fas fa-edit"></i> Editar
                             </a>
                             <a href="<?php echo BASE_URL; ?>receitas/Paginas/cargos/excluirCargo.php?id=<?php echo $categoria['idCargo']; ?>" 

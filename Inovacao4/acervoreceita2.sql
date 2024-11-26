@@ -48,10 +48,11 @@ CREATE TABLE `funcionario` (
   KEY `idLogin` (`idLogin`),
   KEY `idCargo` (`idCargo`),
   KEY `idRestaurante` (`idRestaurante`),  -- Índice para a chave estrangeira
-  CONSTRAINT `funcionario_ibfk_1` FOREIGN KEY (`idLogin`) REFERENCES `usuario` (`idLogin`),
+  CONSTRAINT funcionario_ibfk_1 FOREIGN KEY (idLogin) REFERENCES usuario (idLogin) ON DELETE CASCADE,
   CONSTRAINT `funcionario_ibfk_2` FOREIGN KEY (`idCargo`) REFERENCES `cargo` (`idCargo`),
   CONSTRAINT `funcionario_ibfk_3` FOREIGN KEY (`idRestaurante`) REFERENCES `restaurante` (`idRestaurante`)  -- Chave estrangeira para o restaurante
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 
 
 CREATE TABLE `registro_tokens` (
@@ -85,7 +86,7 @@ CREATE TABLE `livro` (
   `dataEntrega` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`idLivro`),
   KEY `idEditor` (`idEditor`),
-  CONSTRAINT `livro_ibfk_1` FOREIGN KEY (`idEditor`) REFERENCES `funcionario` (`idFun`)
+CONSTRAINT livro_ibfk_1 FOREIGN KEY (idEditor) REFERENCES funcionario (idFun) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 

@@ -145,6 +145,7 @@
                 <ul class="submenu">
                     <li><a href="<?php echo BASE_URL; ?>receitas/Paginas/parametros/metas/listaMeta.php"><i class="fas fa-trophy"></i> Metas</a></li>
                     <li><a href="<?php echo BASE_URL; ?>receitas/Paginas/parametros/logSistema.php"><i class="fas fa-file-alt"></i> Log do Sistema</a></li>
+                    <li><a href="<?php echo BASE_URL; ?>receitas/Paginas/parametros/parametros.php"><i class="fas fa-file-alt"></i> Parâmetros</a></li>
                 </ul>
             </li>
         <?php endif; ?>

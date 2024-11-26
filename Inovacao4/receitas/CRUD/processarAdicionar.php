@@ -380,6 +380,65 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $stmt->close();
             }
             break;
+        case 'usuario':
+            $nome_usuario = $_POST['nome'];
+            $email = $_POST['email'];
+            $senha = password_hash($_POST['senha'], PASSWORD_BCRYPT);  // Criptografando a senha
+            $imagem_perfil = null;  // Inicializando a variável para a imagem de perfil (pode ser alterado para permitir upload de imagem)
+        
+            // Verifica se foi enviado uma imagem de perfil
+            if (isset($_FILES['imagem_perfil']) && $_FILES['imagem_perfil']['error'] === UPLOAD_ERR_OK) {
+                $imagem_perfil = $_FILES['imagem_perfil']['name'];
+                $target_dir = ROOT_PATH . 'uploads/';
+                $target_file = $target_dir . basename($imagem_perfil);
+                
+                // Verifica o tipo de arquivo e move para o diretório de uploads
+                if (move_uploaded_file($_FILES['imagem_perfil']['tmp_name'], $target_file)) {
+                    // Sucesso no upload
+                } else {
+                    echo "<script>alert('Erro ao fazer upload da imagem.'); window.history.back();</script>";
+                    exit;
+                }
+            }
+        
+            $conn->begin_transaction();  // Inicia a transação para garantir que todos os dados sejam salvos corretamente
+        
+            try {
+                // Verifica se já existe um usuário com o mesmo email
+                $sql_check_email = "SELECT * FROM usuario WHERE email = ?";
+                $stmt = $conn->prepare($sql_check_email);
+                $stmt->bind_param("s", $email);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                
+                if ($result->num_rows > 0) {
+                    throw new Exception("Email já está cadastrado.");
+                }
+        
+                // Insere o novo usuário na tabela usuario
+                $sql_usuario = "INSERT INTO usuario (nome, email, senha, imagem_perfil) VALUES (?, ?, ?, ?)";
+                $stmt = $conn->prepare($sql_usuario);
+                $stmt->bind_param("ssss", $nome_usuario, $email, $senha, $imagem_perfil);
+                $stmt->execute();
+                
+                $idLogin = $stmt->insert_id;  // Obtém o ID do usuário inserido
+                $stmt->close();
+        
+                // Comenta ou remove a parte do funcionário, pois não estamos tratando isso aqui
+                // Se necessário, o código de adição de funcionário pode ser inserido aqui.
+        
+                $conn->commit();  // Confirma a transação
+                
+                echo "<script>alert('Usuário adicionado com sucesso!'); window.location.href='" . BASE_URL . "receitas/Paginas/login.php';</script>";
+            } catch (Exception $e) {
+                $conn->rollback();  // Reverte as alterações em caso de erro
+                echo "<script>alert('Erro ao adicionar usuário: " . $e->getMessage() . "'); window.history.back();</script>";
+            } finally {
+                if (isset($stmt) && $stmt !== null) {
+                    $stmt->close();
+                }
+            }
+            break;
         default:
             echo "Tipo de formulário não encontrado";
             break;

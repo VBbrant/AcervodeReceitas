@@ -38,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $type && count($itensSelecionados) >
                 $stmt = $conn->prepare("DELETE FROM categoria WHERE idCategoria = ?");
                 break;
             case 'usuario':
-                $stmt = $conn->prepare("DELETE FROM usuario WHERE idUsuario = ?");
+                $stmt = $conn->prepare("DELETE FROM usuario WHERE idLogin = ?");
                 break;
             case 'funcionario':
                 $stmt = $conn->prepare("DELETE FROM funcionario WHERE idFuncionario = ?");
@@ -53,7 +53,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $type && count($itensSelecionados) >
                 throw new Exception("Tipo inválido para exclusão.");
         }
 
-        // Agora, para cada item selecionado, bind_param e execute são feitos
         foreach ($itensSelecionados as $id) {
             // Buscar o nome do item dependendo do tipo
             $nomeItem = '';
@@ -76,7 +75,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $type && count($itensSelecionados) >
             } elseif ($type == 'categoria') {
                 $sql_nome = "SELECT nome FROM categoria WHERE idCategoria = ?";
             } elseif ($type == 'usuario') {
-                $sql_nome = "SELECT nome FROM usuario WHERE idUsuario = ?";
+                $sql_nome = "SELECT nome FROM usuario WHERE idLogin = ?";
             } elseif ($type == 'funcionario') {
                 $sql_nome = "SELECT nome FROM funcionario WHERE idFuncionario = ?";
             } elseif ($type == 'restaurante') {
@@ -85,7 +84,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $type && count($itensSelecionados) >
                 $sql_nome = "SELECT nome FROM cargo WHERE idCargo = ?";
             }
 
-            // Realizar a consulta para pegar o nome
             if (isset($sql_nome)) {
                 $stmt_nome = $conn->prepare($sql_nome);
                 $stmt_nome->bind_param("i", $id);
@@ -95,12 +93,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $type && count($itensSelecionados) >
                 $stmt_nome->close();
             }
 
-            // Adicionar o nome do item à lista para o log
             if ($nomeItem) {
                 $nomesItens[] = $nomeItem;
             }
 
-            // Primeiro, buscamos as imagens associadas ao tipo (caso seja 'receita', 'livro' ou 'usuario')
             if ($type == 'receita') {
                 // Buscar a imagem associada à receita
                 $sql_imagem = "SELECT arquivo_imagem FROM receita WHERE idReceita = ?";
@@ -131,7 +127,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $type && count($itensSelecionados) >
                 }
             } elseif ($type == 'usuario') {
                 // Buscar a imagem associada ao usuário
-                $sql_imagem = "SELECT imagem_perfil FROM usuario WHERE idUsuario = ?";
+                $sql_imagem = "SELECT imagem_perfil FROM usuario WHERE idLogin = ?";
                 $stmt_imagem = $conn->prepare($sql_imagem);
                 $stmt_imagem->bind_param("i", $id);
                 $stmt_imagem->execute();

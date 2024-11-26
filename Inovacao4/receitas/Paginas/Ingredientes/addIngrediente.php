@@ -1,4 +1,4 @@
-<?php require_once '../../../config.php'; ?>
+<?php require_once '../../../config.php'; require_once ROOT_PATH . 'receitas/conn.php'; ?>
 <!DOCTYPE html>
 <html lang="Pt-br">
 <head>
@@ -16,7 +16,7 @@
 </head>
 <body class="ingrediente">
 <?php include ROOT_PATH . 'receitas/elementoPagina/cabecalho.php'; ?>
-    <div class="container my-4">
+    <div class="container my-4" id="lista">
     <h2 class="text-center">Adicionar Novo ingredinte</h2>
         <form method="POST" action="../../CRUD/processarAdicionar.php">
             <input type="hidden" name="form_type" value="ingrediente">
@@ -28,7 +28,17 @@
                     <label for="modo_preparo" class="form-label">Descrição:</label>
                     <textarea class="form-control" id="descricao" name="descricao" rows="5"></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary w-100">Adicionar ingrediente</button>
+                <div class="d-flex justify-content-between align-items-center">
+                    <!-- Botão de Voltar -->
+                    <button onclick="voltarPagina()" id="backButton" type ="button" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Voltar
+                    </button>
+
+                    <!-- Botão de Editar -->
+                    <button type ="submit" class="btn btn-primary" id="submit">
+                        Adicionar ingrediente
+                    </button>
+                </div>
         </form>
     </div>
 <?php include ROOT_PATH . 'receitas/elementoPagina/rodape.php'; ?>

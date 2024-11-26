@@ -22,8 +22,8 @@ h2 {
 /* Lista Rolável */
 #ingredientList {
     position: absolute;
-    top: 100%; 
-    width: 100%; 
+    top: 175%; 
+    width: 40%; 
     max-height: 200px;
     overflow-y: auto;
     border: 1px solid #ccc;

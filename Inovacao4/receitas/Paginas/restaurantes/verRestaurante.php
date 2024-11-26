@@ -23,7 +23,7 @@ if ($idRestaurante) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SaborArte - Editar Restaurante</title>
+    <title>SaborArte - Ver Restaurante</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome for icons -->
@@ -37,14 +37,14 @@ if ($idRestaurante) {
     <?php include ROOT_PATH . 'receitas/elementoPagina/cabecalho.php'; ?>
     
     <div class="container my-4" id="lista">
-        <h2 class="text-center">Editar Restaurante</h2>
+        <h2 class="text-center">Ver Restaurante</h2>
         <form method="POST" action="../../CRUD/processarEditar.php">
             <input type="hidden" name="form_type" value="restaurante">
             <input type="hidden" name="idRestaurante" value="<?php echo $idRestaurante; ?>">
 
             <div class="mb-3">
                 <label for="nome" class="form-label">Nome do Restaurante:</label>
-                <input type="text" class="form-control" id="nome" name="nome" value="<?php echo $nome; ?>" required>
+                <input type="text" class="form-control" id="nome" name="nome" value="<?php echo $nome; ?>" disabled>
             </div>
 
             <div class="mb-3">
@@ -54,60 +54,31 @@ if ($idRestaurante) {
                     class="form-control" 
                     id="telefone" 
                     name="telefone" 
-                    placeholder="(Ex: (61) 98765-4321)" 
                     value="<?php echo $telefone; ?>"
-                    required
+                    disabled
                     oninput="formatarTelefone(this)"
                     aria-describedby="telefoneHelp">
-                <small id="telefoneHelp" class="form-text text-muted">Formato: (61) 98765-4321</small>
-                <div id="erroTelefone" class="text-danger" style="display: none;">Formato inválido. Exemplo: (61) 98765-4321</div>
             </div>
 
             <div class="mb-3">
                 <label for="endereco" class="form-label">Endereço:</label>
-                <input type="text" class="form-control" id="endereco" name="endereco" value="<?php echo $endereco; ?>" required>
+                <input type="text" class="form-control" id="endereco" name="endereco" value="<?php echo $endereco; ?>" disabled>
             </div>
 
             <div class="d-flex justify-content-between align-items-center">
-                <!-- Botão de Voltar -->
-                <button onclick="voltarPagina()" id="backButton" type ="button" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left"></i> Voltar
-                </button>
+            <!-- Botão de Voltar -->
+            <button onclick="voltarPagina()" id="backButton" type ="button" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </button>
 
-                <!-- Botão de Editar -->
-                <button type="submit" class="btn btn-primary" style="width: 590px;">Salvar Alterações</button>
-            </div>
+            <!-- Botão de Editar -->
+            <a href="<?php echo BASE_URL; ?>receitas/Paginas/restaurantes/editarRestaurante.php?id=<?php echo $idRestaurante; ?>" class="btn btn-primary">
+                <i class="fas fa-edit"></i> Editar
+            </a>
+        </div>
         </form>
     </div>
 
-<script>
-
-function formatarTelefone(input) {
-   let telefone = input.value.replace(/\D/g, ''); // Remove tudo que não for número
-   let formattedPhone = '';
-
-   // Formatação para o padrão (XX) XXXXX-XXXX
-   if (telefone.length <= 2) {
-       formattedPhone = `(${telefone}`;
-   } else if (telefone.length <= 7) {
-       formattedPhone = `(${telefone.substring(0, 2)}) ${telefone.substring(2)}`;
-   } else {
-       formattedPhone = `(${telefone.substring(0, 2)}) ${telefone.substring(2, 7)}-${telefone.substring(7, 11)}`;
-   }
-
-   // Aplica a formatação no campo de entrada
-   input.value = formattedPhone;
-
-   // Valida o formato
-   const regex = /^\(\d{2}\)\s\d{5}-\d{4}$/;
-   const erroDiv = document.getElementById('erroTelefone');
-   if (!regex.test(input.value)) {
-       erroDiv.style.display = 'block'; // Exibe o erro
-   } else {
-       erroDiv.style.display = 'none'; // Esconde o erro
-   }
-}
-</script>
 
 <?php include ROOT_PATH . 'receitas/elementoPagina/rodape.php'; ?>
 

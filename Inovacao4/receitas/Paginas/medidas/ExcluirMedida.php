@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     try {
         // Busca o nome da medida para o log
-        $sql_nome_medida = "SELECT nome FROM medida WHERE idMedida = ?";
+        $sql_nome_medida = "SELECT sistema FROM medida WHERE idMedida = ?";
         $stmt_nome_medida = $conn->prepare($sql_nome_medida);
         $stmt_nome_medida->bind_param("i", $idMedida);
         $stmt_nome_medida->execute();

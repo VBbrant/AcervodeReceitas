@@ -19,7 +19,6 @@
     background-image: url("../imagens/mainRestaurante.jpg");
     background-size: cover; 
     background-position: center;
-    transform: rotate(90deg);
     z-index: -2;
 }
 

@@ -6,10 +6,30 @@ body {
     z-index: -2;
 }
 
+#balao{
+    border: 2px solid black !important;
+}
+
+#balao2 p{
+    color: black !important;
+    font-family: Arial, Helvetica, sans-serif;
+}
+#balao2 small{
+    color: black !important;
+}
+
+
+
+
 /* Container principal */
 .conteudo-receita .container {
-    max-width: 600px;
+    margin-top: 100px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 20px;
+    max-width: 650px;
     margin: auto;
+    background-color: rgb(201, 230, 255) !important;
 }
 
 /* Imagem da receita */
@@ -58,9 +78,10 @@ body {
     gap: 0.5rem;
     background-color: #333;
     border-radius: 20px;
+    margin-top: 10px;
     padding: 1rem;
     color: white;
-    font-family: Arial, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
 }
 

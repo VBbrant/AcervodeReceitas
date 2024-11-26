@@ -45,11 +45,19 @@ $stmt->close();
             <label class="form-label">Descrição:</label>
             <textarea class="form-control" rows="5" disabled><?php echo htmlspecialchars($ingrediente['descricao']); ?></textarea>
         </div>
-        <div class="text-end">
+        <div class="d-flex justify-content-between align-items-center">
+            <!-- Botão de Voltar -->
+            <button onclick="voltarPagina()" id="backButton" type ="button" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </button>
+
+            <!-- Botão de Editar -->
             <a href="<?php echo BASE_URL; ?>receitas/Paginas/ingredientes/editarIngrediente.php?id=<?php echo $idIngrediente; ?>" class="btn btn-primary">
                 <i class="fas fa-edit"></i> Editar
             </a>
         </div>
+
+
     </form>
 </div>
 

@@ -14,6 +14,7 @@ include 'processarVerIndividual.php';
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>receitas/Style/estiloBackground.css">
     <link rel="stylesheet" href="<?php echo BASE_URL;?>receitas/Style/receitaLista2.css">
     <link rel="stylesheet" href="<?php echo BASE_URL;?>receitas/Style/estiloCabecalho.css">
     <style>
@@ -27,7 +28,7 @@ include 'processarVerIndividual.php';
 }
     </style>
 </head>
-<body>
+<body class="receita">
     <?php include ROOT_PATH . 'receitas/elementoPagina/cabecalho.php';?>
     <div class="conteudo-receita">
         <div class="container mt-5">
@@ -46,7 +47,7 @@ include 'processarVerIndividual.php';
                 <?php endif; ?>
             </div>
 
-            <div class="avaliacao-container">
+            <div class="avaliacao-container" id="balao">
                 <div class="rating">
                     <span class="score">
                     <?php 
@@ -78,22 +79,22 @@ include 'processarVerIndividual.php';
                     </span>
                 </div>
                 <div class="chef-info">
-                                        <?php 
-                                            if (!empty($receita['perfil'])) {
-                                                $avatar = BASE_URL . 'receitas/imagens/perfil/' . $receita['perfil'];} else { $avatar = null;}
-                                        ?>
-                                        <?php if ($avatar !== null) : ?>
-                                            <img src="<?php echo htmlspecialchars($avatar); ?>" class="rounded-circle" width="40" height="40" alt="Avatar">
-                                        <?php else : ?>
-                                            <i class="fas fa-user"></i>
-                                        <?php endif ?>
-                                        <span>Chefe <?php echo htmlspecialchars($receita['chef']); ?></span>
-                                    </div>
+                    <?php 
+                        if (!empty($receita['perfil'])) {
+                            $avatar = BASE_URL . 'receitas/imagens/perfil/' . $receita['perfil'];} else { $avatar = null;}
+                    ?>
+                    <?php if ($avatar !== null) : ?>
+                        <img src="<?php echo htmlspecialchars($avatar); ?>" class="rounded-circle" width="40" height="40" alt="Avatar">
+                    <?php else : ?>
+                        <i class="fas fa-user"></i>
+                    <?php endif ?>
+                    <span>Chefe <?php echo htmlspecialchars($receita['chef']); ?></span>
+                </div>
             </div>
 
 
             <!-- Exibição dos Ingredientes -->
-            <div class="mt-5 p-4 rounded bg-light shadow">
+            <div class="mt-5 p-4 rounded bg-light shadow" id="balao">
                 <h3>Ingredientes</h3>
                 <ul>
                     <?php foreach ($ingredientes as $ingrediente): ?>
@@ -107,7 +108,7 @@ include 'processarVerIndividual.php';
 
 
             <!-- Modo de Preparo -->
-            <div class="mt-5 p-4 rounded bg-light shadow">
+            <div class="mt-5 p-4 rounded bg-light shadow" id="balao">
                 <h3>Modo de Preparo</h3>
                 <ol>
                     <?php
@@ -120,16 +121,16 @@ include 'processarVerIndividual.php';
             </div>
 
             <!-- Exibição da Categoria e Porções -->
-            <div class="mt-5 p-4 rounded bg-light shadow">
+            <div class="mt-5 p-4 rounded bg-light shadow" id="balao">
                 <h4>Categoria: <?= htmlspecialchars($receita['categoria']) ?></h4>
                 <p>Porções: <?= htmlspecialchars($receita['num_porcao']) ?> porções</p>
             </div>
 
             <!-- Exibição das Avaliações -->
-            <div class="mt-5 p-4 rounded bg-light shadow">
+            <div class="mt-5 p-4 rounded bg-light shadow" id="balao">
                 <h3>Avaliações</h3>
                 <?php foreach ($avaliacoes as $avaliacao): ?>
-                    <div class="d-flex align-items-center mb-3">
+                    <div class="d-flex align-items-center mb-3" id="balao2">
                         <span class="me-3"><i class="fas fa-user"></i> <?= htmlspecialchars($avaliacao['degustador']) ?></span>
                         <h4 class="me-3"><?= htmlspecialchars($avaliacao['nota_degustacao']) ?> <i class="fas fa-star text-warning"></i></h4>
                         <p><?= htmlspecialchars($avaliacao['comentario_texto']) ?></p>
@@ -137,6 +138,9 @@ include 'processarVerIndividual.php';
                     </div>
                 <?php endforeach; ?>
             </div>
+            <button onclick="voltarPagina()" id="backButton" type ="button" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </button>
 
         </div>
     </div>                

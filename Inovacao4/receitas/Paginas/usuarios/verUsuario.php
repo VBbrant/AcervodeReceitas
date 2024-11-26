@@ -57,16 +57,19 @@ if ($funcionario) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>receitas/Style/estiloBackground.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>receitas/Style/estiloCabecalho.css">  
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>receitas/Style/estiloEditar.css">  
+
     <style>
         body{background-color: black !important;}
         #pagina{background-color: white !important;}
     </style>     
 </head>
-<body>
+<body class="usuario">
 <?php include ROOT_PATH . 'receitas/elementoPagina/cabecalho.php'; ?>
 
-<div class="container my-4" id="pagina" style="max-width: 600px;">
+<div class="container my-4" id="lista">
     <h2 class="text-center">Visualizar Usuário</h2>
     <form class="form-horizontal" disabled>
         <!-- Informações do Usuário -->
@@ -108,10 +111,15 @@ if ($funcionario) {
             </div>
         <?php endif; ?>
 
-        <!-- Botões de navegação -->
-        <div class="text-end mt-3">
-            <a href="<?php echo BASE_URL; ?>receitas/Paginas/usuarios/listaUsuario.php" class="btn btn-secondary">
+        <div class="d-flex justify-content-between align-items-center">
+            <!-- Botão de Voltar -->
+            <button onclick="voltarPagina()" id="backButton" type ="button" class="btn btn-secondary">
                 <i class="fas fa-arrow-left"></i> Voltar
+            </button>
+
+            <!-- Botão de Editar -->
+            <a href="<?php echo BASE_URL; ?>receitas/Paginas/usuarios/editarUsuario.php?id=<?php echo $idUsuario; ?>" class="btn btn-primary">
+                <i class="fas fa-edit"></i> Editar
             </a>
         </div>
     </form>

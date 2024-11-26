@@ -54,7 +54,17 @@ if (!$ingrediente) {
                 <label for="descricao" class="form-label">Descrição:</label>
                 <textarea class="form-control" id="descricao" name="descricao" rows="5" required><?php echo htmlspecialchars($ingrediente['descricao']); ?></textarea>
             </div>
-            <button type="submit" class="btn btn-primary w-100">Salvar Alterações</button>
+            <div class="d-flex justify-content-between align-items-center">
+                <!-- Botão de Voltar -->
+                <button onclick="voltarPagina()" id="backButton" type ="button" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Voltar
+                </button>
+
+                <!-- Botão de Editar -->
+                <button type ="submit" class="btn btn-primary" id="submit">
+                    Salvar
+                </button>
+            </div>
         </form>
     </div>
 <?php include ROOT_PATH . 'receitas/elementoPagina/rodape.php'; ?>

@@ -42,13 +42,14 @@ $editores = $result_editores->fetch_all(MYSQLI_ASSOC);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>receitas/Style/estiloBackground.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>receitas/Style/addLivro.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>receitas/Style/estiloCabecalho.css">
 </head>
-<body>
+<body class="ingrediente">
     <?php include ROOT_PATH . 'receitas/elementoPagina/cabecalho.php'; ?>
 
-    <div class="container my-4">
+    <div class="container my-4" id="lista">
         <h2 class="text-center">Editar Livro</h2>
         <form method="POST" action="../../CRUD/processarEditar.php" enctype="multipart/form-data">
             <input type="hidden" name="form_type" value="livro">
@@ -112,9 +113,14 @@ $editores = $result_editores->fetch_all(MYSQLI_ASSOC);
                 <input type="hidden" name="imagem_atual" value="<?= $livro['arquivo_imagem'] ?>">
             </div>
 
-            <div class="d-flex justify-content-end mt-3">
-                <button type="button" id="btnVoltar" class="btn w-100"onclick="voltarPagina()" style="background-color: gray; color: white; padding: 10px 20px; border: none; cursor: pointer; font-size: 16px;">Voltar</button>
-                <button type="submit" class="btn btn-primary w-100">Salvar</button>
+            <div class="d-flex justify-content-between align-items-center">
+                <!-- Botão de Voltar -->
+                <button onclick="voltarPagina()" id="backButton" type ="button" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Voltar
+                </button>
+
+                <!-- Botão de Editar -->
+                <button type="submit" class="btn btn-primary" style="width: 590px;">Salva Alterações</button>
             </div>
         </form>
     </div>

@@ -79,10 +79,11 @@ $resultTopReceitas = $conn->query($sqlTopReceitas);
     <title>SaborArte - Parâmetros</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>receitas/Style/estiloBackground.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>receitas/Style/estiloCabecalho.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>receitas/Style/estiloParametros.css">
 </head>
-<body>
+<body class="ingrediente">
 <?php include ROOT_PATH . 'receitas/elementoPagina/cabecalho.php'; ?>
 
 <div class="container my-4">
@@ -160,27 +161,28 @@ $resultTopReceitas = $conn->query($sqlTopReceitas);
             </div>
         </div>
     </div>
-
-    <h3 class="text-center my-4">Top 10 Receitas com as Notas Médias Mais Altas</h3>
-    <div class="table-responsive">
-        <table class="table table-striped table-bordered">
-            <thead>
-                <tr>
-                    <th>Nome da Receita</th>
-                    <th>Cozinheiro</th>
-                    <th>Média das Notas</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php while ($row = $resultTopReceitas->fetch_assoc()): ?>
+    <div id="lista">
+        <h3 class="text-center my-4">Top 10 Receitas com as Notas Médias Mais Altas</h3>
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+                <thead>
                     <tr>
-                        <td><?php echo htmlspecialchars($row['nome']); ?></td>
-                        <td><?php echo htmlspecialchars($row['nomeCozinheiro']); ?></td>
-                        <td><?php echo number_format($row['mediaNotas'], 2); ?></td>
+                        <th>Nome da Receita</th>
+                        <th>Cozinheiro</th>
+                        <th>Média das Notas</th>
                     </tr>
-                <?php endwhile; ?>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    <?php while ($row = $resultTopReceitas->fetch_assoc()): ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($row['nome']); ?></td>
+                            <td><?php echo htmlspecialchars($row['nomeCozinheiro']); ?></td>
+                            <td><?php echo number_format($row['mediaNotas'], 2); ?></td>
+                        </tr>
+                    <?php endwhile; ?>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
