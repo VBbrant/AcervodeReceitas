@@ -47,33 +47,43 @@
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $email = $_POST['email'] ?? '';
         $token = bin2hex(random_bytes(16));
+        $expira_em = date('Y-m-d H:i:s', strtotime('+1 hour')); // Token expira em 1 hora
         $link_registro = BASE_URL . "receitas/CRUD/resetSenha.php?token=$token";
-
-        $mail = new PHPMailer(true);
-        try {
-            $mail->isSMTP();
-            $mail->Host = 'smtp.gmail.com';
-            $mail->SMTPAuth = true;
-            $mail->Username = 'senaclpoo@gmail.com';
-            $mail->Password = 'oormdbnavvkuiqgl'; // Certifique-se de usar variáveis de ambiente para senhas.
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-            $mail->Port = 587;
-
-            $mail->setFrom('senaclpoo@gmail.com', 'SABOR + ARTE');
-            $mail->addAddress($email);
-
-            $mail->isHTML(true);
-            $mail->Subject = 'Recuperação de Senha';
-            $mail->Body = "Olá,<br><br>Para redefinir sua senha, clique no link abaixo:<br>
-                <a href='$link_registro'>$link_registro</a><br><br>
-                Caso não tenha solicitado, ignore este e-mail.<br><br>Equipe Sabor + Arte.";
-
-            $mail->send();
-            echo "<div class='alert alert-success text-center'>E-mail de recuperação enviado para $email!</div>";
-        } catch (Exception $e) {
-            echo "<div class='alert alert-danger text-center'>Erro ao enviar e-mail: {$mail->ErrorInfo}</div>";
+    
+        // Inserir o token na tabela
+        $stmt = $conn->prepare("INSERT INTO senha_recuperacao (email, token, expira_em) VALUES (?, ?, ?)");
+        $stmt->bind_param("sss", $email, $token, $expira_em);
+        if ($stmt->execute()) {
+            $mail = new PHPMailer(true);
+            try {
+                $mail->isSMTP();
+                $mail->Host = 'smtp.gmail.com';
+                $mail->SMTPAuth = true;
+                $mail->Username = 'senaclpoo@gmail.com';
+                $mail->Password = 'oormdbnavvkuiqgl';
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                $mail->Port = 587;
+    
+                $mail->setFrom('senaclpoo@gmail.com', 'SABOR + ARTE');
+                $mail->addAddress($email);
+    
+                $mail->isHTML(true);
+                $mail->Subject = 'Recuperação de Senha';
+                $mail->Body = "Olá,<br><br>Para redefinir sua senha, clique no link abaixo:<br>
+                    <a href='$link_registro'>$link_registro</a><br><br>
+                    Caso não tenha solicitado, ignore este e-mail.<br><br>Equipe Sabor + Arte.";
+    
+                $mail->send();
+                echo "<div class='alert alert-success text-center'>E-mail de recuperação enviado para $email!</div>";
+            } catch (Exception $e) {
+                echo "<div class='alert alert-danger text-center'>Erro ao enviar e-mail: {$mail->ErrorInfo}</div>";
+            }
+        } else {
+            echo "<div class='alert alert-danger text-center'>Erro ao registrar o token.</div>";
         }
+        $stmt->close();
     }
+    
     ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

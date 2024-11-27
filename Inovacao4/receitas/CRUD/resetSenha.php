@@ -1,11 +1,7 @@
 <?php 
 require_once "../../config.php"; 
 include ROOT_PATH . 'receitas/conn.php';
-require '../../../vendor/autoload.php'; 
-use PHPMailer\PHPMailer\PHPMailer; 
-use PHPMailer\PHPMailer\Exception; 
 
-// Conexão com o banco de dados
 $conexao = $conn;
 if ($conexao->connect_error) {
     die("Erro de conexão: " . $conexao->connect_error);
@@ -26,27 +22,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['token'])) {
     }
     $stmt->close();
 }
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $token = $_POST['token'];
-    $novaSenha = $_POST['senha'];
-    $novaSenhaHash = password_hash($novaSenha, PASSWORD_DEFAULT);
-
-    $query = "UPDATE usuario SET senha = ? WHERE email = (SELECT email FROM senha_recuperacao WHERE token = ?)";
-    $stmt = $conexao->prepare($query);
-    $stmt->bind_param("ss", $novaSenhaHash, $token);
-
-    if ($stmt->execute() && $stmt->affected_rows > 0) {
-        echo "<div class='alert alert-success text-center'>Senha redefinida com sucesso!</div>";
-        $conexao->query("DELETE FROM senha_recuperacao WHERE token = '$token'");
-    } else {
-        echo "<div class='alert alert-danger text-center'>Token inválido ou expirado.</div>";
-    }
-
-    $stmt->close();
-}
-
-$conexao->close();
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -69,7 +44,7 @@ $conexao->close();
         <div class="p-5 rounded">
             <h2 class="text-center mb-4">Redefinir Senha</h2>
             <?php if (isset($token)) : ?>
-                <form action="resetSenha.php" method="POST">
+                <form action="resetSenha2.php" method="POST">
                     <input type="hidden" name="token" value="<?php echo htmlspecialchars($token); ?>">
                     <div class="mb-3">
                         <label for="senha" class="form-label">Nova Senha</label>
