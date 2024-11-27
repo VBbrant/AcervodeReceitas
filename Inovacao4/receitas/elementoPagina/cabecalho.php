@@ -2,6 +2,11 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();  // Inicia a sessão se não estiver iniciada
 }
+if ($_SESSION['cargo'] == NULL) {
+    // Redirecionar para a página de login se não estiver logado
+    header("Location:". BASE_URL ."receitas/Paginas/Login.php");
+    exit;
+}
 $userRole = $_SESSION['cargo'];
 ?>
 
@@ -20,15 +25,25 @@ $userRole = $_SESSION['cargo'];
             
             <!-- Right side - Search, Notifications, and Profile -->
             <div class="d-flex align-items-center">
-                <?php include ROOT_PATH . 'receitas/elementoPagina/pesquisa.php';?>
-
-
-                <!-- Notificação de Alterações -->
-                <div class="notification-container me-3" onclick="toggleNotifications()">
-                    <i class="fas fa-bell"></i>
-                    <span id="notificationDot" class="notification-dot"></span>
+                <!-- Custom Search Bar -->
+                <div class="search-container-header me-3">
+                    <div class="input-group search-input-wrapper">
+                        <span class="input-group-text search-icon">
+                            <i class="fas fa-search"></i>
+                        </span>
+                        <input 
+                            type="text" 
+                            id="headerSearchInput" 
+                            class="form-control search-input-header" 
+                            placeholder="Pesquisar receitas, livros ou funcionários..." 
+                            autocomplete="off"
+                        >
+                    </div>
+                    <div id="headerSearchResults" class="search-results-header"></div>
                 </div>
 
+
+                <!-- Profile -->
                 <?php
                 $userImage = $_SESSION['imagem_perfil'] ?? null;
                 ?>
@@ -43,14 +58,6 @@ $userRole = $_SESSION['cargo'];
         </div>
     </nav>
 
-    <!-- Caixa de notificações -->
-    <div id="notificationBox" class="notification-box" style="display: none;">
-        <div id="notificationContent" class="notification-content">
-            <!-- As notificações serão inseridas aqui dinamicamente -->
-        </div>
-    </div>
-
-
     <!-- Sidebar, Profile Dropdown, Overlay -->
     <div class="sidebar" id="sidebar">
         <?php include ROOT_PATH . 'receitas/elementoPagina/barraLateral.php'; ?>
@@ -62,6 +69,7 @@ $userRole = $_SESSION['cargo'];
 
     <div class="overlay" id="overlay" onclick="closeAll()"></div>
 </header>
+
 
 
 <style>
@@ -299,56 +307,6 @@ $usuario2 = $result_usuario->fetch_assoc();
         deletions: 0,
         bulkDeletions: 0
     };
-
-    function checkNotifications() {
-    fetch('<?=BASE_URL;?>receitas/CRUD/sincronizarNotificacoes.php')
-        .then(response => response.json())
-        .then(data => {
-            const notificationDot = document.getElementById('notificationDot');
-            const notificationContent = document.getElementById('notificationContent');
-            
-            if (data.length > 0) {
-                notificationDot.style.display = 'block';
-                
-                let notificacoesHtml = '<ul>';
-                data.forEach(notificacao => {
-                    notificacoesHtml += `<li>${notificacao.descricao} (${new Date(notificacao.data).toLocaleString()})</li>`;
-                });
-                notificacoesHtml += '</ul>';
-                notificationContent.innerHTML = notificacoesHtml;
-            } else {
-                notificationDot.style.display = 'none';
-                notificationContent.innerHTML = '';
-            }
-        })
-        .catch(error => console.error('Erro ao buscar notificações:', error));
-    }
-
-    function marcarNotificacoesComoVistas() {
-    fetch('<?=BASE_URL;?>receitas/CRUD/marcarNotificacoesComoVistas.php', { method: 'POST' })
-        .then(() => {
-            document.getElementById('notificationDot').style.display = 'none';
-        });
-    }
-
-
-
-
-    function toggleNotifications() {
-        const notificationBox = document.getElementById('notificationBox');
-        if (notificationBox.style.display === 'none' || notificationBox.style.display === '') {
-            notificationBox.style.display = 'block';
-            marcarNotificacoesComoVistas();
-        } else {
-            notificationBox.style.display = 'none';
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-    checkNotifications();
-    setInterval(checkNotifications, 15000); // Atualiza a cada 15 segundos
-});
-
 
 </script>
 <style>

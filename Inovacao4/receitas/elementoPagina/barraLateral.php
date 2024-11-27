@@ -11,8 +11,10 @@
                     <i class="fas fa-chevron-down float-end"></i>
                 </a>
                 <ul class="submenu">
+                        <?php if ($userRole == 'ADM' || $userRole == 'Cozinheiro') : ?>
+                            <li><a href="<?php echo BASE_URL; ?>receitas/Paginas/receitas/addReceita.php"><i class="fas fa-pencil-alt"></i>Adicionar Receita</a></li>
+                        <?php endif; ?>
                     <li><a href="<?php echo BASE_URL; ?>receitas/Paginas/receitas/verReceita.php"><i class="fas fa-utensils"></i> Lista de Receitas</a></li>
-                    <li><a href="<?php echo BASE_URL; ?>receitas/Paginas/receitas/addReceita.php"><i class="fas fa-pencil-alt"></i>Adicionar Receita</a></li>
                     <?php if ($userRole == 'Cozinheiro') : ?>
                         <li><a href="<?php echo BASE_URL; ?>receitas/Paginas/receitas/minhasReceitas.php"><i class="fas fa-utensils"></i> Minhas Receitas</a></li>
                     <?php endif; ?>

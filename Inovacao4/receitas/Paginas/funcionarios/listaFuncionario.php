@@ -2,6 +2,14 @@
 require_once '../../../config.php';
 require_once ROOT_PATH . 'receitas/conn.php';
 
+if ($_SESSION['cargo'] != 'ADM') {
+    echo "<script>
+        alert('Você não tem permissão para acessar essa página.');
+        window.history.back();
+    </script>";
+    exit;
+}
+
 // Verifica se há uma pesquisa sendo feita
 $search = isset($_POST['search']) ? trim($_POST['search']) : '';
 

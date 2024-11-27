@@ -387,7 +387,74 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $stmt->execute();
                 registrarLog($conn, $idUsuario, "edicao", "Cargo '$categoria' editada com sucesso!");
                 echo "<script>alert('Cargo atualizada com sucesso!'); window.location.href='" . BASE_URL . "receitas/Paginas/cargos/listaCargo.php';</script>";
-                break;        
+                break; 
+            case 'usuario':
+                $idLogin = $_POST['idLogin']; // ID do usuário a ser editado
+                $nome_usuario = $_POST['nome'];
+                $email = $_POST['email'];
+            
+                // Verifica se foi enviado uma nova senha
+                if (!empty($_POST['senha'])) {
+                    $senha = password_hash($_POST['senha'], PASSWORD_BCRYPT);  // Criptografa a nova senha
+                } else {
+                    // Mantém a senha atual se o campo estiver vazio
+                    $sql_current_password = "SELECT senha FROM usuario WHERE idLogin = ?";
+                    $stmt = $conn->prepare($sql_current_password);
+                    $stmt->bind_param("i", $idLogin);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+                    $row = $result->fetch_assoc();
+                    $senha = $row['senha'];  // Mantém a senha atual
+                    $stmt->close();
+                }
+            
+                // Verifica se foi enviado uma nova imagem de perfil
+                if (isset($_FILES['imagem_perfil']) && $_FILES['imagem_perfil']['error'] === UPLOAD_ERR_OK) {
+                    $imagem_perfil = $_FILES['imagem_perfil']['name'];
+                    $target_dir = ROOT_PATH . 'receitas/imagens/perfil/';
+                    $target_file = $target_dir . basename($imagem_perfil);
+                    
+                    // Verifica o tipo de arquivo e move para o diretório de uploads
+                    if (move_uploaded_file($_FILES['imagem_perfil']['tmp_name'], $target_file)) {
+                        // Sucesso no upload
+                    } else {
+                        echo "<script>alert('Erro ao fazer upload da imagem.'); window.history.back();</script>";
+                        exit;
+                    }
+                } else {
+                    // Mantém a imagem atual se o campo estiver vazio
+                    $sql_current_image = "SELECT imagem_perfil FROM usuario WHERE idLogin = ?";
+                    $stmt = $conn->prepare($sql_current_image);
+                    $stmt->bind_param("i", $idLogin);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+                    $row = $result->fetch_assoc();
+                    $imagem_perfil = $row['imagem_perfil'];  // Mantém a imagem atual
+                    $stmt->close();
+                }
+            
+                $conn->begin_transaction();  // Inicia a transação
+            
+                try {
+                    // Atualiza os dados do usuário
+                    $sql_usuario = "UPDATE usuario SET nome = ?, email = ?, senha = ?, imagem_perfil = ? WHERE idLogin = ?";
+                    $stmt = $conn->prepare($sql_usuario);
+                    $stmt->bind_param("ssssi", $nome_usuario, $email, $senha, $imagem_perfil, $idLogin);
+                    $stmt->execute();
+                    $stmt->close();
+            
+                    $conn->commit();  // Confirma a transação
+            
+                    echo "<script>alert('Usuário atualizado com sucesso!'); window.location.href='" . BASE_URL . "receitas/Paginas/usuarios/listaUsuario.php?idLogin=" . $idLogin . "';</script>";
+                } catch (Exception $e) {
+                    $conn->rollback();  // Reverte a transação em caso de erro
+                    echo "<script>alert('Erro ao atualizar usuário: " . $e->getMessage() . "'); window.history.back();</script>";
+                } finally {
+                    if (isset($stmt) && $stmt !== null) {
+                        $stmt->close();
+                    }
+                }
+                break;       
             
                 
             default:

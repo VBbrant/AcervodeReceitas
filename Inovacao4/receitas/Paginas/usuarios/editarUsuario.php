@@ -40,8 +40,9 @@ if ($idUsuario > 0) {
 <?php include ROOT_PATH . 'receitas/elementoPagina/cabecalho.php'; ?>
 <div class="container my-4" id="lista">
     <h2 class="text-center">Editar Usuário</h2>
-    <form method="POST" action="../../CRUD/processarEditarUsuario.php" enctype="multipart/form-data">
+    <form method="POST" action="../../CRUD/processarEditar.php" enctype="multipart/form-data">
         <input type="hidden" name="idLogin" value="<?php echo $usuario['idLogin']; ?>">
+        <input type="hidden" name="form_type" value="usuario">
         <div class="mb-3">
             <label for="nome" class="form-label">Nome:</label>
             <input type="text" class="form-control" id="nome" name="nome" value="<?php echo htmlspecialchars($usuario['nome']); ?>" required>

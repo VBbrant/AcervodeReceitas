@@ -98,9 +98,15 @@ $idEditorSessao = $_SESSION['idFun'];
             </tbody>
         </table>
         <div class="text-end">
-            <button type="button" class="btn btn-warning" id="btnExcluirMassa" onclick="ativarExclusaoMassa()">
-                <i class="fas fa-trash-alt"></i> Excluir em Massa
-            </button>
+            <?php if ($userRole == 'ADM') : ?>
+                <button type="button" class="btn btn-warning" id="btnExcluirMassa" onclick="ativarExclusaoMassa()">
+                    <i class="fas fa-trash-alt"></i> Excluir em Massa
+                </button>
+            <?php else: ?>
+                <span class="btn btn-warning disabled">
+                    <i class="fas fa-lock"></i> Excluir em massa
+                </span>
+            <?php endif;?>
             <button type="submit" class="btn btn-danger" id="btnExcluirSelecionados" style="display: none;">
                 <i class="fas fa-trash-alt"></i> Excluir Selecionados
             </button>

@@ -95,6 +95,89 @@ window.location.href = "configuracoes.php";
 }
 
 //----------------------------------------
+document.addEventListener("DOMContentLoaded", () => {
+    const searchInput = document.getElementById("headerSearchInput");
+    const searchResults = document.getElementById("headerSearchResults");
+
+    searchInput.addEventListener("input", () => {
+        const query = searchInput.value.trim();
+
+        if (query.length > 0) {
+            fetch(`http://localhost/AcervodeReceitas/Inovacao4/receitas/elementoPagina/pesquisa.php?query=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(data => {
+                    let resultsHtml = "";
+
+                    if (data.length > 0) {
+                        const groupedResults = data.reduce((groups, item) => {
+                            if (!groups[item.categoria]) {
+                                groups[item.categoria] = [];
+                            }
+                            groups[item.categoria].push(item);
+                            return groups;
+                        }, {});
+
+                        for (const [categoria, itens] of Object.entries(groupedResults)) {
+                            resultsHtml += `<div class="result-category-header">${categoria}</div>`;
+                            itens.forEach(item => {
+                                resultsHtml += `
+                                    <div class="result-item-header" 
+                                        data-category="${categoria}" 
+                                        data-id="${item.id}" 
+                                        data-name="${item.nome}">
+                                        ${item.nome}
+                                    </div>
+                                `;
+                            });
+                        }
+                    } else {
+                        resultsHtml = `<div class="no-results">Nenhum resultado encontrado.</div>`;
+                    }
+
+                    searchResults.innerHTML = resultsHtml;
+                    searchResults.style.display = "block";
+                })
+                .catch(error => {
+                    console.error("Erro ao buscar resultados:", error);
+                    searchResults.innerHTML = `<div class="no-results">Erro ao buscar resultados.</div>`;
+                    searchResults.style.display = "block";
+                });
+        } else {
+            searchResults.style.display = "none";
+        }
+    });
+
+    // Redirecionamento ao clicar no item
+    searchResults.addEventListener("click", (event) => {
+        const item = event.target.closest(".result-item-header");
+        if (item) {
+            const category = item.getAttribute("data-category");
+            const id = item.getAttribute("data-id");
+
+            let url = "";
+            if (category === "Receita") {
+                url = `http://localhost/AcervodeReceitas/Inovacao4/receitas/paginas/receitas/verReceitaIndividual.php?id=${id}`;
+            } else if (category === "Livro") {
+                url = `http://localhost/AcervodeReceitas/Inovacao4/receitas/paginas/livros/verlivro.php?id=${id}`;
+            } else if (category === "Funcionário") {
+                url = `http://localhost/AcervodeReceitas/Inovacao4/receitas/paginas/funcionarios/verfuncionario.php?id=${id}`;
+            }
+
+            if (url) {
+                window.location.href = url;
+            }
+        }
+    });
+
+    document.addEventListener("click", (event) => {
+        if (!event.target.closest(".search-container-header")) {
+            searchResults.style.display = "none";
+        }
+    });
+});
+
+
+
 
 
   

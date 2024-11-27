@@ -75,9 +75,15 @@ $result = $conn->query($sql);
         </table>
         
         <div class="text-end">
-            <button type="button" class="btn btn-warning" id="btnExcluirMassa" onclick="ativarExclusaoMassa()">
-                <i class="fas fa-trash-alt"></i> Excluir em Massa
-            </button>
+            <?php if ($userRole == 'ADM') : ?>
+                <button type="button" class="btn btn-warning" id="btnExcluirMassa" onclick="ativarExclusaoMassa()">
+                    <i class="fas fa-trash-alt"></i> Excluir em Massa
+                </button>
+            <?php else: ?>
+                <span class="btn btn-warning disabled">
+                    <i class="fas fa-lock"></i> Excluir em massa
+                </span>
+            <?php endif;?>
             <button type="submit" class="btn btn-danger" style="display: none;" id="btnExcluirSelecionados">
                 <i class="fas fa-trash-alt"></i> Excluir Selecionados
             </button>

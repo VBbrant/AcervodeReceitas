@@ -22,10 +22,10 @@ $result = $conn->query($sql);
     <link rel="stylesheet" href="<?php echo BASE_URL . 'receitas/Style/lista.css';?>">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>receitas/Style/estiloCabecalho.css">      
 </head>
-<body class="ingrente">
+<body class="ingrediente">
 <?php include ROOT_PATH . 'receitas/elementoPagina/cabecalho.php'; ?>  
 
-<div class="container my-4">
+<div class="container my-4" id="lista2">
     <h2 class="text-center">Lista de Livros</h2>
     <form method="POST" action="<?php echo BASE_URL; ?>receitas/CRUD/processarExcluirEmMassa.php" id="formExcluirMassa" onsubmit="return confirmarExclusaoEmMassa()">
         <input type="hidden" name="type" value="livro">
@@ -75,9 +75,15 @@ $result = $conn->query($sql);
         </table>
 
         <div class="text-end">
-            <button type="button" class="btn btn-warning" id="btnExcluirMassa" onclick="ativarExclusaoMassa()">
-                <i class="fas fa-trash-alt"></i> Excluir em Massa
-            </button>
+            <?php if ($userRole == 'ADM') : ?>
+                <button type="button" class="btn btn-warning" id="btnExcluirMassa" onclick="ativarExclusaoMassa()">
+                    <i class="fas fa-trash-alt"></i> Excluir em Massa
+                </button>
+            <?php else: ?>
+                <span class="btn btn-warning disabled">
+                    <i class="fas fa-lock"></i> Excluir em massa
+                </span>
+            <?php endif;?>
             <button type="submit" class="btn btn-danger" style="display: none;" id="btnExcluirSelecionados">
                 <i class="fas fa-trash-alt"></i> Excluir Selecionados
             </button>

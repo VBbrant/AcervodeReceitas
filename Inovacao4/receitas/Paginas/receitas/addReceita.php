@@ -89,15 +89,19 @@ while ($row = $result_categorias->fetch_assoc()) {
                     <option value="N">Não</option>
                 </select>
             </div>
-            <div class="mb-3">
-                <label for="cozinheiro" class="form-label">Cozinheiro:</label>
-                <select class="form-select" id="cozinheiro" name="id_cozinheiro" required>
-                    <option value="">Selecione o Cozinheiro</option>
-                    <?php foreach ($cozinheiros as $cozinheiro): ?>
-                        <option value="<?= $cozinheiro['idFun'] ?>"><?= $cozinheiro['nome'] ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
+            <?php if ($userRole == 'ADM') : ?>
+                <div class="mb-3">
+                    <label for="cozinheiro" class="form-label">Cozinheiro:</label>
+                    <select class="form-select" id="cozinheiro" name="id_cozinheiro" required>
+                        <option value="">Selecione o Cozinheiro</option>
+                        <?php foreach ($cozinheiros as $cozinheiro): ?>
+                            <option value="<?= $cozinheiro['idFun'] ?>"><?= $cozinheiro['nome'] ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+            <?php elseif ($userRole == 'Cozinheiro') : ?>
+                <input type="hidden" name="id_cozinheiro" value="<?php echo $_SESSION['idFun']; ?>">
+            <?php endif;?>
             <div class="mb-3">
                 <label for="categoria" class="form-label">Categoria:</label>
                 <select class="form-select" id="categoria" name="id_categoria" required>
@@ -115,16 +119,31 @@ while ($row = $result_categorias->fetch_assoc()) {
                 <label for="arquivo_imagem" class="form-label">Upload da Imagem:</label>
                 <input type="file" class="form-control" id="arquivo_imagem" name="arquivo_imagem" accept="image/*" onchange="toggleLinkInput()">
             </div>
-            <div class="mb-3">
-                <label for="ingredientSearch" class="form-label">Ingredientes</label>
-                <div class="input-group mb-2">
-                    <input type="text" id="ingredientSearch" class="form-control" placeholder="Pesquisar ingrediente...">
-                    <span class="input-group-text" onclick="filterIngredients()"><i class="fas fa-search"></i></span>
-                    <button type="button" class="btn btn-primary" id="addIngredientOptions">+</button>
+
+            <?php if ($userRole == 'ADM') : ?>
+                <div class="mb-3">
+                    <label for="ingredientSearch" class="form-label">Ingredientes</label>
+                    <div class="input-group mb-2">
+                        <input type="text" id="ingredientSearch" class="form-control" placeholder="Pesquisar ingrediente...">
+                        <span class="input-group-text" onclick="filterIngredients()"><i class="fas fa-search"></i></span>
+                        <button type="button" class="btn btn-primary" id="addIngredientOptions">+</button>
+                    </div>
+                    <div id="ingredientList" class="list-group"></div>
+                    <div id="selectedIngredients" class="mb-3"></div>
                 </div>
-                <div id="ingredientList" class="list-group"></div>
-                <div id="selectedIngredients" class="mb-3"></div>
-            </div>
+            <?php elseif ($userRole == 'Cozinheiro') : ?>
+                <div class="mb-3">
+                    <label for="ingredientSearch" class="form-label">Ingredientes</label>
+                    <div class="input-group mb-2">
+                        <input type="text" id="ingredientSearch" class="form-control" placeholder="Pesquisar ingrediente...">
+                        <span class="input-group-text" onclick="filterIngredients()"><i class="fas fa-search"></i></span>
+                        <button type="button" class="btn btn-primary" id="addIngredientOptions">+</button>
+                    </div>
+                    <div id="ingredientList" style="top: 162% !important;" class="list-group"></div>
+                    <div id="selectedIngredients" class="mb-3"></div>
+                </div>
+            <?php endif;?>
+
             <input type="hidden" name="ingredientes" id="ingredientesJson">
             <div class="d-flex justify-content-between align-items-center">
                 <!-- Botão de Voltar -->

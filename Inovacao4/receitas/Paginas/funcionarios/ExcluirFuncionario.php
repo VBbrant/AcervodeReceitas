@@ -2,6 +2,14 @@
 require_once "../../../config.php";
 require_once ROOT_PATH . "receitas/conn.php";
 
+if ($_SESSION['cargo'] != 'ADM') {
+    echo "<script>
+        alert('Você não tem permissão para acessar essa página.');
+        window.history.back();
+    </script>";
+    exit;
+}
+
 $idFuncionario = $_GET['id'] ?? null;
 if (!$idFuncionario) {
     echo "ID da categoria não fornecido.";

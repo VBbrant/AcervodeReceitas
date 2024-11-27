@@ -25,10 +25,10 @@ header .logo-img {
 }
 
 .profile-button .profile-img {
-    width: 40px;       /* Define o tamanho da imagem */
-    height: 40px;      /* Define o tamanho da imagem */
-    border-radius: 50%; /* Torna a imagem redonda */
-    object-fit: cover;  /* Faz a imagem se ajustar ao tamanho sem distorcer */
+    width: 40px !important;       /* Define o tamanho da imagem */
+    height: 40px !important;      /* Define o tamanho da imagem */
+    border-radius: 50% !important; /* Torna a imagem redonda */
+    object-fit: cover !important;  /* Faz a imagem se ajustar ao tamanho sem distorcer */
 }
 
 /* Search Input */
@@ -167,4 +167,93 @@ header .search-button {
         padding: 0.5rem 1rem;
         height: 70px;
     }
-        
+/*------------------------------------*/
+.search-container-header {
+    position: relative;
+    max-width: 400px;
+    width: 100%;
+}
+
+
+/* Wrapper do input, com borda arredondada e sombra */
+.search-input-wrapper {
+    border-radius: 30px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Ícone de pesquisa (caso tenha) */
+.search-icon {
+    background: #fff;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.search-icon:hover {
+    background: #f7f7f7;
+}
+
+/* Estilo do input da barra de pesquisa */
+.search-input-header {
+    width: 100%;
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    border-radius: 30px;
+    outline: none;
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.search-input-header:focus {
+    box-shadow: 0 0 10px rgba(0, 122, 255, 0.5); /* Efeito de foco com cor azul */
+}
+
+/* Estilo da lista de resultados da pesquisa */
+.search-results-header {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 0 0 10px 10px;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo dos itens da lista de resultados */
+.search-results-header .result-item-header {
+    padding: 12px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.3s ease-in-out;
+}
+
+/* Efeito de hover nos itens */
+.search-results-header .result-item-header:hover {
+    background-color: #f7f7f7;
+}
+
+/* Estilo para os cabeçalhos de categoria */
+.search-results-header .result-category-header {
+    font-size: 16px;
+    font-weight: bold;
+    color: #b02a2a; /* Cor vermelha para o título das categorias */
+    padding: 10px 20px;
+    background-color: #f9f9f9;
+    border-top: 1px solid #ddd;
+}
+
+/* Estilo para quando não houver resultados */
+.search-results-header .no-results {
+    padding: 20px;
+    color: #888;
+    text-align: center;
+    font-size: 16px;
+}

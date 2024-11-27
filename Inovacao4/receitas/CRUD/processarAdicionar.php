@@ -389,7 +389,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Verifica se foi enviado uma imagem de perfil
             if (isset($_FILES['imagem_perfil']) && $_FILES['imagem_perfil']['error'] === UPLOAD_ERR_OK) {
                 $imagem_perfil = $_FILES['imagem_perfil']['name'];
-                $target_dir = ROOT_PATH . 'uploads/';
+                $target_dir = ROOT_PATH . 'receitas/imagens/perfil/';
                 $target_file = $target_dir . basename($imagem_perfil);
                 
                 // Verifica o tipo de arquivo e move para o diretório de uploads
@@ -424,12 +424,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $idLogin = $stmt->insert_id;  // Obtém o ID do usuário inserido
                 $stmt->close();
         
-                // Comenta ou remove a parte do funcionário, pois não estamos tratando isso aqui
-                // Se necessário, o código de adição de funcionário pode ser inserido aqui.
-        
                 $conn->commit();  // Confirma a transação
                 
-                echo "<script>alert('Usuário adicionado com sucesso!'); window.location.href='" . BASE_URL . "receitas/Paginas/login.php';</script>";
+                echo "<script>alert('Usuário adicionado com sucesso!'); window.location.href='" . BASE_URL . "receitas/Paginas/usuarios/listaUsuario.php';</script>";
             } catch (Exception $e) {
                 $conn->rollback();  // Reverte as alterações em caso de erro
                 echo "<script>alert('Erro ao adicionar usuário: " . $e->getMessage() . "'); window.history.back();</script>";

@@ -28,10 +28,10 @@
     </header>
 
 
-    <div class="container d-flex justify-content-center align-items-center min-vh-100">
+    <div class="container d-flex justify-content-center align-items-center min-vh-100" style="width: 400px !important; height: auto !important;">
         <div class="login-box p-5 rounded">
             <h2 class="text-center mb-4">LOGIN</h2>
-            <form action="../CRUD/processarConta.php" method="post">
+            <form action="../CRUD/processarConta.php" method="post" style="width: 400px !important; height: auto !important;">
                 <input type="hidden" name="form_type" value="login">
 
                 <div class="mb-3">
@@ -45,7 +45,6 @@
                 <div class="d-grid">
                     <button type="submit" class="btn btn-dark">ACESSAR</button>
                 </div>
-                <p class="text-center mt-3">Não tem uma conta? <a href="registro.php">Registre-se aqui</a></p>
             </form>
         </div>
     </div>

@@ -1,12 +1,15 @@
-<?php
+<?php session_start();
 require_once '../../../config.php';
 require_once ROOT_PATH . 'receitas/conn.php';
 
+$idSessao  = $_SESSION['idFun'];
 // Consulta para listar todas as avaliações e receitas associadas
 $sql = "
-    SELECT d.idDegustacao, d.nota_degustacao, d.data_degustacao, r.nome_rec
+    SELECT d.idDegustacao, d.nota_degustacao, d.data_degustacao, r.nome_rec, f.idFun    
     FROM degustacao d
     LEFT JOIN receita r ON d.idReceita = r.idReceita
+    LEFT JOIN funcionario f ON d.idDegustacao = f.idFun
+    WHERE idDegustador = $idSessao
 ";
 $result = $conn->query($sql);
 ?>
