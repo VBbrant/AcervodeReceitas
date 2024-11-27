@@ -41,7 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $type && count($itensSelecionados) >
                 $stmt = $conn->prepare("DELETE FROM usuario WHERE idLogin = ?");
                 break;
             case 'funcionario':
-                $stmt = $conn->prepare("DELETE FROM funcionario WHERE idFuncionario = ?");
+                $stmt = $conn->prepare("DELETE FROM funcionario WHERE idFun = ?");
                 break;
             case 'restaurante':
                 $stmt = $conn->prepare("DELETE FROM restaurante WHERE idRestaurante = ?");
@@ -77,7 +77,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $type && count($itensSelecionados) >
             } elseif ($type == 'usuario') {
                 $sql_nome = "SELECT nome FROM usuario WHERE idLogin = ?";
             } elseif ($type == 'funcionario') {
-                $sql_nome = "SELECT nome FROM funcionario WHERE idFuncionario = ?";
+                $sql_nome = "SELECT nome FROM funcionario WHERE idFun = ?";
             } elseif ($type == 'restaurante') {
                 $sql_nome = "SELECT nome FROM restaurante WHERE idRestaurante = ?";
             } elseif ($type == 'cargo') {

@@ -1,8 +1,8 @@
-<?php
+<?php session_start();
 require_once '../../../config.php';
 require_once ROOT_PATH . 'receitas/conn.php';
 
-if ($_SESSION['cargo'] != 'ADM') {
+if ($_SESSION['cargo'] !== 'ADM') {
     echo "<script>
         alert('Você não tem permissão para acessar essa página.');
         window.history.back();
@@ -34,7 +34,12 @@ $cargos = $result_cargos->fetch_all(MYSQLI_ASSOC);
 
 $stmt->close();
 
-
+$sql_usuarios = "SELECT idLogin, nome FROM usuario";
+$result_usuarios = $conn->query($sql_usuarios);
+$usuarios = [];
+while ($row = $result_usuarios->fetch_assoc()) {
+    $usuarios[] = $row;
+}
 
 ?>
 
@@ -56,35 +61,82 @@ $stmt->close();
 
 <div class="container my-4" id="lista">
     <h2 class="text-center">Detalhes do funcionario</h2>
-    <form>
-        <div class="mb-3">
-            <label class="form-label">Nome:</label>
-            <input type="text" class="form-control" value="<?php echo htmlspecialchars($funcionario['nome']); ?>" disabled>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">RG:</label>
-            <input type="number" class="form-control" value="<?php echo htmlspecialchars($funcionario['rg']); ?>" disabled>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Date de nascimento:</label>
-            <input type="date" class="form-control" value="<?php echo htmlspecialchars($funcionario['data_nascimento']); ?>" disabled>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Date de admissão:</label>
-            <input type="date" class="form-control" value="<?php echo htmlspecialchars($funcionario['data_admissao']); ?>" disabled>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Salário:</label>
-            <input type="number" class="form-control" value="<?php echo htmlspecialchars($funcionario['salario']); ?>" disabled>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Cargo:</label>
-            <input type="text" class="form-control" value="<?php echo htmlspecialchars($funcionario['cargo_nome']); ?>" disabled>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Apelido:</label>
-            <input type="text" class="form-control" value="<?php echo htmlspecialchars($funcionario['nome_fantasia']); ?>" disabled>
-        </div>
+    <form disabled>
+            <!-- Campos de dados do funcionário -->
+            <div class="mb-3">
+                <label for="nome" class="form-label">Nome do Funcionário:</label>
+                <input type="text" class="form-control" id="nome" name="nome" value="<?= htmlspecialchars($funcionario['nome']) ?>" disabled>
+            </div>
+            <div class="mb-3">
+                <label for="rg" class="form-label">RG:</label>
+                <input type="text" class="form-control" id="rg" name="rg" value="<?= htmlspecialchars($funcionario['rg']) ?>" disabled>
+            </div>
+            <div class="mb-3">
+                <label for="data_nascimento" class="form-label">Data de Nascimento:</label>
+                <input type="date" class="form-control" id="data_nascimento" name="data_nascimento" value="<?= $funcionario['data_nascimento'] ?>" disabled>
+            </div>
+            <div class="mb-3">
+                <label for="data_admissao" class="form-label">Data de Admissão:</label>
+                <input type="date" class="form-control" id="data_admissao" name="data_admissao" value="<?= $funcionario['data_admissao'] ?>" disabled>
+            </div>
+            <div class="mb-3">
+                <label for="salario" class="form-label">Salário:</label>
+                <input type="number" step="0.01" class="form-control" id="salario" name="salario" value="<?= $funcionario['salario'] ?>" disabled>
+            </div>
+            <div class="mb-3">
+                <label for="nome_fantasia" class="form-label">Apelido:</label>
+                <input type="text" class="form-control" id="nome_fantasia" name="nome_fantasia" value="<?= htmlspecialchars($funcionario['nome_fantasia']) ?>" disabled>
+            </div>
+            <div class="mb-3">
+                <label for="telefone" class="form-label">Telefone:</label>
+                <input type="text" class="form-control" id="telefone" name="telefone" value="<?= htmlspecialchars($funcionario['telefone']) ?>" disabled>
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email:</label>
+                <input type="email" class="form-control" id="email" name="email" value="<?= htmlspecialchars($funcionario['email'])?>" disabled>
+            </div>
+
+            <!-- Campo de seleção para o cargo -->
+            <div class="mb-3">
+                <label for="idCargo" class="form-label">Cargo:</label>
+                <select class="form-select" id="idCargo" name="idCargo" disabled>
+                    <option value="">Selecione o Cargo</option>
+                    <?php foreach ($cargos as $cargo): ?>
+                        <option value="<?= $cargo['idCargo'] ?>" <?= $funcionario['idCargo'] == $cargo['idCargo'] ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($cargo['nome']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+
+            <!-- Campo de seleção para o restaurante -->
+            <div class="mb-3">
+                <label for="idRestaurante" class="form-label">Restaurante:</label>
+                <select class="form-select" id="idRestaurante" name="idRestaurante" disabled>
+                    <option value="">Selecione o Restaurante</option>
+                    <?php 
+                    $sql_restaurantes = "SELECT idRestaurante, nome FROM restaurante";
+                    $result_restaurantes = $conn->query($sql_restaurantes);
+                    while ($restaurante = $result_restaurantes->fetch_assoc()): ?>
+                        <option value="<?= $restaurante['idRestaurante'] ?>" <?= $funcionario['idRestaurante'] == $restaurante['idRestaurante'] ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($restaurante['nome']) ?>
+                        </option>
+                    <?php endwhile; ?>
+                </select>
+            </div>
+
+            <!-- Campo de seleção para o usuário -->
+            <div class="mb-3">
+                <label for="idLogin" class="form-label">Associar a Usuário Existente:</label>
+                <select class="form-select" id="idLogin" name="idLogin" disabled>
+                    <option value="<?= $funcionario['idLogin'] == $usuario['idLogin'] ? 'selected' : '' ?>"><?= htmlspecialchars($usuario['nome']) ?></option>
+                    <?php foreach ($usuarios as $usuario): ?>
+                        <option value="<?= $usuario['idLogin'] ?>" <?= $funcionario['idLogin'] == $usuario['idLogin'] ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($usuario['nome']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
 
         <div class="d-flex justify-content-between align-items-center">
             <!-- Botão de Voltar -->

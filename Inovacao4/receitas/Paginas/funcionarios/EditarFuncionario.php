@@ -1,8 +1,8 @@
-<?php
+<?php session_start();
 require_once "../../../config.php";
 require_once ROOT_PATH . "receitas/conn.php";
 
-if ($_SESSION['cargo'] != 'ADM') {
+if ($_SESSION['cargo'] !== 'ADM') {
     echo "<script>
         alert('Você não tem permissão para acessar essa página.');
         window.history.back();
@@ -91,6 +91,14 @@ while ($row = $result_usuarios->fetch_assoc()) {
                 <label for="nome_fantasia" class="form-label">Apelido:</label>
                 <input type="text" class="form-control" id="nome_fantasia" name="nome_fantasia" value="<?= htmlspecialchars($funcionario['nome_fantasia']) ?>">
             </div>
+            <div class="mb-3">
+                <label for="telefone" class="form-label">Telefone:</label>
+                <input type="text" class="form-control" id="telefone" name="telefone" value="<?= htmlspecialchars($funcionario['telefone']) ?>">
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email:</label>
+                <input type="email" class="form-control" id="email" name="email" value="<?= htmlspecialchars($funcionario['email'])?>" required>
+            </div>
 
             <!-- Campo de seleção para o cargo -->
             <div class="mb-3">
@@ -105,11 +113,27 @@ while ($row = $result_usuarios->fetch_assoc()) {
                 </select>
             </div>
 
+            <!-- Campo de seleção para o restaurante -->
+            <div class="mb-3">
+                <label for="idRestaurante" class="form-label">Restaurante:</label>
+                <select class="form-select" id="idRestaurante" name="idRestaurante" required>
+                    <option value="">Selecione o Restaurante</option>
+                    <?php 
+                    $sql_restaurantes = "SELECT idRestaurante, nome FROM restaurante";
+                    $result_restaurantes = $conn->query($sql_restaurantes);
+                    while ($restaurante = $result_restaurantes->fetch_assoc()): ?>
+                        <option value="<?= $restaurante['idRestaurante'] ?>" <?= $funcionario['idRestaurante'] == $restaurante['idRestaurante'] ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($restaurante['nome']) ?>
+                        </option>
+                    <?php endwhile; ?>
+                </select>
+            </div>
+
             <!-- Campo de seleção para o usuário -->
             <div class="mb-3">
                 <label for="idLogin" class="form-label">Associar a Usuário Existente:</label>
-                <select class="form-select" id="idLogin" name="idLogin">
-                    <option value="">Nenhum (Gerar link para registro)</option>
+                <select class="form-select" id="idLogin" name="idLogin" required>
+                    <option value="">Selecione uma conta</option>
                     <?php foreach ($usuarios as $usuario): ?>
                         <option value="<?= $usuario['idLogin'] ?>" <?= $funcionario['idLogin'] == $usuario['idLogin'] ? 'selected' : '' ?>>
                             <?= htmlspecialchars($usuario['nome']) ?>
@@ -131,4 +155,6 @@ while ($row = $result_usuarios->fetch_assoc()) {
     </div>
 
 <?php include ROOT_PATH . 'receitas/elementoPagina/rodape.php'; ?>
+
+
 

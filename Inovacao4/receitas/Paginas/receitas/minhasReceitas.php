@@ -48,6 +48,7 @@ $idEditorSessao = $_SESSION['idFun'];
 <script src="<?php echo BASE_URL . 'receitas/Scripts/listas.js';?>"></script>
     <form method="POST" action="<?php echo BASE_URL; ?>receitas/CRUD/processarExcluirEmMassa.php" id="formExcluirMassa" onsubmit="return confirmarExclusaoEmMassa()">
         <input type="hidden" name="type" value="receita">
+        <h2 class="text-center">Minhas receitas</h2>
         <table class="table table-striped">
             <thead>
                 <th class="checkbox-cell">

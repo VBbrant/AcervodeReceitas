@@ -8,7 +8,7 @@ if (!$idAvaliacao) {
     exit;
 }
 
-$sql = "SELECT d.nota_degustacao, d.data_degustacao, r.nome_rec, c.comentario_texto
+$sql = "SELECT d.nota_degustacao, d.data_degustacao, r.nome_rec, c.comentario_texto, d.idDegustador
 FROM degustacao d
 LEFT JOIN receita r ON d.idReceita = r.idReceita
 LEFT JOIN comentario c ON d.idDegustacao = c.idDegustacao
@@ -66,11 +66,12 @@ if (!$avaliacao) {
             <button onclick="voltarPagina()" id="backButton" type ="button" class="btn btn-secondary">
                 <i class="fas fa-arrow-left"></i> Voltar
             </button>
-
-            <!-- Botão de Editar -->
-            <a href="<?php echo BASE_URL; ?>receitas/Paginas/avaliacoes/editarAvaliacao.php?id=<?php echo $idAvaliacao; ?>" class="btn btn-primary">
-                <i class="fas fa-edit"></i> Editar
-            </a>
+            <?php if ($userRole == 'ADM' || $_SESSION['idFun'] == $avaliacao['idDegustador']):?>
+                <!-- Botão de Editar -->
+                <a href="<?php echo BASE_URL; ?>receitas/Paginas/avaliacoes/editarAvaliacao.php?id=<?php echo $idAvaliacao; ?>" class="btn btn-primary">
+                    <i class="fas fa-edit"></i> Editar
+                </a>
+            <?php endif;?>
         </div>
     </form>
 </div>

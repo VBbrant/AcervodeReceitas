@@ -1,8 +1,8 @@
-<?php
+<?php session_start();
 require_once '../../../config.php';
 require_once ROOT_PATH . 'receitas/conn.php';
 
-if ($_SESSION['cargo'] != 'ADM') {
+if ($_SESSION['cargo'] !== 'ADM') {
     echo "<script>
         alert('Você não tem permissão para acessar essa página.');
         window.history.back();
@@ -106,6 +106,23 @@ $result = $stmt->get_result();
                 <?php endif; ?>
             </tbody>
         </table>
+        <div class="text-end">
+        <?php if ($userRole == 'ADM') : ?>
+            <button type="button" class="btn btn-warning" id="btnExcluirMassa" onclick="ativarExclusaoMassa()">
+                <i class="fas fa-trash-alt"></i> Excluir em Massa
+            </button>
+        <?php else: ?>
+            <span class="btn btn-warning disabled">
+                <i class="fas fa-lock"></i> Excluir em massa
+            </span>
+        <?php endif;?>
+            <button type="submit" class="btn btn-danger" style="display: none;" id="btnExcluirSelecionados">
+                <i class="fas fa-trash-alt"></i> Excluir Selecionados
+            </button>
+            <a href="<?php echo BASE_URL; ?>receitas/Paginas/funcionarios/addFuncionario.php" class="btn btn-success">
+                <i class="fas fa-plus"></i> Adicionar Funcionário
+            </a>
+        </div>
     </form>
 </div>
 

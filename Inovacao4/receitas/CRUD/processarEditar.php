@@ -270,49 +270,67 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 break;
             
             case 'funcionario':
-                $idFuncionario = $_POST['idFun'] ?? null;
-                $nome = $_POST['nome'] ?? null;
-                $rg = $_POST['rg'] ?? null;
-                $data_nascimento = $_POST['data_nascimento'] ?? null;
-                $data_admissao = $_POST['data_admissao'] ?? null;
-                $salario = $_POST['salario'] ?? null;
-                $nome_fantasia = $_POST['nome_fantasia'] ?? null;
-                $idLogin = $_POST['idLogin'] ?? null;
-                $idCargo = $_POST['idCargo'] ?? null;
+                $idFun = $_POST['idFun'];
+                $nome = $_POST['nome'];
+                $rg = $_POST['rg'];
+                $data_nascimento = $_POST['data_nascimento'];
+                $data_admissao = $_POST['data_admissao'];
+                $salario = $_POST['salario'];
+                $nome_fantasia = $_POST['nome_fantasia'];
+                $telefone = $_POST['telefone'];
+                $email = $_POST['email'];
+                $idCargo = $_POST['idCargo'];
+                $idRestaurante = $_POST['idRestaurante'];
+                $idLogin = $_POST['idLogin'];
 
-                if (!$idFuncionario || !$nome || !$idCargo) {
-                    echo "<script>alert('Dados incompletos para atualização do funcionário!'); window.history.back();</script>";
-                    exit;
-                }
-        
                 try {
+                    // Inicia a transação para garantir atomicidade
                     $conn->begin_transaction();
-        
-                    $sql_update_funcionario = "UPDATE funcionario 
-                        SET nome = ?, rg = ?, data_nascimento = ?, data_admissao = ?, salario = ?, nome_fantasia = ?, idLogin = ?, idCargo = ?
-                        WHERE idFun = ?
-                    ";
-                    $stmt_funcionario = $conn->prepare($sql_update_funcionario);
-                    $stmt_funcionario->bind_param("ssssdsiii", $nome, $rg, $data_nascimento, $data_admissao, $salario, $nome_fantasia, $idLogin, $idCargo, $idFuncionario);
-                    $stmt_funcionario->execute();
-        
+
+                    // Atualizar os dados do funcionário
+                    $sql_funcionario = "UPDATE funcionario SET nome = ?, rg = ?, data_nascimento = ?, data_admissao = ?, salario = ?, nome_fantasia = ?, telefone = ?, email = ?, idCargo = ?, idRestaurante = ? WHERE idFun = ?";
+                    $stmt = $conn->prepare($sql_funcionario);
+                    $stmt->bind_param("ssssdsdssii", $nome, $rg, $data_nascimento, $data_admissao, $salario, $nome_fantasia, $telefone, $email, $idCargo, $idRestaurante, $idFun);
+                    if (!$stmt->execute()) {
+                        throw new Exception("Erro ao atualizar dados do funcionário.");
+                    }
+
+                    // Verificar se o e-mail foi alterado e atualizar o e-mail do usuário associado
+                    $sql_usuario = "SELECT email FROM usuario WHERE idLogin = ?";
+                    $stmt_usuario = $conn->prepare($sql_usuario);
+                    $stmt_usuario->bind_param("i", $idLogin);
+                    $stmt_usuario->execute();
+                    $result = $stmt_usuario->get_result();
+                    $usuario = $result->fetch_assoc();
+
+                    // Se o e-mail do funcionário for diferente do e-mail do usuário, atualize o e-mail do usuário
+                    if ($usuario['email'] !== $email) {
+                        $sql_update_usuario = "UPDATE usuario SET email = ? WHERE idLogin = ?";
+                        $stmt_update_usuario = $conn->prepare($sql_update_usuario);
+                        $stmt_update_usuario->bind_param("si", $email, $idLogin);
+                        if (!$stmt_update_usuario->execute()) {
+                            throw new Exception("Erro ao atualizar e-mail do usuário.");
+                        }
+                    }
+
+                    // Commit das transações
                     $conn->commit();
-                    registrarLog($conn, $idUsuario, "edicao", "Funcionario '$nome' editado(a) com sucesso!");
-                    echo "<script>alert('Funcionário atualizado com sucesso!'); window.location.href='" . BASE_URL . "receitas/Paginas/funcionarios/listaFuncionario.php';</script>";
+
+                    // Redirecionar ou mostrar mensagem de sucesso
+                    echo "<script>window.location.href='" . BASE_URL . "receitas/Paginas/funcionarios/listaFuncionario.php';</script>";
                 } catch (Exception $e) {
-                    var_dump($idFuncionario,$idCargo);
-                    error_log(print_r($_POST, true));
-                        error_log("Erro ao atualizar o funcionário: " . $e->getMessage());
-                        $conn->rollback();
-                        
-                    
+                    // Caso ocorra algum erro, faz o rollback
+                    $conn->rollback();
+                    echo "Erro: " . $e->getMessage();
                 } finally {
-                    if (isset($stmt_funcionario)) {
-                        $stmt_funcionario->close();
+                    // Fechar conexões e liberar recursos
+                    $stmt_usuario->close();
+                    if (isset($stmt_update_usuario)) {
+                        $stmt_update_usuario->close();
                     }
                 }
                 break;
-            
+                
             case 'meta':
                 try {
                     $idMeta = $_POST['idMeta'];

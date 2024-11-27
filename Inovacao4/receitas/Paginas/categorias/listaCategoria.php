@@ -58,13 +58,16 @@ $result = $conn->query($sql);
                         <a href="<?php echo BASE_URL; ?>receitas/Paginas/categorias/verCategoria.php?id=<?php echo $categoria['idCategoria']; ?>" class="btn btn-info btn-sm">
                             <i class="fas fa-eye"></i> Ver
                         </a>
-                        <a href="<?php echo BASE_URL; ?>receitas/Paginas/categorias/editarCategoria.php?id=<?php echo $categoria['idCategoria']; ?>" class="btn btn-primary btn-sm">
-                            <i class="fas fa-edit"></i> Editar
-                        </a>
-                        <a href="<?php echo BASE_URL; ?>receitas/Paginas/categorias/excluirCategoria.php?id=<?php echo $categoria['idCategoria']; ?>" 
-                        class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir esta categoria?');">
-                            <i class="fas fa-trash-alt"></i> Excluir
-                        </a>
+                        <?php if ($userRole == 'ADM'):?>
+                            <a href="<?php echo BASE_URL; ?>receitas/Paginas/categorias/editarCategoria.php?id=<?php echo $categoria['idCategoria']; ?>" class="btn btn-primary btn-sm">
+                                <i class="fas fa-edit"></i> Editar
+                            </a>
+                            
+                            <a href="<?php echo BASE_URL; ?>receitas/Paginas/categorias/excluirCategoria.php?id=<?php echo $categoria['idCategoria']; ?>" 
+                            class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir esta categoria?');">
+                                <i class="fas fa-trash-alt"></i> Excluir
+                            </a>
+                        <?php endif ; ?>
                     </td>
                 </tr>
                 <?php endwhile; ?>
@@ -72,9 +75,15 @@ $result = $conn->query($sql);
         </table>
 
         <div class="text-end">
+        <?php if ($userRole == 'ADM') : ?>
             <button type="button" class="btn btn-warning" id="btnExcluirMassa" onclick="ativarExclusaoMassa()">
                 <i class="fas fa-trash-alt"></i> Excluir em Massa
             </button>
+        <?php else: ?>
+            <span class="btn btn-warning disabled">
+                <i class="fas fa-lock"></i> Excluir em massa
+            </span>
+        <?php endif;?>
             <button type="submit" class="btn btn-danger" style="display: none;" id="btnExcluirSelecionados">
                 <i class="fas fa-trash-alt"></i> Excluir Selecionados
             </button>

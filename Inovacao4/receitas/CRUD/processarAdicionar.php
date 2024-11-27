@@ -3,6 +3,11 @@ $idUsuario = $_SESSION['idLogin'];
 
 require_once "../../config.php";
 require_once ROOT_PATH . "receitas/conn.php";
+require '../../../vendor/autoload.php'; // Caminho correto para o autoload gerado pelo Composer
+
+// Importar as classes do PHPMailer
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $form_type = $_POST['form_type'] ?? '';
@@ -257,49 +262,88 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $data_admissao = $_POST['data_admissao'] ?? null;
             $salario = $_POST['salario'] ?? null;
             $nome_fantasia = $_POST['nome_fantasia'] ?? null;
+            $telefone = $_POST['telefone'] ?? null;
+            $email = $_POST['email'] ?? null;
+            $restaurante = $_POST['idRestaurante'] ?? null;
             $idLogin = $_POST['idLogin'] ?? null;
             $idCargo = $_POST['idCargo'] ?? null;
-    
+        
             if (!$nome) {
                 echo "<script>alert('Nome do funcionário é obrigatório!'); window.history.back();</script>";
                 exit;
             }
-    
+        
             $conn->begin_transaction();
-    
             try {
                 if ($idLogin) {
-                    // Associa o funcionário a um usuário existente
-                    $sql_funcionario = "INSERT INTO funcionario (nome, rg, data_nascimento, data_admissao, salario, nome_fantasia, idLogin, idCargo) 
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                    $sql_funcionario = "INSERT INTO funcionario (nome, rg, data_nascimento, data_admissao, salario, nome_fantasia, telefone, email, idLogin, idCargo, idRestaurante) 
+                                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                     $stmt_funcionario = $conn->prepare($sql_funcionario);
-                    $stmt_funcionario->bind_param("ssssdsii", $nome, $rg, $data_nascimento, $data_admissao, $salario, $nome_fantasia, $idLogin, $idCargo);
+                    $stmt_funcionario->bind_param("ssssdsssiii", $nome, $rg, $data_nascimento, $data_admissao, $salario, $nome_fantasia, $telefone, $email, $idLogin, $idCargo, $restaurante);
                     $stmt_funcionario->execute();
                 } else {
-                    // Gerar link de registro
-                    $token = bin2hex(random_bytes(16)); // Gera um token único para o link
-                    $link_registro = BASE_URL ."receitas/Paginas/registro.php?token=$token";
-                    
-                    // Armazenar o token temporariamente
-                    $sql_token = "INSERT INTO registro_tokens (token, nome, rg, data_nascimento, data_admissao, salario, nome_fantasia, idCargo) 
-                                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                    // Gerar token e link de registro
+                    $token = bin2hex(random_bytes(16));
+                    $link_registro = BASE_URL . "receitas/Paginas/registro.php?token=$token";
+        
+                    $sql_token = "INSERT INTO registro_tokens (token, nome, rg, data_nascimento, data_admissao, salario, nome_fantasia, telefone, email, idCargo, idRestaurante) 
+                                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                     $stmt_token = $conn->prepare($sql_token);
-                    $stmt_token->bind_param("sssssdsi", $token, $nome, $rg, $data_nascimento, $data_admissao, $salario, $nome_fantasia, $idCargo);
+                    $stmt_token->bind_param("sssssdsssii", $token, $nome, $rg, $data_nascimento, $data_admissao, $salario, $nome_fantasia, $telefone, $email, $idCargo, $restaurante);
                     $stmt_token->execute();
-    
-                    echo "Link de registro gerado: <a href='$link_registro'>$link_registro</a>";
+        
+                    echo "
+                    <div id='codigo-container' style='margin-top: 20px;'>
+                        <textarea id='codigo' rows='3' style='width: 100%; font-family: monospace;' readonly>
+                Token: $token
+                Link de Registro: $link_registro
+                        </textarea>
+                        <button onclick='copiarLink()'>Copiar Link</button>
+                        <button onclick='enviarEmail()'>Enviar E-mail</button>
+                        <button onclick='voltarParaLista()'>Voltar</button>
+                    </div>
+
+                    <script>
+                        function copiarLink() {
+                            const link = '$link_registro';
+                            navigator.clipboard.writeText(link).then(() => {
+                                alert('Link copiado para a área de transferência!');
+                            }).catch(err => {
+                                alert('Erro ao copiar o link: ' + err);
+                            });
+                        }
+
+                        function enviarEmail() {
+                            const xhr = new XMLHttpRequest();
+                            xhr.open('POST', 'enviarEmail.php', true);
+                            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                            xhr.onreadystatechange = function () {
+                                if (xhr.readyState === 4 && xhr.status === 200) {
+                                    alert(xhr.responseText);
+                                }
+                            };
+                            xhr.send('token=$token&email=$email&nome=$nome&link_registro=$link_registro');
+                        }
+
+                        function voltarParaLista() {
+                            window.location.href = '" . BASE_URL . "receitas/paginas/funcionarios/listaFuncionario.php';
+                        }
+                    </script>
+                ";
+
                 }
-    
+        
                 $conn->commit();
                 registrarLog($conn, $idUsuario, "inclusao", "Funcionário '$nome' adicionado com sucesso!");
             } catch (Exception $e) {
                 $conn->rollback();
-                echo "<script>alert('Erro ao adicionar funcionário: " . $e->getMessage() . "'); window.history.back();</script>";
+                echo "<script>alert('Erro ao adicionar funcionário: " . $e->getMessage() . "');</script>";
             } finally {
                 $stmt_close = $stmt_funcionario ?? $stmt_token;
                 $stmt_close->close();
             }
             break;
+            
         case 'meta':
             try {
                 $idCozinheiro = $_POST['idCozinheiro'];
@@ -467,3 +511,55 @@ function registrarLog($conn, $idUsuario, $tipo, $descricao) {
 
 $conn->close();
 ?>
+<Style>
+    #codigo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+#codigo {
+    width: 80%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: none;
+    font-family: 'Courier New', monospace;
+    background-color: #f9f9f9;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+#codigo:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+button:active {
+    background-color: #004085;
+    transform: scale(0.98);
+}
+
+button:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+</Style>

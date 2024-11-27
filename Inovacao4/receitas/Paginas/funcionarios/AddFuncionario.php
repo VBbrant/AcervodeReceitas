@@ -1,8 +1,8 @@
-<?php
+<?php session_start();
 require_once "../../../config.php";
 require_once ROOT_PATH . "receitas/conn.php";
 
-if ($_SESSION['cargo'] != 'ADM') {
+if ($_SESSION['cargo'] !== 'ADM') {
     echo "<script>
         alert('Você não tem permissão para acessar essa página.');
         window.history.back();
@@ -39,7 +39,7 @@ $cargos = $result_cargos->fetch_all(MYSQLI_ASSOC);
 <body class="ingrediente">
     <?php include ROOT_PATH . 'receitas/elementoPagina/cabecalho.php'; ?>
 
-    <div class="container my-4">
+    <div class="container my-4" id="lista">
         <h2 class="text-center">Adicionar Funcionário</h2>
         <form method="POST" action="../../CRUD/processarAdicionar.php">
             <input type="hidden" name="form_type" value="funcionario">
@@ -69,7 +69,14 @@ $cargos = $result_cargos->fetch_all(MYSQLI_ASSOC);
                 <label for="nome_fantasia" class="form-label">Apelido:</label>
                 <input type="text" class="form-control" id="nome_fantasia" name="nome_fantasia">
             </div>
-
+            <div class="mb-3">
+                <label for="telefone" class="form-label">Telefone:</label>
+                <input type="text" class="form-control" id="telefone" name="telefone">
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email:</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
             <div class="mb-3">
                 <label for="cargo" class="form-label">Cargo:</label>
                 <select class="form-select" id="idCargo" name="idCargo" required>
@@ -79,7 +86,6 @@ $cargos = $result_cargos->fetch_all(MYSQLI_ASSOC);
                     <?php endforeach; ?>
                 </select>
             </div>
-
 
             <!-- Selecionar usuário existente -->
             <div class="mb-3">
@@ -94,6 +100,20 @@ $cargos = $result_cargos->fetch_all(MYSQLI_ASSOC);
                 </select>
             </div>
 
+            <!-- Selecionar restaurante -->
+            <div class="mb-3">
+                <label for="idRestaurante" class="form-label">Restaurante:</label>
+                <select class="form-select" id="idRestaurante" name="idRestaurante" required>
+                    <option value="">Selecione o Restaurante</option>
+                    <?php 
+                    $sql_restaurantes = "SELECT idRestaurante, nome FROM restaurante";
+                    $result_restaurantes = $conn->query($sql_restaurantes);
+                    while ($restaurante = $result_restaurantes->fetch_assoc()): ?>
+                        <option value="<?= $restaurante['idRestaurante'] ?>"><?= $restaurante['nome'] ?></option>
+                    <?php endwhile; ?>
+                </select>
+            </div>
+
             <div class="d-flex justify-content-between align-items-center">
                 <!-- Botão de Voltar -->
                 <button onclick="voltarPagina()" id="backButton" type ="button" class="btn btn-secondary">
@@ -105,4 +125,7 @@ $cargos = $result_cargos->fetch_all(MYSQLI_ASSOC);
             </div>
         </form>
     </div>
-<?php include ROOT_PATH . 'receitas/elementoPagina/rodape.php'; ?>
+
+    <?php include ROOT_PATH . 'receitas/elementoPagina/rodape.php'; ?>
+</body>
+</html>

@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();  // Inicia a sessão se não estiver iniciada
 }
-if ($_SESSION['cargo'] == NULL) {
+if ($_SESSION['cargo'] == NULL || !isset($_SESSION['idLogin'])) {
     // Redirecionar para a página de login se não estiver logado
     header("Location:". BASE_URL ."receitas/Paginas/Login.php");
     exit;

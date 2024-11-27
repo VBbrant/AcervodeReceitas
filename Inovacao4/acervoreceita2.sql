@@ -41,6 +41,7 @@ CREATE TABLE `funcionario` (
   `salario` decimal(10,2) DEFAULT NULL,
   `nome_fantasia` varchar(100) DEFAULT NULL,
   `telefone` varchar(25) DEFAULT NULL,
+  `email` varchar(150) DEFAULT NULL,
   `idLogin` int DEFAULT NULL,
   `idCargo` int DEFAULT NULL,
   `idRestaurante` int DEFAULT NULL,  -- Chave estrangeira para o restaurante
@@ -64,7 +65,10 @@ CREATE TABLE `registro_tokens` (
   `data_admissao` date NULL,
   `salario` decimal(10,2) NULL,
   `nome_fantasia` varchar(100) NULL,
+  `telefone` varchar(25) NULL,
+  `email` varchar(150) null,
   `idCargo` int NULL,
+  `idRestaurante` int NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

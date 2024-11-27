@@ -27,13 +27,14 @@ $registro = $result->fetch_assoc();
     <title>Registro - Sabor e Arte</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../Style/estiloRegistro.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>receitas/Style/estiloBackground.css">
 </head>
 <body>
     <!-- Logo -->
     <div class="logo text-center py-3">
         <h1 class="display-4">SABOR <span class="text-danger">ARTE</span></h1>
     </div>
-    <div class="container my-4">
+    <div class="container my-4" id="lista2">
         <h2 class="text-center">Registrar Funcionário</h2>
         <form method="POST" action="../CRUD/processarConta.php" onsubmit="return validarSenha();">
             <input type="hidden" name="form_type" value="registro">

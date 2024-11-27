@@ -79,6 +79,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $conn->begin_transaction();
         
             try {
+                // Verifica o token de registro
                 $sql = "SELECT * FROM registro_tokens WHERE token = ?";
                 $stmt = $conn->prepare($sql);
                 $stmt->bind_param("s", $token);
@@ -92,6 +93,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $registro = $result->fetch_assoc();
                 $stmt->close();
         
+                // Insere o usuário
                 $sql_usuario = "INSERT INTO usuario (nome, email, senha) VALUES (?, ?, ?)";
                 $stmt = $conn->prepare($sql_usuario);
                 $stmt->bind_param("sss", $nome_usuario, $email, $senha);
@@ -99,18 +101,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $idLogin = $stmt->insert_id;
                 $stmt->close();
         
-                $sql_funcionario = "INSERT INTO funcionario (nome, rg, data_nascimento, data_admissao, salario, nome_fantasia, idLogin, idCargo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                // Verifica se o e-mail do funcionário é diferente do e-mail do usuário
+                if ($email !== $registro['email']) {
+                    // Atualiza o e-mail do usuário para o do funcionário
+                    $sql_update_email = "UPDATE usuario SET email = ? WHERE id = ?";
+                    $stmt = $conn->prepare($sql_update_email);
+                    $stmt->bind_param("si", $registro['email'], $idLogin);
+                    $stmt->execute();
+                    $stmt->close();
+                }
+        
+                // Insere o funcionário
+                $sql_funcionario = "INSERT INTO funcionario (nome, rg, data_nascimento, data_admissao, salario, nome_fantasia, telefone, email, idLogin, idCargo, idRestaurante) 
+                                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 $stmt = $conn->prepare($sql_funcionario);
-                $stmt->bind_param("ssssdsii", $registro['nome'], $registro['rg'], $registro['data_nascimento'], $registro['data_admissao'], $registro['salario'], $registro['nome_fantasia'], $idLogin, $registro['idCargo']);
+                $stmt->bind_param("ssssdsssiii", $registro['nome'], $registro['rg'], $registro['data_nascimento'], $registro['data_admissao'], 
+                                    $registro['salario'], $registro['nome_fantasia'],$registro['telefone'], $registro['email'], $idLogin, $registro['idCargo'], $registro['idRestaurante']);
                 $stmt->execute();
                 $stmt->close();
         
+                // Deleta o token de registro após a conclusão
                 $sql_delete_token = "DELETE FROM registro_tokens WHERE token = ?";
                 $stmt = $conn->prepare($sql_delete_token);
                 $stmt->bind_param("s", $token);
                 $stmt->execute();
                 $stmt->close();
         
+                // Commit da transação
                 $conn->commit();
                 echo "<script>alert('Registrado com sucesso!'); window.location.href='" . BASE_URL . "receitas/Paginas/login.php';</script>";
             } catch (Exception $e) {
@@ -122,6 +139,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
             }
             break;
+            
         case 'perfil':
             // Defina o diretório de upload e obtenha as informações do usuário
             $diretorioUpload = ROOT_PATH . 'receitas/imagens/perfil/';
