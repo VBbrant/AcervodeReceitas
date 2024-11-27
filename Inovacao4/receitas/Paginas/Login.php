@@ -1,4 +1,4 @@
-<?php require_once "../../config.php";?>
+<?php require_once "../../config.php" ;?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -41,6 +41,9 @@
                 <div class="mb-3">
                     <label for="senha" class="form-label">Senha</label>
                     <input type="password" class="form-control" id="senha" name="senha" placeholder="Digite sua Senha" required>
+                </div>
+                <div class="mb-3 text-end">
+                    <a href="<?php echo BASE_URL; ?>receitas/paginas/esqueceuSenha.php" class="text-decoration-none">Esqueceu a senha?</a>
                 </div>
                 <div class="d-grid">
                     <button type="submit" class="btn btn-dark">ACESSAR</button>

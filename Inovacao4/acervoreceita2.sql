@@ -215,6 +215,15 @@ CREATE TABLE log_sistema (
     FOREIGN KEY (idUsuario) REFERENCES funcionario(idFun) -- Referência à tabela de funcionários (ou outra tabela de usuários)
 );
 
+CREATE TABLE `senha_recuperacao` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `email` varchar(100) NOT NULL,
+  `token` varchar(255) NOT NULL,
+  `expira_em` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
 
 
 
