@@ -1,34 +1,44 @@
 <?php
 session_start();
-require_once '../../../../config.php';
+require_once '../../../config.php';
 require_once ROOT_PATH . 'receitas/conn.php';
+
+// Verifica se o usuário está logado e obtém o ID do cozinheiro
+$idCozinheiro = isset($_SESSION['idFun']) ? $_SESSION['idFun'] : null;
+if (!$idCozinheiro) {
+    // Se o cozinheiro não estiver logado, redireciona ou mostra mensagem de erro
+    echo "Você não está logado!";
+    exit;
+}
 
 $search = isset($_POST['search']) ? trim($_POST['search']) : '';
 
-// Base da consulta para a tabela "Metas" com junção para obter o nome do cozinheiro
+// Base da consulta para a tabela "Metas" com junção para obter o nome do cozinheiro, filtrando pelas metas do cozinheiro logado
 $sql = "SELECT m.*, f.nome AS cozinheiro 
         FROM Metas m
-        LEFT JOIN funcionario f ON m.idCozinheiro = f.idFun";
+        LEFT JOIN funcionario f ON m.idCozinheiro = f.idFun
+        WHERE m.idCozinheiro = ?"; // Filtra apenas as metas do cozinheiro logado
 
 if (!empty($search)) {
-    $sql .= " WHERE m.descricao LIKE ? OR f.nome LIKE ?";
+    $sql .= " AND (m.descricao LIKE ? OR f.nome LIKE ?)";
 }
 
 $stmt = $conn->prepare($sql);
 
 if (!empty($search)) {
     $likeSearch = "%" . $search . "%";
-    $stmt->bind_param("ss", $likeSearch, $likeSearch);
+    $stmt->bind_param("sss", $idCozinheiro, $likeSearch, $likeSearch);
+} else {
+    $stmt->bind_param("s", $idCozinheiro);
 }
 
 $stmt->execute();
 $result = $stmt->get_result();
 
 $currentDate = new DateTime();
-
-
 ?>
 
+<!-- O código HTML para exibir as metas permanece o mesmo -->
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -101,31 +111,11 @@ $currentDate = new DateTime();
                         <a href="<?php echo BASE_URL; ?>receitas/Paginas/parametros/metas/verMeta.php?id=<?php echo $meta['idMeta']; ?>" class="btn btn-info btn-sm">
                             <i class="fas fa-eye"></i> Ver
                         </a>
-                        <?php if ($diasRestantes >= -30): ?>
-                            <a href="<?php echo BASE_URL; ?>receitas/Paginas/parametros/metas/editarMeta.php?id=<?php echo $meta['idMeta']; ?>" class="btn btn-primary btn-sm">
-                                <i class="fas fa-edit"></i> Editar
-                            </a>
-                        <?php endif; ?>
-                        <a href="<?php echo BASE_URL; ?>receitas/Paginas/parametros/metas/excluirMeta.php?id=<?php echo $meta['idMeta']; ?>" class="btn btn-danger btn-sm">
-                            <i class="fas fa-trash-alt"></i> Excluir
-                        </a>
                     </td>
                 </tr>
                 <?php endwhile; ?>
             </tbody>
         </table>
-
-        <div class="text-end">
-            <button type="button" class="btn btn-warning" id="btnExcluirMassa" onclick="ativarExclusaoMassa()">
-                <i class="fas fa-trash-alt"></i> Excluir em Massa
-            </button>
-            <button type="submit" class="btn btn-danger" style="display: none;" id="btnExcluirSelecionados">
-                <i class="fas fa-trash-alt"></i> Excluir Selecionados
-            </button>
-            <a href="<?php echo BASE_URL; ?>receitas/Paginas/parametros/metas/addMeta.php" class="btn btn-success">
-                <i class="fas fa-plus"></i> Adicionar Meta
-            </a>
-        </div>
     </form>
 </div>
 

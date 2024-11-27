@@ -161,7 +161,7 @@ $resultTopReceitas = $conn->query($sqlTopReceitas);
             </div>
         </div>
     </div>
-    <div id="lista">
+    <div id="lista2">
         <h3 class="text-center my-4">Top 10 Receitas com as Notas Médias Mais Altas</h3>
         <div class="table-responsive">
             <table class="table table-striped table-bordered">

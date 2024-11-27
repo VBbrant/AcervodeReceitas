@@ -151,7 +151,17 @@
                 </ul>
             </li>
         <?php endif; ?>
-
+        <?php if ($userRole == 'Cozinheiro') : ?>
+            <li class="has-submenu">
+                <a href="javascript:void(0);" onclick="toggleSubmenu(this)">
+                    <i class="fas fa-cogs"></i> Metas
+                    <i class="fas fa-chevron-down float-end"></i>
+                </a>
+                <ul class="submenu">
+                    <li><a href="<?php echo BASE_URL; ?>receitas/Paginas/metas/minhasMetas.php"><i class="fas fa-trophy"></i> Metas</a></li>
+                </ul>
+            </li>
+        <?php endif;?>
     </ul>
 </nav>
 

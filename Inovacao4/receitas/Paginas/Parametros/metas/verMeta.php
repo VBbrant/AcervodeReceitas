@@ -1,6 +1,8 @@
-<?php
+<?php session_start();
 require_once '../../../../config.php';
 require_once ROOT_PATH . 'receitas/conn.php';
+
+$usuarioTipo = $_SESSION['Cargo'];
 
 $idMeta = $_GET['id'] ?? null;
 if (!$idMeta) {
@@ -41,9 +43,9 @@ if (!$meta) {
 <body class="ingrediente">
 <?php include ROOT_PATH . 'receitas/elementoPagina/cabecalho.php'; ?>
 
-<div class="container my-4" id="formulario1">
+<div class="container my-4" id="lista">
     <h2 class="text-center">Detalhes da Meta</h2>
-    <form id="formulario1">
+    <form>
         <div class="mb-3">
             <label class="form-label">Cozinheiro:</label>
             <input type="text" class="form-control" value="<?php echo htmlspecialchars($meta['nome_func']); ?>" disabled>
@@ -78,10 +80,18 @@ if (!$meta) {
             </ul>
         </div>
 
-        <div class="text-end">
-            <a href="<?php echo BASE_URL; ?>receitas/Paginas/parametros/metas/editarMeta.php?id=<?php echo $idMeta; ?>" class="btn btn-primary">
-                <i class="fas fa-edit"></i> Editar
-            </a>
+        
+            <div class="d-flex justify-content-between align-items-center">
+            <!-- Botão de Voltar -->
+            <button onclick="voltarPagina()" id="backButton" type ="button" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </button>
+            <?php if ($usuarioTipo === 'ADM'): ?>
+                <!-- Botão de Editar -->
+                <a href="<?php echo BASE_URL; ?>receitas/Paginas/medidas/editarMedida.php?id=<?php echo $idMedida; ?>" class="btn btn-primary">
+                    <i class="fas fa-edit"></i> Editar
+                </a>
+            <?php endif; ?>
         </div>
     </form>
 </div>
