@@ -56,6 +56,7 @@ while ($row = $result_receitas->fetch_assoc()) {
         <form method="POST" action="../../CRUD/processarEditar.php">
             <input type="hidden" name="form_type" value="avaliacao">
             <input type="hidden" name="idAvaliacao" value="<?php echo htmlspecialchars($avaliacao['idDegustacao']); ?>">
+            <input type="hidden" name="idDegustador" value="<?= $_SESSION['idFun']?>">
 
             <div class="mb-3">
                 <label for="idReceita" class="form-label">Selecionar Receita:</label>

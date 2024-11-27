@@ -1,7 +1,7 @@
 <?php session_start();
 require_once '../../../config.php';
 require_once ROOT_PATH . 'receitas/conn.php';
-
+$idEditorSessao = $_SESSION['idFun'];
 $sql = "SELECT 
     r.idReceita, r.idCozinheiro, 
     r.nome_rec AS titulo, 
@@ -15,6 +15,7 @@ LEFT JOIN
     degustacao d ON r.idReceita = d.idReceita
 JOIN 
     categoria c ON r.idCategoria = c.idCategoria
+WHERE idCozinheiro = $idEditorSessao
 ";
 $result = $conn->query($sql);
 

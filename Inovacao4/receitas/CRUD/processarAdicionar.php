@@ -89,7 +89,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
                     $conn->commit();
                     registrarLog($conn, $idUsuario, "inclusao", "Receita '$nome_rec' adicionada com sucesso!");
-                    echo "<script>alert('Receita adicionada com sucesso!'); window.location.href='" . BASE_URL . "receitas/Paginas/home.php';</script>";
+                    echo " <script>window.location.href='" . BASE_URL . "receitas/Paginas/home.php';</script>";
                 } catch (Exception $e) {
                     $conn->rollback();
                     echo "<script>alert('Erro ao processar o formulário: " . $e->getMessage() . "'); window.history.back();</script>";
@@ -116,7 +116,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             try {
                 $stmt->execute();
                 registrarLog($conn, $idUsuario, "inclusao", "Ingrediente '$nome_ingrediente' adicionado com sucesso!");
-                echo "<script>alert('Ingrediente adicionado com sucesso!'); window.location.href='" . BASE_URL . "receitas/Paginas/ingredientes/listaIngrediente.php';</script>";
+                echo "<script> window.location.href='" . BASE_URL . "receitas/Paginas/ingredientes/listaIngrediente.php';</script>";
             } catch (Exception $e) {
                 echo "<script>alert('Erro ao processar o formulário: " . $e->getMessage() . "'); window.history.back();</script>";
             } finally {
@@ -133,7 +133,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             try{
                 $stmt->execute();
                 registrarLog($conn, $idUsuario, "inclusao", "Medida '$sistema' adicionada com sucesso!");
-                echo "<script>alert('Medida adicionada com sucesso!'); window.location.href='" . BASE_URL . "receitas/Paginas/medidas/listaMedida.php';</script>";
+                echo "<script> window.location.href='" . BASE_URL . "receitas/Paginas/medidas/listaMedida.php';</script>";
             } catch (Exception $e){
                 echo "<script>alert('Erro ao processar o formulário: " . $e->getMessage() . "'); window.history.back();</script>"; 
             } finally {
@@ -205,7 +205,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $notaDegustacao = $_POST['nota_degustacao'] ?? null;
             $comentarioTexto = $_POST['comentario_texto'] ?? null;
             $dataDegustacao = date("Y-m-d");
-            $idDegustador = 8; // Ajuste para um ID válido ou obtenha-o da sessão
+            $idDegustador = $_POST['idDegustador']?? null;
             
             if (!$idReceita || $notaDegustacao === null || !$idDegustador) {
                 echo "<script>alert('Dados incompletos ou degustador inválido!'); window.history.back();</script>";
@@ -245,7 +245,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // Registrar log
                 registrarLog($conn, $idUsuario, "inclusao", "Avaliação para a receita '$nome_receita' adicionada com sucesso!");
                 
-                echo "<script>alert('Degustação adicionada com sucesso!'); window.location.href='" . BASE_URL . "receitas/Paginas/avaliacoes/listaAvaliacao.php';</script>";
+                echo "<script> window.location.href='" . BASE_URL . "receitas/Paginas/avaliacoes/listaAvaliacao.php';</script>";
             } catch (Exception $e) {
                 $conn->rollback();
                 echo "<script>alert('Erro ao processar a degustação: " . $e->getMessage() . "'); window.history.back();</script>";
@@ -417,7 +417,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             try{
                 $stmt->execute();
                 registrarLog($conn, $idUsuario, "inclusao", "Cargo '$categoria' adicionado com sucesso!");
-                echo "<script>alert('Cargo adicionado com sucesso!'); window.location.href='" . BASE_URL . "receitas/Paginas/cargos/listaCargo.php';</script>";
+                echo "<script> window.location.href='" . BASE_URL . "receitas/Paginas/cargos/listaCargo.php';</script>";
             } catch (Exception $e){
                 echo "<script>alert('Erro ao processar o formulário: " . $e->getMessage() . "'); window.history.back();</script>"; 
             } finally {
@@ -470,7 +470,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
                 $conn->commit();  // Confirma a transação
                 
-                echo "<script>alert('Usuário adicionado com sucesso!'); window.location.href='" . BASE_URL . "receitas/Paginas/usuarios/listaUsuario.php';</script>";
+                echo "<script> window.location.href='" . BASE_URL . "receitas/Paginas/usuarios/listaUsuario.php';</script>";
             } catch (Exception $e) {
                 $conn->rollback();  // Reverte as alterações em caso de erro
                 echo "<script>alert('Erro ao adicionar usuário: " . $e->getMessage() . "'); window.history.back();</script>";

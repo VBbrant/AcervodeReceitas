@@ -1,4 +1,4 @@
-<?php
+<?php session_start();
 //addAvaliação.php
 require_once "../../../config.php";
 require_once ROOT_PATH . "receitas/conn.php";
@@ -40,6 +40,7 @@ while ($row = $result_receitas->fetch_assoc()) {
         <h2 class="text-center">Adicionar Avaliação</h2>
         <form method="POST" action="../../CRUD/processarAdicionar.php"  >
             <input type="hidden" name="form_type" value="avaliacao">
+            <input type="hidden" name="idDegustador" value="<?= $_SESSION['idFun']?>">
             
             <!-- Selecionar Receita -->
             <div class="mb-3">
